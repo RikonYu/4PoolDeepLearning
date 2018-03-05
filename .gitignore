@@ -1,0 +1,12 @@
+
+*.tlog
+*.dll
+*.pyc
+pybrood/__init__.py
+pybrood/inner.exp
+pybrood/inner.exp
+pybrood/inner.obj
+pybrood/inner.pyd
+pybrood/vc140.pdb
+pybrood/inner.lib
+pybrood/abc.py
