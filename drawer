@@ -1,0 +1,9 @@
+import matplotlib.pyplot as plt
+a=[0,8,24,24,24,8,8,8,64,64,96,64,224,368,0,254]
+b=[40]*len(a)
+c=[975]*len(a)
+
+plt.plot(a,'r',label='model')
+plt.plot(b,'g',label='random')
+plt.plot(c,'b',label='ideal')
+plt.show()
