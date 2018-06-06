@@ -52,7 +52,7 @@ class DroneNet:
     def train(self,X,Y):
         return self.model.fit(X,Y)
     def evaluate(self,X,Y):
-        return self.model.evaluate(X,Y)
+        return self.model.evaluate(X,Y,verbose=0)
     def train_experience(self,states,actions,rewards,next_states,discount):
         targets=rewards+discount*self.predict_max(next_states)
         

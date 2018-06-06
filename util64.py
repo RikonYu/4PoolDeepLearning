@@ -20,6 +20,8 @@ def y2stateDrone(ind):
     if(ind[2] in [0,5]):
         ans[180,180,ind[2]]=1
     else:
+        if(ind[0]>=360 or ind[1]>=360 or ind[0]<0 or ind[1]<0):
+            print(ind)
         ans[ind[0],ind[1],ind[2]]=1
     return ans
 def msg2stateDrone(msg):

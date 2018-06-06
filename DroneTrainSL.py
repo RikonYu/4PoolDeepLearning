@@ -30,7 +30,7 @@ def valid(model,size=128):
         yt=numpy.zeros([360,360,6])
         ans+=model.evaluate(
             numpy.reshape(util64.msg2stateDrone(Xt[i]),[1,360,360,18]),
-             numpy.reshape(util64.y2stateDrone(Yt[i]),[1,360,360,6]))
+            numpy.reshape(util64.y2stateDrone(Yt[i]),[1,360,360,6]))
     return ans/size
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
