@@ -21,7 +21,7 @@ valid_every=50
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    for i in range(len(allrep)*0.9):
+    for i in range(len(allrep)*10//9):
         try:
             f=open(allrep[i],'rb')
             reg=pickle.load(f)
