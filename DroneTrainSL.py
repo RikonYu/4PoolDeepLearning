@@ -8,9 +8,14 @@ import util64
 from DroneNet import DroneNet
 X=[]
 Y=[]
-
+Xt=[]
+Yt=[]
 freq={}
 allrep=[]
+
+max_epoch=0
+batch_size=0
+    
 reppath='../reps/'
 for i in os.listdir(reppath):
     allrep.append(i)
@@ -18,27 +23,42 @@ for i in os.listdir(reppath):
 #test: 1900+
 #train_size=100
 valid_every=50
+def valid(model,size=128):
+    ans=0
+    ind=numpy.random.choice(len(Xt),size,replace=False)
+    ans+=model.evaluate([Xt[ind]],[Yt[ind]])
+    return ans/size
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    for i in range(len(allrep)*10//9):
+    for i in range(len(allrep)*9//10):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
-            #print(allrep[i],end=' ')
-            #print('reg:',reg)
-            #print('\n\n\n')
             util64.makeReg(reg)
             while(True):
                 x=pickle.load(f)
                 y=pickle.load(f)
-                
-                #print(x,y)
                 X.append(x)
                 Y.append(y)
             f.close()
         except EOFError:
             continue
+
+    for i in range(len(allrep)*9//10,len(allrep)):
+        try:
+            f=open(reppath+allrep[i],'rb')
+            reg=pickle.load(f)
+            util64.makeReg(reg)
+            while(True):
+                x=pickle.load(f)
+                y=pickle.load(f)
+                Xt.append(x)
+                Yt.append(y)
+            f.close()
+        except EOFError:
+            continue
+    
     for i in range(len(Y)):
         if(Y[i][2] in freq):
            freq[Y[i][2]]+=1
@@ -73,6 +93,7 @@ if(__name__=='__main__'):
             history=agent.train(X_,Y_)
             trainerr.append(history.history['loss'])
             if(tk%valid_every==0):
+                validerr.append(valid(agent))
                 #validerr.append(agent.evaluate(X_,Y_))
                 pass
             tk+=1
