@@ -21,12 +21,13 @@ valid_every=50
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    for i in range(len(allrep)*10//9):
+    for i in range(38,len(allrep)*10//9):
         try:
-            f=open(allrep[i],'rb')
+            f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
-            print('reg:',reg)
-            print('\n\n\n')
+            #print(allrep[i],end=' ')
+            #print('reg:',reg)
+            #print('\n\n\n')
             util64.makeReg(reg)
             while(True):
                 x=pickle.load(f)

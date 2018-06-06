@@ -8,7 +8,7 @@ hground=None
 
 def makeReg(reg):
     global regions, hground
-    #print(reg[0][0])
+    #print(reg)
     regions=numpy.zeros([reg[0][0][0]*32+1,reg[0][0][1]*32+1])
     hground=numpy.zeros([reg[0][0][0]*32+1,reg[0][0][1]*32+1])
     for i in reg[1]:
