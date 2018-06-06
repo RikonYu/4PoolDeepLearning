@@ -26,7 +26,8 @@ valid_every=50
 def valid(model,size=128):
     ans=0
     ind=numpy.random.choice(len(Xt),size,replace=False)
-    ans+=model.evaluate([Xt[ind]],[Yt[ind]])
+    for i in ind:
+        ans+=model.evaluate([Xt[i]],[Yt[i]])
     return ans/size
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
