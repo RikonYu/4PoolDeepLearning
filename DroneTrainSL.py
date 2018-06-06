@@ -27,7 +27,7 @@ def valid(model,size=128):
     ans=0
     ind=numpy.random.choice(len(Xt),size,replace=False)
     for i in ind:
-        yt=numpy.zeros([360,360,])
+        yt=numpy.zeros([360,360,6])
         ans+=model.evaluate(
             [util64.msg2stateDrone(Xt[i])],
             [util64.y2stateDrone(Yt[i])])
