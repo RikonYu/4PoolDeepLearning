@@ -27,7 +27,10 @@ def valid(model,size=128):
     ans=0
     ind=numpy.random.choice(len(Xt),size,replace=False)
     for i in ind:
-        ans+=model.evaluate([Xt[i]],[Yt[i]])
+        yt=numpy.zeros([360,360,])
+        ans+=model.evaluate(
+            [util64.msg2stateDrone(Xt[i])],
+            [util64.y2stateDrone(Yt[i])])
     return ans/size
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
@@ -82,20 +85,12 @@ if(__name__=='__main__'):
             X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
             Y_=numpy.zeros([batch_size,360,360,6])
             for j in range(batch_size):
-                #print(Y[ind[i*batch_size+j]])
-                if(Y[ind[i*batch_size+j]][2]==5):
-                    Y_[j,180,180,5]=1
-                elif(Y[ind[i*batch_size+j]][2]==0):
-                    Y_[j,180,180,0]=1
-                else:
-                    Y_[j][tuple(Y[ind[i*batch_size+j]])]=1
+                Y_[j]=util62.y2stateDrone(ind[i*batch_size+j])
             #print(X_.shape,Y_.shape,batch_size)
-            #history=agent.model.fit(numpy.zeros([2,360,360,18]),numpy.zeros([2,360,360,6]))
             history=agent.train(X_,Y_)
             trainerr.append(history.history['loss'])
             if(tk%valid_every==0):
                 validerr.append(valid(agent))
-                #validerr.append(agent.evaluate(X_,Y_))
                 pass
             tk+=1
     pickle.dump(trainerr,tout)

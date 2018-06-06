@@ -14,7 +14,13 @@ def makeReg(reg):
     for i in reg[1]:
         regions[i[0]:i[1],i[2]:i[3]]=i[4]
         hground[i[0]:i[1],i[2]:i[3]]=i[5]
-        
+def y2stateDrone(ind):
+    ans=numpy.zeros([360,360,6])
+    if(ind[2] in [0,5]):
+        ans[180,180,ind[2]]=1
+    else:
+        ans[ind[0],ind[1],ind[2]]=1
+    return ans
 def msg2stateDrone(msg):
     global regions, hground
     ans=numpy.zeros([360,360,18])
