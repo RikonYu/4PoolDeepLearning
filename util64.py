@@ -16,7 +16,7 @@ def makeReg(reg):
         hground[i[0]:i[1],i[2]:i[3]]=i[5]
 def y2stateDrone(ind):
     ans=numpy.zeros([360,360,6])
-    print(ind)
+    #print(ind)
     if(ind[2] in [0,5]):
         ans[180,180,ind[2]]=1
     else:

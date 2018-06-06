@@ -93,6 +93,7 @@ if(__name__=='__main__'):
                 validerr.append(valid(agent))
                 pass
             tk+=1
+    agent.save()
     pickle.dump(trainerr,tout)
     pickle.dump(validerr,vout)
     tout.close()
