@@ -85,7 +85,7 @@ if(__name__=='__main__'):
             X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
             Y_=numpy.zeros([batch_size,360,360,6])
             for j in range(batch_size):
-                Y_[j]=util62.y2stateDrone(ind[i*batch_size+j])
+                Y_[j]=util64.y2stateDrone(ind[i*batch_size+j])
             #print(X_.shape,Y_.shape,batch_size)
             history=agent.train(X_,Y_)
             trainerr.append(history.history['loss'])
