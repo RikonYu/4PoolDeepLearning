@@ -6,6 +6,12 @@ import pickle
 regions=None
 hground=None
 
+def shrinkScr(x):
+    if(x<0):
+        return 0
+    if(x>359):
+        return 359
+    return x
 def makeReg(reg):
     global regions, hground
     #print(reg)
@@ -20,9 +26,7 @@ def y2stateDrone(ind):
     if(ind[2] in [0,5]):
         ans[180,180,ind[2]]=1
     else:
-        if(ind[0]>=360 or ind[1]>=360 or ind[0]<0 or ind[1]<0):
-            print(ind)
-        ans[ind[0],ind[1],ind[2]]=1
+        ans[shrinkScr(ind[0]),shrinkScr(ind[1]),ind[2]]=1
     return ans
 def msg2stateDrone(msg):
     global regions, hground
