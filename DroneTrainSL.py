@@ -74,7 +74,7 @@ if(__name__=='__main__'):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
-            ngt.append(util64.gameInstancce(reg))
+            ngt.append(util64.gameInstance(reg))
             ngtl.append(len(Xt))
             while(True):
                 x=pickle.load(f)
