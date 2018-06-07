@@ -13,8 +13,7 @@ drones=DroneNet(Loading=False)
 while(True):
     c,addr=soc.accept()
     while(True):
-        
-data=c.recv(20480)
+        data=c.recv(20480)
         if(data):
             k=pickle.loads(data)
             if(k[0]=='reg'):
