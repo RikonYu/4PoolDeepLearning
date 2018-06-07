@@ -16,6 +16,7 @@ while(True):
         alldata=b''
         data=c.recv(20480)
         while(data):
+            print(len(data))
             alldata+=data
             data=c.recv(20480)
         
