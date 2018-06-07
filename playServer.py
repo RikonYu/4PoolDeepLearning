@@ -13,7 +13,7 @@ drones=DroneNet.DroneNet()
 while(True):
     c,addr=soc.accept()
     while(True):
-        alldata=''
+        alldata=b''
         data=c.recv(20480)
         while(data):
             alldata+=data
