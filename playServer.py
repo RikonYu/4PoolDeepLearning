@@ -9,7 +9,7 @@ host='linux.cs.uwaterloo.ca'
 soc.bind((host,12346))
 soc.listen(5)
 disGame=None
-drones=DroneNet(Loading=False)
+drones=DroneNet.DroneNet(Loading=False)
 while(True):
     c,addr=soc.accept()
     while(True):
