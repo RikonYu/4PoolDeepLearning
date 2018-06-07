@@ -6,12 +6,16 @@ from pybrood import BaseAI, run, game, Color
 soc=None
 def send(u,tp):
     msg=util32.game2msgDrone(u)
-    soc.send(pickle.dumps([tp,msg]))
+    soc.sendall(pickle.dumps([tp,msg]))
 def send_reg():
-    print(len(pickle.dumps(['reg',util32.reg2msg()])))
+    #print(len(pickle.dumps(['reg',util32.reg2msg()])))
     soc.send(pickle.dumps(['reg',util32.reg2msg()]))
 def receive():
     k=soc.recv(10240)
+    while(len(k)==0):
+        k=soc.recv(10240)
+        
+        print(len(k))
     return pickle.loads(k)
 class PlayAI(BaseAI):
     def prepare(self):

@@ -1,6 +1,7 @@
 import numpy
 import os
 from pybrood import BaseAI, run, game
+import pybrood
 import win32api
 import win32con
 import time
@@ -151,6 +152,7 @@ def command(unit,order):
     coord[0]+=order[0]
     coord[1]+=order[1]
     lcmd=unit.getLastCommand()
+    #print(lcmd,lcmd.getX(),lcmd.getY())
     if(lcmd.getTargetPosition()==coord and type2cmd(lcmd.getType())==order[2]):
         return
     if(order[2]==0):
@@ -164,4 +166,4 @@ def command(unit,order):
     elif(order[2]==4):
         unit.attack(game.getClosestUnit(coord))
     elif(order[2]==5):
-        unit.reeturnCargo()
+        unit.returnCargo()

@@ -11,21 +11,17 @@ soc.listen(5)
 disGame=None
 drones=DroneNet.DroneNet()
 while(True):
-    c,addr=soc.accept()
+    con,addr=soc.accept()
     while(True):
         alldata=b''
-        data=c.recv(20480)
-        while(data):
-            print(len(data))
-            alldata+=data
-            data=c.recv(20480)
-        
-        print(len(alldata))
-        k=pickle.loads(alldata)
-        print(k)
+        data=con.recv(20480)
+        k=pickle.loads(data)
+        #print(k)
         if(k[0]=='reg'):
-            disGame=util64.gameInstance(k[0])
+            disGame=util64.gameInstance(k[1])
         else:
-            ans=DroneNet.predict_ans(k)
-            soc.send(pickle.dumps([random.randint()%360,random.randint()%360,random.randint()%6]))
+            #ans=drones.predict_ans([k[1]])
+            ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
+            print(ans)
+            con.sendall(pickle.dumps(ans))
         
