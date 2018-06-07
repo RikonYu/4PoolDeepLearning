@@ -22,6 +22,7 @@ for i in os.listdir(reppath):
     allrep.append(i)
 #train: 90%
 #test: 90%+
+TRAIN_BATCHES=1000
 valid_every=50
 ngsl=[]
 ngs=[]
@@ -52,9 +53,9 @@ def valid(model,size=128):
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    #for i in range(len(allrep)*9//10):
+    for i in range(len(allrep)*9//10):
         
-    for i in range(20):
+    #for i in range(20):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
