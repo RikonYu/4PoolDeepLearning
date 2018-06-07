@@ -40,6 +40,21 @@ def ord2cmd(order):
     if(order in [90,84]):
         return 5
     return 0
+def type2cmd(cmdType):
+    if(cmdType.getName() in ['Attack_Move', 'Attack_Unit']):
+        return 4
+    if(cmdType.getName()== 'Gather'):
+        return 3
+    if(cmdType.getName() in ['Move','Follow']):
+        return 1
+    if(cmdType.getName()=='Build'):
+        return 2
+    if(cmdType.getName()=='Return_Cargo'):
+        return 5
+    if(cmdType.getName() in ['Stop', 'Hold_Position']):
+        return 0
+    raise Exception
+    
 #0terrain,1friendly ground,2friendly air,3friendly building,4enemy ground, 5enemy air,
 #6enemy building, 7mineral, 8naked gas, 9geyser, 10highground, 11self hp, 12ally hp,
 #13enemy hp, 14dmg dealt, 15dmg receive, 16has mineral, 17has gas
@@ -131,5 +146,22 @@ def game2stateDrone(me):
                         me.getPosition()[1]-u.getPosition()[1]+180,4]=1
 
     return ans
-def action2cmd(acts):
-    pass
+def command(unit,order):
+    coord=unit.getPosition()
+    coord[0]+=order[0]
+    coord[1]+=order[1]
+    lcmd=unit.getLastCommand()
+    if(lcmd.getTargetPosition()==coord and type2cmd(lcmd.getType())==order[2]):
+        return
+    if(order[2]==0):
+        unit.holdPosition()
+    elif(order[2]==1):
+        unit.move(coord)
+    elif(order[2]==2):
+        unit.build(pybrood.UnitTypes.Zerg_Spawning_Pool, coord)
+    elif(order[2]==3):
+        unit.gather(game.getClosestUnit(coord))
+    elif(order[2]==4):
+        unit.attack(game.getClosestUnit(coord))
+    elif(order[2]==5):
+        unit.reeturnCargo()
