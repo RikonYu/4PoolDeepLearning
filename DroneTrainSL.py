@@ -22,7 +22,7 @@ for i in os.listdir(reppath):
     allrep.append(i)
 #train: 90%
 #test: 90%+
-TRAIN_BATCHES=1000
+TRAIN_BATCHES=3000
 valid_every=50
 ngsl=[]
 ngs=[]
@@ -54,7 +54,6 @@ if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
     for i in range(len(allrep)*9//10):
-        
     #for i in range(20):
         try:
             f=open(reppath+allrep[i],'rb')
@@ -82,7 +81,7 @@ if(__name__=='__main__'):
                 y=pickle.load(f)
                 Xt.append(x)
                 Yt.append(y)
-            ngtl.append(len((Xt))
+            ngtl.append(len(Xt))
             f.close()
         except EOFError:
             continue
@@ -101,9 +100,11 @@ if(__name__=='__main__'):
     tk=0
     trainerr=[]
     validerr=[]
-    for epoch in range(max_epoch):
-        ind=list(range(nX))
-        numpy.random.shuffle(ind)
+    #for epoch in range(max_epoch):
+                        
+    ind=list(range(nX))
+    numpy.random.shuffle(ind)
+    for epoch in range(TRAIN_BATCHES):
         for i in range(nX//batch_size):
             X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in range(i*batch_size,(i+1)*batch_size)])
             #X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
