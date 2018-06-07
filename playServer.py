@@ -15,6 +15,7 @@ while(True):
     while(True):
         alldata=b''
         data=con.recv(20480)
+        print(len(data))
         k=pickle.loads(data)
         #print(k)
         if(k[0]=='reg'):
