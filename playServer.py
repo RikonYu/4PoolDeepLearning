@@ -6,7 +6,7 @@ import pickle
 import random
 soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host='linux.cs.uwaterloo.ca'
-soc.bind((host,123456))
+soc.bind((host,12346))
 soc.listen(5)
 disGame=None
 drones=DroneNet(Loading=False)
