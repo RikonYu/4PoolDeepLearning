@@ -6,11 +6,11 @@ from pybrood import BaseAI, run, game, Color
 soc=None
 def send(u,tp):
     msg=util32.game2msgDrone(u)
-    soc.send([tp,pickle.dumps(msg)])
+    soc.send(pickle.dumps([tp,msg]))
 def send_reg():
-    soc.send(['reg',util32.reg2msg()])
+    soc.send(pickle.dumps(['reg',util32.reg2msg()]))
 def receive():
-    k=soc.receive(10240)
+    k=soc.recv(10240)
     return pickle.loads(k)
 class PlayAI(BaseAI):
     def prepare(self):
@@ -18,7 +18,7 @@ class PlayAI(BaseAI):
         send_reg()
     def frame(self):
         if(game.getFrameCount()%10!=0):
-            continue
+            return
         for i in game.getAllUnits():
             if(i.getType().getName()=='Zerg_Drone' and i.getPlayer()==self.playerMe):
                 send(i,'drone')
@@ -29,5 +29,5 @@ class PlayAI(BaseAI):
 
 if(__name__=='__main__'):
     soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    soc.connect(('linux.cs.uwaterloo.ca',22))
+    soc.connect(('linux.cs.uwaterloo.ca',12346))
     run(PlayAI)

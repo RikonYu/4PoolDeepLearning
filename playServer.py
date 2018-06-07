@@ -16,6 +16,7 @@ while(True):
         data=c.recv(20480)
         if(data):
             k=pickle.loads(data)
+            print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[0])
             else:
