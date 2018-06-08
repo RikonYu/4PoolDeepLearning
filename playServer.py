@@ -20,7 +20,7 @@ while(True):
         #print(k)
         if(k[0]=='reg'):
             disGame=util64.gameInstance(k[1])
-            con.sendall('ok')
+            con.sendall(b'ok')
         else:
             #ans=drones.predict_ans([k[1]])
             ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]

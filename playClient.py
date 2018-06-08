@@ -2,6 +2,7 @@ import numpy
 import pickle
 import util32
 import socket,os
+import struct
 from pybrood import BaseAI, run, game, Color
 soc=None
 def send_msg(sock, msg):

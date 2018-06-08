@@ -5,8 +5,6 @@ import pickle
 import socket
 import struct
 
-
-
 def recv_msg(sock):
     # Read message length and unpack it into an integer
     raw_msglen = recvall(sock, 4)
