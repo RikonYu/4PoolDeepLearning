@@ -14,7 +14,7 @@ while(True):
     con,addr=soc.accept()
     while(True):
         alldata=b''
-        data=con.recv(16384)
+        data=util64.recv_msg(con)
         print('server recv',len(data))
         k=pickle.loads(data)
         #print(k)

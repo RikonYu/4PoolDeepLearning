@@ -4,14 +4,17 @@ import util32
 import socket,os
 from pybrood import BaseAI, run, game, Color
 soc=None
+def send_msg(sock, msg):
+    msg = struct.pack('>I', len(msg)) + msg
+    sock.sendall(msg)
+    
 def send(u,tp):
     msg=util32.game2msgDrone(u)
-    print('client send unit',len(msg))
-    soc.sendall(pickle.dumps([tp,msg]))
+    #print('client send unit',len(msg))
+    send_msg(soc,pickle.dumps([tp,msg]))
 def send_reg():
-    print('client send reg',len(pickle.dumps(['reg',util32.reg2msg()])))
-    
-    soc.send(pickle.dumps(['reg',util32.reg2msg()]))
+    #print('client send reg',len(pickle.dumps(['reg',util32.reg2msg()])))
+    send_msg(soc,pickle.dumps(['reg',util32.reg2msg()]))
 def receive():
     k=soc.recv(16384)
     print('client recv',len(k))
