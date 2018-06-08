@@ -6,10 +6,10 @@ from pybrood import BaseAI, run, game, Color
 soc=None
 def send(u,tp):
     msg=util32.game2msgDrone(u)
-    print('client send',len(msg))
+    print('client send unit',len(msg))
     soc.sendall(pickle.dumps([tp,msg]))
 def send_reg():
-    print('client send',len(pickle.dumps(['reg',util32.reg2msg()])))
+    print('client send reg',len(pickle.dumps(['reg',util32.reg2msg()])))
     
     soc.send(pickle.dumps(['reg',util32.reg2msg()]))
 def receive():
@@ -24,6 +24,7 @@ class PlayAI(BaseAI):
     def prepare(self):
         self.playerMe=game.self()
         send_reg()
+        soc.recv(16)
     def frame(self):
         if(game.getFrameCount()%10!=0):
             return
