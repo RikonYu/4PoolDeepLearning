@@ -54,11 +54,12 @@ class gameInstance:
         y=msg[0][1]
         ax=max(0,180-x)
         ay=max(0,180-y)
-        ans[ax:min(360,game.mapHeight()*32-x+180),
-            ay:min(360,game.mapWidth()*32-y+180),1]=self.hground[max(0,x-180):min(x+180,game.mapHeight()*32),max(0,y-180):min(y+180,game.mapWidth()*32)]
+        hei,wid=self.regions.shape
+        ans[ax:min(360,hei-x+180),
+            ay:min(360,wid-y+180),1]=self.hground[max(0,x-180):min(x+180,hei),max(0,y-180):min(y+180,hei)]
 
-        ans[ax:min(360,game.mapHeight()*32-x+180),
-            ay:min(360,game.mapWidth()*32-y+180),1]*=self.terrain[max(0,x-180):min(x+180,game.mapHeight()*32),max(0,y-180):min(y+180,game.mapWidth()*32)]
+        ans[ax:min(360,hei-x+180),
+            ay:min(360,wid-y+180),1]*=self.terrain[max(0,x-180):min(x+180,wid),max(0,y-180):min(y+180,wid)]
         for i in msg[2]:
             ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
         for i in msg[3]:
