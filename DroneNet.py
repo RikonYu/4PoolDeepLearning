@@ -45,7 +45,7 @@ class DroneNet:
     def predict_max(self,X):
         return numpy.amax(self.predict_all(X))
     def predict_all_masked(self,X,mask):
-        return numpy.where(mask,self.model.predict([X]),-1234)
+        return numpy.where(mask,self.model.predict(numpy.reshape(X,[1,360,360,-1])),-1234)
     def predict_ans_masked(self,X,mask):
         ans=numpy.argmax(self.predict_all_masked(X,mask))
         return numpy.unravel_index(ans,(360,360,6))
