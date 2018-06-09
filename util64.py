@@ -59,7 +59,7 @@ class gameInstance:
             ay:min(360,wid-y+180),1]=self.hground[max(0,x-180):min(x+180,hei),max(0,y-180):min(y+180,hei)]
 
         ans[ax:min(360,hei-x+180),
-            ay:min(360,wid-y+180),1]*=self.terrain[max(0,x-180):min(x+180,wid),max(0,y-180):min(y+180,wid)]
+            ay:min(360,wid-y+180),1]*=self.regions[max(0,x-180):min(x+180,wid),max(0,y-180):min(y+180,wid)]
         for i in msg[2]:
             ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
         for i in msg[3]:
