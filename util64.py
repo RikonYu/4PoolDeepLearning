@@ -45,8 +45,29 @@ class gameInstance:
         for i in reg[1]:
             self.regions[i[0]:i[1],i[2]:i[3]]=i[4]
             self.hground[i[0]:i[1],i[2]:i[3]]=i[5]
-            
 
+    def msg2maskDrone(self,msg):
+        ans=numpy.zeros([360,360,6])
+        ans[:,:,0]=1
+        ans[:,:,5]=(msg[1][1] or msg[1][2])
+        x=msg[0][0]
+        y=msg[0][1]
+        ax=max(0,180-x)
+        ay=max(0,180-y)
+        ans[ax:min(360,game.mapHeight()*32-x+180),
+            ay:min(360,game.mapWidth()*32-y+180),1]=hground[max(0,x-180):min(x+180,game.mapHeight()*32),max(0,y-180):min(y+180,game.mapWidth()*32)]
+
+        ans[ax:min(360,game.mapHeight()*32-x+180),
+            ay:min(360,game.mapWidth()*32-y+180),1]*=terrain[max(0,x-180):min(x+180,game.mapHeight()*32),max(0,y-180):min(y+180,game.mapWidth()*32)]
+        for i in msg[2]:
+            ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
+        for i in msg[3]:
+            ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
+        for i in msg[4]:
+            ans[i[1][0]-x+180,i[1][1]-y+180,3]=i[0]
+        for i in msg[5]:
+            ans[i[1][0]-x+180,i[1][1]-y+180,3]=1
+        return ans
     def msg2stateDrone(self,msg):
         ans=numpy.zeros([360,360,18])
         x,y=msg[0]

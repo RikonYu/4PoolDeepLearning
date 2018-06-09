@@ -18,11 +18,11 @@ def send_reg():
     send_msg(soc,pickle.dumps(['reg',util32.reg2msg()]))
 def receive():
     k=soc.recv(16384)
-    print('client recv',len(k))
+    #print('client recv',len(k))
     while(len(k)==0):
         k=soc.recv(16384)
         
-        print('client recv',len(k))
+        #print('client recv',len(k))
     return pickle.loads(k)
 class PlayAI(BaseAI):
     def prepare(self):
