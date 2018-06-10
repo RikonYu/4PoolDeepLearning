@@ -17,7 +17,7 @@ def unit_control(soc):
     while(True):
         try:
             data=util64.recv_msg(soc)
-            k=pickle.load(data)
+            k=pickle.loads(data)
             print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])

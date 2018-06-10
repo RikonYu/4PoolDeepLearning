@@ -60,7 +60,7 @@ class PlayAI(BaseAI):
                 droneThreads[i]=threading.Thread(target=unit_thread,args=[i])
                 droneThreads[i].start()
         for i in droneThreads.keys():
-            droneThrads[i].join()
+            droneThreads[i].join()
     def finished(self):
         pass
 
