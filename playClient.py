@@ -6,6 +6,7 @@ import struct
 import threading
 from pybrood import BaseAI, run, game, Color
 droneSocks={}
+droneThreads={}
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
@@ -50,13 +51,16 @@ class PlayAI(BaseAI):
                 #send(i,'drone')
                 #k=receive()
                 #util32.command(i,k)
-        for i in droneSocks:
+        for i in droneSocks.keys():
             if(game.getUnit(i).exists()==False):
                 droneSocks[i].close()
                 droneSocks.pop(i,None)
+                droneThreads.pop(i,None)
             else:
-                threading.Thread(target=unit_thread,args=[i])
-                
+                droneThreads[i]=threading.Thread(target=unit_thread,args=[i])
+                droneThreads[i].start()
+        for i in droneThreads.keys():
+            droneThrads[i].join()
     def finished(self):
         pass
 
