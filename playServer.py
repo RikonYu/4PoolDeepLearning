@@ -21,6 +21,7 @@ def unit_control(soc):
             print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
+                soc.send(b'ok')
                 break
             else:
                 X=disGame.msg2stateDrone(k[1])
