@@ -25,7 +25,7 @@ def unit_control(soc):
                 break
             else:
                 X=disGame.msg2stateDrone(k[1])
-                mask.disGame.msg2maskDrone(k[1])
+                mask=disGame.msg2maskDrone(k[1])
                 ans=drones.predict_ans_masked(X,mask)
                 soc.sendall(pickle.dumps(ans))
         except EOFError:

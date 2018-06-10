@@ -20,7 +20,7 @@ def send_reg():
     soc.connect(('linux.cs.uwaterloo.ca',12346))
     #print('client send reg',len(pickle.dumps(['reg',util32.reg2msg()])))
     send_msg(soc,pickle.dumps(['reg',util32.reg2msg()]))
-    k=receive(16)
+    k=soc.recv(16)
     soc.close()
 def receive(soc):
     k=soc.recv(16384)
