@@ -35,6 +35,9 @@ class DroneNet:
         self.model.compile(optimizer=opt,loss='categorical_crossentropy')
         if(os.path.isfile('DroneNet.h5') and loading==True):
             self.model.load_weights("DroneNet.h5",by_name=True)
+        self.model._make_predict_function()
+        self.model._make_test_function()
+        self.model._make_train_function()
     def save(self):
         self.model.save_weights('DroneNet.h5',by_name=True)
     def predict_all(self,X):
