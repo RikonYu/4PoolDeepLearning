@@ -20,7 +20,7 @@ def send_reg():
     #print('client send reg',len(pickle.dumps(['reg',util32.reg2msg()])))
     send_msg(soc,pickle.dumps(['reg',util32.reg2msg()]))
     soc.close()
-def receive():
+def receive(soc):
     k=soc.recv(16384)
     #print('client recv',len(k))
     while(len(k)==0):
@@ -30,6 +30,10 @@ def receive():
     return pickle.loads(k)
 def unit_thread(ind):
     send(game.getUnit(ind),'drone',droneSocks[ind])
+    print('send %d'%ind)
+    k=receive(soc)
+    print(k)
+    util32.command(game.getUnit(ind),k)
 class PlayAI(BaseAI):
     def prepare(self):
         self.playerMe=game.self()

@@ -13,10 +13,12 @@ disGame=None
 drones=DroneNet.DroneNet()
 def unit_control(soc):
     global disGame
+    print('new thread')
     while(True):
         try:
             data=util64.recv_msg(soc)
             k=pickle.load(data)
+            print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
                 break
