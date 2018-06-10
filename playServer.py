@@ -3,6 +3,7 @@ import DroneNet
 import util64
 import socket
 import pickle
+import threading
 import random
 soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host='linux.cs.uwaterloo.ca'
@@ -10,8 +11,26 @@ soc.bind((host,12346))
 soc.listen(5)
 disGame=None
 drones=DroneNet.DroneNet()
+def unit_control(soc):
+    global disGame
+    while(True):
+        try:
+            data=util64.recv_msg(soc)
+            k=pickle.load(data)
+            if(k[0]=='reg'):
+                disGame=util64.gameInstance(k[1])
+                break
+            else:
+                X=disGame.msg2stateDrone(k[1])
+                mask.disGame.msg2maskDrone(k[1])
+                ans=drones.predict_ans_masked(X,mask)
+                soc.sendall(pickle.dumps(ans))
+        except EOFError:
+            break
 while(True):
     con,addr=soc.accept()
+    threading.Thread(unit_control,[con])
+    '''
     while(True):
         alldata=b''
         data=util64.recv_msg(con)
@@ -29,4 +48,4 @@ while(True):
             ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
             #print('server send',ans)
             con.sendall(pickle.dumps(ans))
-        
+    '''
