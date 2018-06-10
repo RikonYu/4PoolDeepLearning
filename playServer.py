@@ -29,7 +29,7 @@ def unit_control(soc):
             break
 while(True):
     con,addr=soc.accept()
-    threading.Thread(unit_control,[con])
+    threading.Thread(target=unit_control,args=[con])
     '''
     while(True):
         alldata=b''

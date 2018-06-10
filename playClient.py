@@ -51,12 +51,12 @@ class PlayAI(BaseAI):
                 droneSocks[i].close()
                 droneSocks.pop(i,None)
             else:
-                threading.Thread(unit_thread,[i])
+                threading.Thread(target=unit_thread,args=[i])
                 
     def finished(self):
         pass
 
 if(__name__=='__main__'):
     #soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    soc.connect(('linux.cs.uwaterloo.ca',12346))
+    #soc.connect(('linux.cs.uwaterloo.ca',12346))
     run(PlayAI)
