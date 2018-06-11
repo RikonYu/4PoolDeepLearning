@@ -2,7 +2,7 @@
 import keras
 import tensorflow as tf
 from keras.models import Sequential, Model, load_model
-from keras.layers import Input,Concatenate,BatchNormalization,UpSampling2D,Layer
+from keras.layers import Input,Concatenate,BatchNormalization,UpSampling2D,Layer,Add
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D,Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as KTF
@@ -19,24 +19,38 @@ class DroneNet:
             with self.graph.as_default():       
                 self.inp=Input((360,360,INP_CHANNEL),dtype='float32')
                 self.conv1=Conv2D(64,(5,5),activation='relu',padding='same')(self.inp)
-                self.conv2=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv1)+self.conv1
+                self.conv2=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv1)
+                self.conv2=Add()([self.conv2,self.conv1])
                 self.pool1=MaxPooling2D((2,2))(self.conv2)
-                self.conv3=Conv2D(64,(5,5),activation='relu',padding='same')(self.pool1)+self.pool1
-                self.conv4=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv3)+self.conv3
+                self.conv3=Conv2D(64,(5,5),activation='relu',padding='same')(self.pool1)
+                self.conv3=Add()([self.conv3,self.pool1])
+                self.conv4=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv3)
+                self.conv4=Add()([self.conv4,self.conv3])
                 self.pool2=MaxPooling2D((2,2))(self.conv4)
-                self.conv5=Conv2D(64,(5,5),activation='relu',padding='same')(self.pool2)+self.pool2
-                self.conv6=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv5)+self.conv5
-
-                self.deconv1=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.conv6)+self.conv6
-                self.deconv2=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.deconv1)+self.deconv1
+                self.conv5=Conv2D(64,(5,5),activation='relu',padding='same')(self.pool2)
+                self.conv5=Add()([self.conv5,self.pool2])
+                self.conv6=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv5)
+                self.conv6=Add()([self.conv6,self.conv5])
+                
+                self.deconv1=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.conv6)
+                self.deconv1.set_shape([None,90,90,64])
+                self.deconv2=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.deconv1)
+                self.deconv2=Add()([self.deconv2,self.deconv1])
+                self.deconv2.set_shape([None,90,90,64])
                 self.up1=UpSampling2D((2,2))(self.deconv2)
                 self.deconv3=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(Concatenate(axis=3)([self.up1,self.conv4]))
-                self.deconv4=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.deconv3)+self.deconv3
+                self.deconv3.set_shape([None,180,180,64])
+                self.deconv4=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.deconv3)
+                self.deconv4=Add()([self.deconv4,self.deconv3])
+                self.deconv4.set_shape([None,180,180,64])
                 self.up2=UpSampling2D((2,2))(self.deconv4)
+                #print(self.deconv4.get_shape(),self.conv2.get_shape())
                 self.deconv5=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(Concatenate(axis=3)([self.up2,self.conv2]))
+                #self.deconv5.set_shape([None,360,360,64])
                 self.deconv6=Conv2DTranspose(OUT_CHANNEL,(5,5),activation='softmax',padding='same')(self.deconv5)
+                #self.deconv6.set_shape([None,360,360,OUT_CHANNEL])
                 self.model=Model(inputs=self.inp,outputs=self.deconv6)
-                #print(self.model.summary())
+                print(self.model.summary())
                 opt=Adam(lr=0.001)
                 self.model.compile(optimizer=opt,loss='categorical_crossentropy')
                 if(os.path.isfile('DroneNet.h5') and loading==True):
