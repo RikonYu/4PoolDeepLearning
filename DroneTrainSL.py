@@ -53,8 +53,8 @@ def valid(model,size=128):
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    for i in range(len(allrep)*9//10):
-    #for i in range(20):
+    #for i in range(len(allrep)*9//10):
+    for i in range(1):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
@@ -104,22 +104,22 @@ if(__name__=='__main__'):
                         
     ind=list(range(nX))
     numpy.random.shuffle(ind)
+    
     for epoch in range(TRAIN_BATCHES):
-        for i in range(nX//batch_size):
-            X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in range(i*batch_size,(i+1)*batch_size)])
-            #X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
-            Y_=numpy.zeros([batch_size,360,360,6])
-            for j in range(batch_size):
-                Y_[j]=util64.y2stateDrone(Y[ind[i*batch_size+j]])
-                #print(Y[ind[i*batch_size+j]])
-            #print(X_.shape,Y_.shape,batch_size)
-            history=agent.train(X_,Y_)
-            trainerr.append(history.history['loss'])
-            if(tk%valid_every==0):
-                validerr.append(valid(agent))
-                pass
-            tk+=1
-    agent.save()
+        X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in range(i*batch_size,(i+1)*batch_size)])
+        #X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
+        Y_=numpy.zeros([batch_size,360,360,6])
+        for j in range(batch_size):
+            Y_[j]=util64.y2stateDrone(Y[ind[i*batch_size+j]])
+            #print(Y[ind[i*batch_size+j]])
+        #print(X_.shape,Y_.shape,batch_size)
+        history=agent.train(X_,Y_)
+        trainerr.append(history.history['loss'])
+        if(tk%valid_every==0):
+            validerr.append(valid(agent))
+            pass
+        tk+=1
+agent.save()
     pickle.dump(trainerr,tout)
     pickle.dump(validerr,vout)
     tout.close()
