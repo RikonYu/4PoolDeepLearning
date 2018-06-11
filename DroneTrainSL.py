@@ -106,7 +106,8 @@ if(__name__=='__main__'):
     numpy.random.shuffle(ind)
     
     for epoch in range(TRAIN_BATCHES):
-        X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in range(i*batch_size,(i+1)*batch_size)])
+        picks=numpy.random.choice(nX,batch_size)
+        X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in picks])
         #X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
         Y_=numpy.zeros([batch_size,360,360,6])
         for j in range(batch_size):
