@@ -106,7 +106,7 @@ if(__name__=='__main__'):
     numpy.random.shuffle(ind)
     
     for epoch in range(TRAIN_BATCHES):
-        picks=numpy.random.choice(200,batch_size,False)
+        picks=numpy.random.choice(batch_size,batch_size,False)
         X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in picks])
         #X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
         Y_=numpy.zeros([batch_size,360,360,6])
@@ -114,6 +114,7 @@ if(__name__=='__main__'):
             Y_[j]=util64.y2stateDrone(Y[picks[j]])
             #print(Y[ind[i*batch_size+j]])
         #print(X_.shape,Y_.shape,batch_size)
+        print('epoch %d'%epoch, end=' ')
         history=agent.train(X_,Y_)
         trainerr.append(history.history['loss'])
         if(tk%valid_every==0):
