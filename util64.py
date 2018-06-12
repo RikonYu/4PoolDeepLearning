@@ -64,8 +64,9 @@ class gameInstance:
             ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
         for i in msg[3]:
             ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
-        for i in msg[4]:
-            ans[i[1][0]-x+180,i[1][1]-y+180,3]=i[0]
+        if(msg[1][3]==0):
+            for i in msg[4]:
+                ans[i[1][0]-x+180,i[1][1]-y+180,3]=i[0]
         for i in msg[5]:
             ans[i[1][0]-x+180,i[1][1]-y+180,3]=1
         return ans

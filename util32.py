@@ -63,12 +63,12 @@ def reg2msg():
     ans=[[(game.mapHeight(),game.mapWidth())]]
     ans.append([(i.getBoundsTop(),i.getBoundsBottom(),i.getBoundsLeft(),i.getBoundsRight(),i.isAccessible(),i.isHigherGround()) for i in game.getAllRegions()])
     return ans
-#0myPos,1[myHp,hasMineral,hasGas],2enemies[coordinate, HP,isFlyer,isBuilding, dmgTo,dmgFrom],3Ally[coordinate, Hp, isFlyer, isBuilding]
+#0myPos,1[myHp,hasMineral,hasGas, groudWeaponCooldown],2enemies[coordinate, HP,isFlyer,isBuilding, dmgTo,dmgFrom],3Ally[coordinate, Hp, isFlyer, isBuilding]
 #4resource[isMineral,coord], 5my_extractor[coord]
 def game2msgDrone(me):
     ans=[]
     ans.append(me.getPosition())
-    ans.append((me.getHitPoints(),me.isCarryingMinerals(),me.isCarryingGas()))
+    ans.append((me.getHitPoints(),me.isCarryingMinerals(),me.isCarryingGas(),me.getGroundWeaponCooldown()))
     enemy=[]
     ally=[]
     resource=[]

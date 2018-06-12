@@ -19,8 +19,8 @@ def conv_block(inp,times,has_input=False):
         x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
     if(has_input):
         return x
-    return x
-    #return Add()([x,inp])
+    #return x
+    return Add()([x,inp])
 def deconv_block(inp,times):
     x=inp
     for i in range(times):
@@ -30,6 +30,7 @@ def deconv_block(inp,times):
         conv4=Conv2DTranspose(8,(9,9),activation='relu',padding='same')(x)
         x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
     return x
+    #x=Conv2DTranspose()
     #return Add()([x,inp])
 class DroneNet:
     def __init__(self,loading=False):
@@ -40,18 +41,19 @@ class DroneNet:
         with self.session.as_default():
             with self.graph.as_default():       
                 self.inp=Input((360,360,INP_CHANNEL),dtype='float32')
-                self.conv1=conv_block(self.inp,1,True)
+                #self.conv1=conv_block(self.inp,1,True)
+                self.conv1=Conv2D(32,(1,1),activation='relu',padding='same')(self.inp)
                 self.pool1=MaxPooling2D((2,2))(self.conv1)
                 self.conv2=conv_block(self.pool1,1)
                 self.pool2=MaxPooling2D((2,2))(self.conv2)
-                #self.conv3=conv_block(self.pool2,1)
-                #self.pool3=MaxPooling2D((2,2))(self.conv3)
+                self.conv3=conv_block(self.pool2,1)
+                self.pool3=MaxPooling2D((2,2))(self.conv3)
 
-                #self.deconv1=deconv_block(self.pool3,2)
-                #self.up1=UpSampling2D((2,2))(self.deconv1)
+                self.deconv1=deconv_block(self.pool3,2)
+                self.up1=UpSampling2D((2,2))(self.deconv1)
                 #print(self.up1.get_shape(),self.conv3.get_shape())
-                #self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),11)
-                self.deconv2=deconv_block(self.pool2,1)
+                self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),11)
+                #self.deconv2=deconv_block(self.pool2,1)
                 self.up2=UpSampling2D((2,2))(self.deconv2)
                 self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),1)
                 self.up3=UpSampling2D((2,2))(self.deconv3)

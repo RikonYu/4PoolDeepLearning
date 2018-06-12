@@ -10,7 +10,7 @@ host='linux.cs.uwaterloo.ca'
 soc.bind((host,12346))
 soc.listen(5)
 disGame=None
-drones=DroneNet.DroneNet()
+drones=DroneNet.DroneNet(True)
 def unit_control(soc):
     global disGame
     print('new thread')
