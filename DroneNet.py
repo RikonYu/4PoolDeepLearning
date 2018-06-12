@@ -17,10 +17,11 @@ def conv_block(inp,times,has_input=False):
         conv3=Conv2D(8,(7,7),activation='relu',padding='same')(x)
         conv4=Conv2D(8,(9,9),activation='relu',padding='same')(x)
         x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
-    if(has_input):
-        return x
+    #if(has_input):
+    #    return x
     #return x
-    return Add()([x,inp])
+    short=Conv2D(32,(1,1),activation='linear',padding='same')(inp)
+    return Add()([x,short])
 def deconv_block(inp,times):
     x=inp
     for i in range(times):
@@ -29,9 +30,8 @@ def deconv_block(inp,times):
         conv3=Conv2DTranspose(8,(7,7),activation='relu',padding='same')(x)
         conv4=Conv2DTranspose(8,(9,9),activation='relu',padding='same')(x)
         x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
-    return x
-    #x=Conv2DTranspose()
-    #return Add()([x,inp])
+    short=Conv2DTranspose(32,(1,1),activation='linear',padding='same')(inp)
+    return Add()([x,short])
 class DroneNet:
     def __init__(self,loading=False):
         INP_CHANNEL=18
