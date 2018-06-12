@@ -40,22 +40,22 @@ class DroneNet:
         with self.session.as_default():
             with self.graph.as_default():       
                 self.inp=Input((360,360,INP_CHANNEL),dtype='float32')
-                self.conv1=conv_block(self.inp,2,True)
+                self.conv1=conv_block(self.inp,1,True)
                 self.pool1=MaxPooling2D((2,2))(self.conv1)
-                self.conv2=conv_block(self.pool1,2)
+                self.conv2=conv_block(self.pool1,1)
                 self.pool2=MaxPooling2D((2,2))(self.conv2)
-                self.conv3=conv_block(self.pool2,2)
+                self.conv3=conv_block(self.pool2,1)
                 self.pool3=MaxPooling2D((2,2))(self.conv3)
 
                 self.deconv1=deconv_block(self.pool3,2)
                 self.up1=UpSampling2D((2,2))(self.deconv1)
                 #print(self.up1.get_shape(),self.conv3.get_shape())
-                self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),2)
+                self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),11)
                 self.up2=UpSampling2D((2,2))(self.deconv2)
-                self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),2)
+                self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),1)
                 self.up3=UpSampling2D((2,2))(self.deconv3)
-                self.deconv4=deconv_block(Concatenate(axis=3)([self.up3,self.conv1]),2)
-                self.out=Conv2DTranspose(OUT_CHANNEL,(3,3),activation='linear',padding='same')(self.deconv4)
+                self.deconv4=deconv_block(Concatenate(axis=3)([self.up3,self.conv1]),1)
+                self.out=Conv2DTranspose(OUT_CHANNEL,(3,3),activation='softmax',padding='same')(self.deconv4)
                 '''
                 self.conv1=Conv2D(64,(5,5),activation='relu',padding='same')(self.inp)
                 self.conv2=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv1)
@@ -91,7 +91,7 @@ class DroneNet:
                 #self.deconv6.set_shape([None,360,360,OUT_CHANNEL])
                 self.model=Model(inputs=self.inp,outputs=self.out)
                 #print(self.model.summary())
-                opt=Adam(lr=0.001)
+                opt=Adam(lr=0.0001)
                 self.model.compile(optimizer=opt,loss='categorical_crossentropy')
                 if(os.path.isfile('DroneNet.h5') and loading==True):
                     self.model.load("DroneNet.h5")
