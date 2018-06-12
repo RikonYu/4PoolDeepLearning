@@ -19,7 +19,8 @@ def conv_block(inp,times,has_input=False):
         x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
     if(has_input):
         return x
-    return Add()([x,inp])
+    return x
+    #return Add()([x,inp])
 def deconv_block(inp,times):
     x=inp
     for i in range(times):
