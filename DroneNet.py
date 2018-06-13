@@ -98,7 +98,7 @@ class DroneNet:
                 opt=Adam(lr=0.0001)
                 self.model.compile(optimizer=opt,loss='categorical_crossentropy')
                 if(os.path.isfile('DroneNet.h5') and loading==True):
-                    self.model.load("DroneNet.h5")
+                    self.model.load_model("DroneNet.h5")
         
     def save(self):
         self.model.save('DroneNet.h5')
