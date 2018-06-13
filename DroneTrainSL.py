@@ -22,7 +22,7 @@ for i in os.listdir(reppath):
     allrep.append(i)
 #train: 90%
 #test: 90%+
-TRAIN_BATCHES=300
+TRAIN_BATCHES=100
 valid_every=50
 ngsl=[]
 ngs=[]
