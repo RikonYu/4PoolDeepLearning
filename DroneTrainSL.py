@@ -22,7 +22,7 @@ for i in os.listdir(reppath):
     allrep.append(i)
 #train: 90%
 #test: 90%+
-TRAIN_BATCHES=100
+TRAIN_BATCHES=2000
 valid_every=50
 ngsl=[]
 ngs=[]
@@ -53,8 +53,8 @@ def valid(model,size=128):
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    #for i in range(len(allrep)*9//10):
-    for i in range(1):
+    for i in range(len(allrep)*9//10):
+    #for i in range(1):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
@@ -90,7 +90,7 @@ if(__name__=='__main__'):
            freq[Y[i][2]]+=1
         else:
             freq[Y[i][2]]=1
-    print(freq)
+    #print(freq)
     X=numpy.array(X)
     Y=numpy.array(Y)
     max_epoch=int(sys.argv[1])
