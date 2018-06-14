@@ -99,7 +99,10 @@ class DroneNet:
                 self.model.compile(optimizer=opt,loss='categorical_crossentropy')
                 if(os.path.isfile('DroneNet.h5') and loading==True):
                     self.model=load_model("DroneNet.h5")
-        
+    def set_weights(self,weights):
+        self.model.set_weights(weights)
+    def get_weights(self):
+        return self.model.get_weights()
     def save(self):
         self.model.save('DroneNet.h5')
     def predict_all(self,X):
@@ -110,7 +113,7 @@ class DroneNet:
         ans=numpy.argmax(self.predict_all([X]))
         return numpy.unravel_index(ans,(360,360,6))
     def predict_max(self,X):
-        return numpy.amax(self.predict_all(X))
+        return numpy.amax(self.predict_all(X),axis=(1,2,3))
     def predict_all_masked(self,X,mask):
         Y=self.predict_all(X)
         return numpy.where(mask,Y,-1234)

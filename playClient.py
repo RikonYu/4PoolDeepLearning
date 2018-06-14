@@ -34,7 +34,7 @@ def unit_thread(ind):
     send(game.getUnit(ind),'drone',droneSocks[ind])
     #print('send %d'%ind)
     k=receive(droneSocks[ind])
-    #print(k)
+    print(k)
     util32.command(game.getUnit(ind),k)
 class PlayAI(BaseAI):
     def prepare(self):
