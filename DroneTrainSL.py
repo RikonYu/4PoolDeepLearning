@@ -22,7 +22,7 @@ for i in os.listdir(reppath):
     allrep.append(i)
 #train: 90%
 #test: 90%+
-TRAIN_BATCHES=2000
+TRAIN_BATCHES=5000
 valid_every=50
 ngsl=[]
 ngs=[]
@@ -63,7 +63,7 @@ if(__name__=='__main__'):
             while(True):
                 x=pickle.load(f)
                 y=pickle.load(f)
-                if(y[2]!=0 or random.randint(0,3)<=2): 
+                if(y[2]!=0): 
                     X.append(x)
                     Y.append(y)
             f.close()
@@ -79,8 +79,9 @@ if(__name__=='__main__'):
             while(True):
                 x=pickle.load(f)
                 y=pickle.load(f)
-                Xt.append(x)
-                Yt.append(y)
+                if(y[2]!=0): 
+                    Xt.append(x)
+                    Yt.append(y)
             ngtl.append(len(Xt))
             f.close()
         except EOFError:
