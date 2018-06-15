@@ -41,7 +41,7 @@ def unit_RL(con):
     last_mineral=None
     while(True):
         try:
-            data=util64.recv_msg(soc)
+            data=util64.recv_msg(con)
             k=pickle.loads(data)
             #print(k)
             if(k[0]=='reg'):
