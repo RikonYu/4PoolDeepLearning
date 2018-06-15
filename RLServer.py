@@ -74,6 +74,6 @@ if(__name__=='__main__'):
     soc.bind((host,12346))
     soc.listen(5)
     while(True):
-        con,addr=soc.accpet()
+        con,addr=soc.accept()
         k=threading.Thread(target=unit_RL,args=[con])
         k.start()
