@@ -63,9 +63,9 @@ def unit_RL(con):
                     last_state=k[1]
                     last_action=ans
                     last_mineral=k[1][1][1]
-                if(learning==0):
-                    lx=threaing.Thread(target=learner,args=[])
-                    lx.start()
+                    if(numpy.random.randint(1,10)==3):
+                        lx=threaing.Thread(target=learner,args=[])
+                        lx.start()
         except EOFError:
             break
 if(__name__=='__main__'):
