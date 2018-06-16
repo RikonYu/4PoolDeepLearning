@@ -58,7 +58,7 @@ def unit_RL(con):
                     mask=disGame.msg2maskDrone(k[1])
                     ans=drones.predict_ans_masked(X,mask)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
-                soc.sendall(pickle.dumps(ans))
+                con.sendall(pickle.dumps(ans))
                 if(last_state!=None):
                     buf.add(last_state,last_action,k[1],(last_mineral==1 and k[1][1][1]==0))
                     last_state=k[1]
