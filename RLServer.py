@@ -46,7 +46,7 @@ def unit_RL(con):
             #print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
-                #soc.send(b'ok')
+                con.send(b'ok')
                 break
             else:
                 ans=0
