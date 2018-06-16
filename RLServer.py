@@ -1,6 +1,7 @@
 import util64
 import pickle
 import socket
+import random
 import numpy
 import ReplayBuffer
 import DroneNet
