@@ -50,7 +50,7 @@ def unit_RL(con):
                 break
             else:
                 ans=0
-                if(random.random.random()<epsilon):
+                if(numpy.random.random()<epsilon):
                     ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 else:
                     X=disGame.msg2stateDrone(k[1])
