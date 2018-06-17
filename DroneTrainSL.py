@@ -24,6 +24,7 @@ for i in os.listdir(reppath):
 #test: 90%+
 TRAIN_BATCHES=5000
 valid_every=50
+save_every=500
 ngsl=[]
 ngs=[]
 ngtl=[]
@@ -121,6 +122,8 @@ if(__name__=='__main__'):
         if(tk%valid_every==0):
             validerr.append(valid(agent))
             pass
+        if(tk%save_every==0):
+            agent.save()
         tk+=1
     agent.save()
     pickle.dump(trainerr,tout)
