@@ -1,5 +1,5 @@
 import numpy
-import DroneNet
+from DroneNet import DroneNet
 import util64
 import socket
 import pickle
@@ -10,7 +10,7 @@ host='linux.cs.uwaterloo.ca'
 soc.bind((host,12346))
 soc.listen(5)
 disGame=None
-drones=DroneNet.DroneNet(True)
+drones=DroneNet(True)
 def unit_control(soc):
     global disGame
     print('new thread')
@@ -24,8 +24,8 @@ def unit_control(soc):
                 soc.send(b'ok')
                 break
             else:
-                X=disGame.msg2stateDrone(k[1])
-                mask=disGame.msg2maskDrone(k[1])
+                X=DroneNet.msg2state(disGame,k[1])
+                mask=DroneNet.msg2maskDrone(disGame,k[1])
                 ans=drones.predict_ans_masked(X,mask)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 soc.sendall(pickle.dumps(ans))

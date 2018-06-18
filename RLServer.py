@@ -4,7 +4,7 @@ import socket
 import random
 import numpy
 import ReplayBuffer
-import DroneNet
+from DroneNet import DroneNet
 import threading
 
 #Deep Q Learning
@@ -12,8 +12,8 @@ batch_size=32
 disGame=None
 learning=threading.Semaphore(value=1)
 buf=ReplayBuffer.ReplayBuffer(20000)
-drones=DroneNet.DroneNet(True)
-target=DroneNet.DroneNet(True)
+drones=DroneNet(True)
+target=DroneNet(True)
 epsilon=0.3
 discount=0.9
 def learner():
@@ -54,8 +54,8 @@ def unit_RL(con):
                 if(numpy.random.random()<epsilon):
                     ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 else:
-                    X=disGame.msg2stateDrone(k[1])
-                    mask=disGame.msg2maskDrone(k[1])
+                    X=DroneNet.msg2stateDrone(disGame,k[1])
+                    mask=DroneNet.msg2maskDrone(disGame,k[1])
                     ans=drones.predict_ans_masked(X,mask)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 con.sendall(pickle.dumps(ans))
