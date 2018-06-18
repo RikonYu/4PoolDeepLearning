@@ -25,7 +25,7 @@ def unit_control(soc):
                 break
             else:
                 X=DroneNet.msg2state(disGame,k[1])
-                mask=DroneNet.msg2maskDrone(disGame,k[1])
+                mask=DroneNet.msg2mask(disGame,k[1])
                 ans=drones.predict_ans_masked(X,mask)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 soc.sendall(pickle.dumps(ans))

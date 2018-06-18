@@ -54,8 +54,8 @@ def unit_RL(con):
                 if(numpy.random.random()<epsilon):
                     ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 else:
-                    X=DroneNet.msg2stateDrone(disGame,k[1])
-                    mask=DroneNet.msg2maskDrone(disGame,k[1])
+                    X=DroneNet.msg2state(disGame,k[1])
+                    mask=DroneNet.msg2mask(disGame,k[1])
                     ans=drones.predict_ans_masked(X,mask)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 con.sendall(pickle.dumps(ans))
