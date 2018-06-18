@@ -27,6 +27,7 @@ def unit_control(soc):
                 X=DroneNet.msg2state(disGame,k[1])
                 mask=DroneNet.msg2mask(disGame,k[1])
                 ans=drones.predict_ans_masked(X,mask)
+                print(ans)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 soc.sendall(pickle.dumps(ans))
         except EOFError:
