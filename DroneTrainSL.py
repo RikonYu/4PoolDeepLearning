@@ -46,16 +46,19 @@ def valid(model,size=128):
     ind=numpy.random.choice(len(Xt),size,replace=False)
     for i in ind:
         yt=numpy.zeros([360,360,6])
-        ans+=model.evaluate(
-            numpy.reshape(ngt[find_place(i,ngt)].msg2stateDrone(Xt[i]),[1,360,360,18]),
-            numpy.reshape(util64.y2stateDrone(Yt[i]),[1,360,360,6]))
+        #print(Yt[i])
+        X=numpy.reshape(DroneNet.msg2state(ngt[find_place(i,ngt)],Xt[i]),[1,360,360,18])
+        Y=numpy.reshape(DroneNet.y2state(Yt[i]),[1,360,360,6])
+        ans+=model.evaluate(X,Y)
+        print(model.predict_ans(X),end=' ')
+    print('\n')
     return ans/size
 
 if(__name__=='__main__'):
     tout=open('trainerr.txt','wb')
     vout=open('validerr.txt','wb')
-    for i in range(len(allrep)*9//10):
-    #for i in range(1):
+    #for i in range(len(allrep)*9//10):
+    for i in range(1):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
@@ -71,7 +74,9 @@ if(__name__=='__main__'):
             ngsl.append(len(X))
         except EOFError:
             continue
-    for i in range(len(allrep)*9//10,len(allrep)):
+    #for i in range(len(allrep)*9//10,len(allrep)):
+    for i in range(1,2):
+        
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
@@ -98,7 +103,7 @@ if(__name__=='__main__'):
     max_epoch=int(sys.argv[1])
     batch_size=int(sys.argv[2])
     nX=len(X)
-    agent=DroneNet(False)
+    agent=DroneNet(True)
     tk=0
     trainerr=[]
     validerr=[]
@@ -109,19 +114,15 @@ if(__name__=='__main__'):
     
     for epoch in range(TRAIN_BATCHES):
         picks=numpy.random.choice(nX,batch_size,False)
-        X_=numpy.array([ngs[find_place(i,ngsl)].msg2stateDrone(X[i]) for i in picks])
-        #X_=numpy.array([util64.msg2stateDrone(x) for x in X[ind[i*batch_size:(i+1)*batch_size]]])
+        X_=numpy.array([DroneNet.msg2state(ngs[find_place(i,ngsl)],X[i]) for i in picks])
         Y_=numpy.zeros([batch_size,360,360,6])
         for j in range(batch_size):
-            Y_[j]=util64.y2stateDrone(Y[picks[j]])
-            #print(Y[ind[i*batch_size+j]])
-        #print(X_.shape,Y_.shape,batch_size)
+            Y_[j]=DroneNet.y2state(Y[picks[j]])
         print('epoch %d'%epoch, end=' ')
         history=agent.train(X_,Y_)
         trainerr.append(history.history['loss'])
         if(tk%valid_every==0):
             validerr.append(valid(agent))
-            pass
         if(tk%save_every==0):
             agent.save()
         tk+=1

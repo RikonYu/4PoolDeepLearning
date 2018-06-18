@@ -7,33 +7,13 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam
 from keras import backend as KTF
 import numpy
+from util64 import conv_block, deconv_block, shrinkScr
+from UnitNet import UnitNet
 import os,sys
 
-def conv_block(inp,times,has_input=False):
-    x=inp
-    for i in range(times):
-        conv1=Conv2D(8,(3,3),activation='relu',padding='same')(x)
-        conv2=Conv2D(8,(5,5),activation='relu',padding='same')(x)
-        conv3=Conv2D(8,(7,7),activation='relu',padding='same')(x)
-        conv4=Conv2D(8,(9,9),activation='relu',padding='same')(x)
-        x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
-    #if(has_input):
-    #    return x
-    #return x
-    short=Conv2D(32,(1,1),activation='linear',padding='same')(inp)
-    return Add()([x,short])
-def deconv_block(inp,times):
-    x=inp
-    for i in range(times):
-        conv1=Conv2DTranspose(8,(3,3),activation='relu',padding='same')(x)
-        conv2=Conv2DTranspose(8,(5,5),activation='relu',padding='same')(x)
-        conv3=Conv2DTranspose(8,(7,7),activation='relu',padding='same')(x)
-        conv4=Conv2DTranspose(8,(9,9),activation='relu',padding='same')(x)
-        x=Concatenate(axis=3)([conv1,conv2,conv3,conv4])
-    short=Conv2DTranspose(32,(1,1),activation='linear',padding='same')(inp)
-    return Add()([x,short])
-class DroneNet:
+class DroneNet(UnitNet):
     def __init__(self,loading=False):
+        super(DroneNet,self).__init__(loading)
         INP_CHANNEL=18
         OUT_CHANNEL=6
         self.session=KTF.get_session()
@@ -60,38 +40,6 @@ class DroneNet:
                 #self.deconv4=deconv_block(Concatenate(axis=3)([self.up3,self.conv1]),1)
                 self.deconv4=Conv2DTranspose(64,(3,3),activation='relu',padding='same')(self.up3)
                 self.out=Conv2DTranspose(OUT_CHANNEL,(3,3),activation='softmax',padding='same')(self.deconv4)
-                '''
-                self.conv1=Conv2D(64,(5,5),activation='relu',padding='same')(self.inp)
-                self.conv2=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv1)
-                self.conv2=Add()([self.conv2,self.conv1])
-                self.pool1=MaxPooling2D((2,2))(self.conv2)
-                self.conv3=Conv2D(64,(5,5),activation='relu',padding='same')(self.pool1)
-                #self.conv3=Add()([self.conv3,self.pool1])
-                self.conv4=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv3)
-                self.conv4=Add()([self.conv4,self.conv3])
-                self.pool2=MaxPooling2D((2,2))(self.conv4)
-                self.conv5=Conv2D(64,(5,5),activation='relu',padding='same')(self.pool2)
-                #self.conv5=Add()([self.conv5,self.pool2])
-                self.conv6=Conv2D(64,(5,5),activation='relu',padding='same')(self.conv5)
-                self.conv6=Add()([self.conv6,self.conv5])
-                
-                self.deconv1=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.conv6)
-                self.deconv1.set_shape([None,90,90,64])
-                self.deconv2=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.deconv1)
-                self.deconv2=Add()([self.deconv2,self.deconv1])
-                self.deconv2.set_shape([None,90,90,64])
-                self.up1=UpSampling2D((2,2))(self.deconv2)
-                self.deconv3=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(Concatenate(axis=3)([self.up1,self.conv4]))
-                self.deconv3.set_shape([None,180,180,64])
-                self.deconv4=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(self.deconv3)
-                self.deconv4=Add()([self.deconv4,self.deconv3])
-                self.deconv4.set_shape([None,180,180,64])
-                self.up2=UpSampling2D((2,2))(self.deconv4)
-                #print(self.deconv4.get_shape(),self.conv2.get_shape())
-                self.deconv5=Conv2DTranspose(64,(5,5),activation='relu',padding='same')(Concatenate(axis=3)([self.up2,self.conv2]))
-                #self.deconv5.set_shape([None,360,360,64])
-                self.deconv6=Conv2DTranspose(OUT_CHANNEL,(5,5),activation='softmax',padding='same')(self.deconv5)
-                '''
                 #self.deconv6.set_shape([None,360,360,OUT_CHANNEL])
                 self.model=Model(inputs=self.inp,outputs=self.out)
                 #print(self.model.summary())
@@ -99,35 +47,91 @@ class DroneNet:
                 self.model.compile(optimizer=opt,loss='categorical_crossentropy')
                 if(os.path.isfile('DroneNet.h5') and loading==True):
                     self.model=load_model("DroneNet.h5")
-    def set_weights(self,weights):
-        self.model.set_weights(weights)
-    def get_weights(self):
-        return self.model.get_weights()
-    def save(self):
-        self.model.save('DroneNet.h5')
-    def predict_all(self,X):
-        with self.session.as_default():
-            with self.graph.as_default():
-                return self.model.predict(numpy.reshape(X,[-1,360,360,18]))
-    def predict_ans(self,X):
-        ans=numpy.argmax(self.predict_all([X]))
-        return numpy.unravel_index(ans,(360,360,6))
-    def predict_max(self,X):
-        return numpy.amax(self.predict_all(X),axis=(1,2,3))
-    def predict_all_masked(self,X,mask):
-        Y=self.predict_all(X)
-        return numpy.where(mask,Y,-1234)
-    def predict_ans_masked(self,X,mask):
-        ans=numpy.argmax(self.predict_all_masked(X,mask))
-        return numpy.unravel_index(ans,(360,360,6))
-    def train(self,X,Y):
-        with self.session.as_default():
-            with self.graph.as_default():
-                return self.model.fit(X,Y)
-    def evaluate(self,X,Y):
-        with self.session.as_default():
-            with self.graph.as_default():
-                return self.model.evaluate(X,Y,verbose=0)
-    def train_experience(self,states,actions,rewards,next_states,discount):
-        targets=rewards+discount*self.predict_max(next_states)
-        
+    @staticmethod
+    def msg2mask(disGame,msg):
+        ans=numpy.zeros([360,360,6])
+        ans[:,:,0]=1
+        ans[:,:,5]=(msg[1][1] or msg[1][2])
+        x=msg[0][0]
+        y=msg[0][1]
+        ax=max(0,180-x)
+        ay=max(0,180-y)
+        hei,wid=disGame.regions.shape
+        ans[ax:min(360,hei-x+180),
+            ay:min(360,wid-y+180),1]=disGame.hground[max(0,x-180):min(x+180,hei),max(0,y-180):min(y+180,hei)]
+
+        ans[ax:min(360,hei-x+180),
+            ay:min(360,wid-y+180),1]*=disGame.regions[max(0,x-180):min(x+180,wid),max(0,y-180):min(y+180,wid)]
+        for i in msg[2]:
+            ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
+        for i in msg[3]:
+            ans[i[0][0]-x+180,i[0][1]-y+180,4]=1-i[2]
+        if(msg[1][3]==0):
+            for i in msg[4]:
+                ans[i[1][0]-x+180,i[1][1]-y+180,3]=i[0]
+        for i in msg[5]:
+            ans[i[1][0]-x+180,i[1][1]-y+180,3]=1
+        return ans
+    @staticmethod
+    def y2state(ind):
+        ans=numpy.zeros([360,360,6])
+        if(ind[2] in [0,5]):
+            ans[180,180,ind[2]]=1
+        else:
+            ans[shrinkScr(ind[0]),shrinkScr(ind[1]),ind[2]]=1
+        return ans
+
+    @staticmethod
+    def msg2state(disGame,msg):
+        ans=numpy.zeros([360,360,18])
+        x,y=msg[0]
+        ans[:,:,11]=msg[1][0]
+        ans[:,:,16]=msg[1][1]
+        ans[:,:,17]=msg[1][2]
+        for u in msg[2]:
+            nx=u[0][0]-x+180
+            ny=u[0][1]-y+180
+            if(u[2]):
+                ans[nx,ny,5]=1
+            elif(u[3]):
+                ans[nx,ny,6]=1
+            else:
+                ans[nx,ny,4]=1
+            ans[nx,ny,13]=u[1]
+            ans[nx,ny,14]=u[4]
+            ans[nx,ny,15]=u[5]
+        for u in msg[3]:
+            
+            nx=u[0][0]-x+180
+            ny=u[0][1]-y+180
+            if(u[2]):
+                ans[nx,ny,5]=1
+            elif(u[3]):
+                ans[nx,ny,6]=1
+            else:
+                ans[nx,ny,4]=1
+            ans[nx,ny,12]=u[1]
+        for u in msg[4]:
+            
+            nx=u[1][0]-x+180
+            ny=u[1][1]-y+180
+            if(u[0]):
+                ans[nx,ny,7]=1
+            else:
+                ans[nx,ny,8]=1
+        for u in msg[5]:
+
+            nx=u[0]-x+180
+            ny=u[1]-y+180
+            #print(u,x,y,nx,ny)
+            ans[nx,ny,9]=1
+        ax=max(0,180-x)
+        ay=max(0,180-y)
+        X=disGame.hground.shape[0]
+        Y=disGame.hground.shape[1]
+        ans[ax:min(360,X-x+180),
+            ay:min(360,Y-y+180),10]=disGame.hground[max(0,x-180):min(x+180,X),max(0,y-180):min(y+180,Y)]
+
+        ans[ax:min(360,X-x+180),
+            ay:min(360,Y-y+180),0]=disGame.regions[max(0,x-180):min(x+180,X),max(0,y-180):min(y+180,Y)]
+        return ans
