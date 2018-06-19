@@ -44,8 +44,8 @@ def unit_control(soc):
                         plt.show()
                 #ans=[random.randint(0,),random.randint(0,359),random.randint(0,5)]
                 soc.sendall(pickle.dumps(ans))
-        except EOFError:
-            break
+        except:
+            return
 if(platform.system()=='Windows'):
     subprocess.Popen(['e:\python32bit\python.exe','playClient.py'])
 while(True):

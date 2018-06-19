@@ -100,7 +100,7 @@ def command(unit,order):
     coord[0]+=order[0]
     coord[1]+=order[1]
     lcmd=unit.getLastCommand()
-    #print(lcmd,lcmd.getX(),lcmd.getY())
+    print('cmd',lcmd.getType(),lcmd.getTargetPosition())
     if(lcmd.getTargetPosition()==coord and type2cmd(lcmd.getType())==order[2]):
         return
     if(order[2]==0):
@@ -110,8 +110,10 @@ def command(unit,order):
     elif(order[2]==2):
         unit.build(pybrood.UnitTypes.Zerg_Spawning_Pool, coord)
     elif(order[2]==3):
+        print('gathering ',unit.getPosition(),game.getClosestUnit(coord).getPosition())
         unit.gather(game.getClosestUnit(coord))
     elif(order[2]==4):
+        print('attacking ',unit.getPosition(),game.getClosestUnit(coord).getPosition())
         unit.attack(game.getClosestUnit(coord))
     elif(order[2]==5):
         unit.returnCargo()
