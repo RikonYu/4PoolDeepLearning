@@ -146,6 +146,10 @@ class DroneNet(UnitNet):
         ay=max(0,WINDOW_SIZE//2-y)
         Y=disGame.hground.shape[0]
         X=disGame.hground.shape[1]
+        print(ax,min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
+            ay:,min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),
+              max(0,x-WINDOW_SIZE//2),min(x+WINDOW_SIZE//2,X),
+              max(0,y-WINDOW_SIZE//2),min(y+WINDOW_SIZE//2,Y))
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),10]=disGame.hground[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                        max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
