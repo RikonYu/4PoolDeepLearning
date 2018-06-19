@@ -5,14 +5,21 @@ import socket
 import pickle
 import threading
 import random
+import platform
+import subprocess
 soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host='linux.cs.uwaterloo.ca'
+if(platform.system()=='Windows'):
+    host='127.0.0.1'
+    import matplotlib.pyplot as plt
+else:
+    host='linux.cs.uwaterloo.ca'
 soc.bind((host,12346))
 soc.listen(5)
 disGame=None
-drones=DroneNet(True)
+plotting=0
+drones=DroneNet()
 def unit_control(soc):
-    global disGame
+    global disGame,plotting
     print('new thread')
     while(True):
         try:
@@ -27,11 +34,20 @@ def unit_control(soc):
                 X=DroneNet.msg2state(disGame,k[1])
                 mask=DroneNet.msg2mask(disGame,k[1])
                 ans=drones.predict_ans_masked(X,mask)
-                print(mask)
-                #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
+                if(platform.system()=='Windows'):
+                    if(plotting==0):
+                        plotting=1
+                        fig=plt.figure(figsize=(6,6))
+                        for i in range(6):
+                            fig.add_subplot(2,3,i+1)
+                            plt.imshow(mask[:,:,i]*255.0,cmap=plt.cm.gray)
+                        plt.show()
+                #ans=[random.randint(0,),random.randint(0,359),random.randint(0,5)]
                 soc.sendall(pickle.dumps(ans))
         except EOFError:
             break
+if(platform.system()=='Windows'):
+    subprocess.Popen(['e:\python32bit\python.exe','playClient.py'])
 while(True):
     con,addr=soc.accept()
     k=threading.Thread(target=unit_control,args=[con])

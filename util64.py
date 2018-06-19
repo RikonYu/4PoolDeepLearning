@@ -10,7 +10,7 @@ from keras.layers import Input,Concatenate,BatchNormalization,UpSampling2D,Layer
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D,Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as KTF
-
+from consts import WINDOW_SIZE
 def conv_block(inp,times,has_input=False):
     x=inp
     for i in range(times):
@@ -57,8 +57,8 @@ def recvall(sock, n):
 def shrinkScr(x):
     if(x<0):
         return 0
-    if(x>359):
-        return 359
+    if(x>WINDOW_SIZE-1):
+        return WINDOW_SIZE-1
     return x
 
 class gameInstance:

@@ -6,6 +6,8 @@ import struct
 import threading
 from pybrood import BaseAI, run, game, Color
 droneSocks={}
+address='linux.cs.uwaterloo.ca'
+#address='127.0.0.1'
 droneThreads={}
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
@@ -13,12 +15,11 @@ def send_msg(sock, msg):
     
 def send(u,tp,sock):
     msg=util32.game2msgDrone(u)
-    #print('client send unit',len(msg))
     send_msg(sock,pickle.dumps([tp,msg]))
 def send_reg():
     soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    soc.connect(('linux.cs.uwaterloo.ca',12346))
-    #print('client send reg',len(pickle.dumps(['reg',util32.reg2msg()])))
+    soc.connect((address,12346))
+    
     send_msg(soc,pickle.dumps(['reg',util32.reg2msg()]))
     k=soc.recv(16)
     soc.close()
@@ -48,10 +49,7 @@ class PlayAI(BaseAI):
                 if(i.getID() in droneSocks):
                     continue
                 droneSocks[i.getID()]=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                droneSocks[i.getID()].connect(('linux.cs.uwaterloo.ca',12346))
-                #send(i,'drone')
-                #k=receive()
-                #util32.command(i,k)
+                droneSocks[i.getID()].connect((address,12346))
         for i in droneSocks.keys():
             if(game.getUnit(i).exists()==False):
                 droneSocks[i].close()

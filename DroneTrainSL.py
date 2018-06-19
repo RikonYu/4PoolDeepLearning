@@ -5,6 +5,7 @@ import numpy
 import keras
 import random
 import os
+from util32 import WINDOW_SIZE
 import util64
 from DroneNet import DroneNet
 X=[]
@@ -45,10 +46,10 @@ def valid(model,size=128):
     ans=0
     ind=numpy.random.choice(len(Xt),size,replace=False)
     for i in ind:
-        yt=numpy.zeros([360,360,6])
+        yt=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,6])
         #print(Yt[i])
-        X=numpy.reshape(DroneNet.msg2state(ngt[find_place(i,ngt)],Xt[i]),[1,360,360,18])
-        Y=numpy.reshape(DroneNet.y2state(Yt[i]),[1,360,360,6])
+        X=numpy.reshape(DroneNet.msg2state(ngt[find_place(i,ngt)],Xt[i]),[1,WINDOW_SIZE,WINDOW_SIZE,18])
+        Y=numpy.reshape(DroneNet.y2state(Yt[i]),[1,WINDOW_SIZE,WINDOW_SIZE,6])
         ans+=model.evaluate(X,Y)
         print(model.predict_ans(X),end=' ')
     print('\n')
@@ -115,7 +116,7 @@ if(__name__=='__main__'):
     for epoch in range(TRAIN_BATCHES):
         picks=numpy.random.choice(nX,batch_size,False)
         X_=numpy.array([DroneNet.msg2state(ngs[find_place(i,ngsl)],X[i]) for i in picks])
-        Y_=numpy.zeros([batch_size,360,360,6])
+        Y_=numpy.zeros([batch_size,WINDOW_SIZE,WINDOW_SIZE,6])
         for j in range(batch_size):
             Y_[j]=DroneNet.y2state(Y[picks[j]])
         print('epoch %d'%epoch, end=' ')
