@@ -67,15 +67,17 @@ def unit_RL(con):
                     places=dragoons.msg2mask(disGame,k[1])
                     ini,inj,ink=numpy.nonzero(places)
                     ind=numpy.random.choice(len(ini))
-                    ans=[ini[ind],inj[ind],ink[ind]]
+                    ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
                 else:
                     #temps = getUnitClass()
                     #temps.set_weights(dragoons.get_weights())
                     X=dragoons.msg2state(disGame,k[1])
                     mask = dragoons.msg2mask(disGame, k[1])
+                    '''
                     ftest=open('masks.txt','wb')
                     pickle.dump(mask,ftest)
                     ftest.close()
+                    '''
                     ans=dragoons.predict_ans_masked(X,mask)
                 con.sendall(pickle.dumps(ans))
                 if(last_state!=None):
