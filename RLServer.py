@@ -1,7 +1,7 @@
 import util64
 import pickle
 import socket
-import random
+import time
 import numpy
 import ReplayBuffer
 from DroneNet import DroneNet
@@ -14,8 +14,6 @@ batch_size=32
 disGame=None
 learning=threading.Semaphore(value=1)
 buf=ReplayBuffer.ReplayBuffer(20000)
-#drones=DroneNet(True)
-#target=DroneNet(True)
 targetType=''
 dragoons=None
 target=None
@@ -61,7 +59,6 @@ def unit_RL(con):
                 dragoons = getUnitClass(targetType, True)
                 target = getUnitClass(targetType, True)
                 con.send(b'ok')
-
                 break
             else:
                 ans=0
@@ -71,12 +68,11 @@ def unit_RL(con):
                     ind=numpy.random.choice(len(ini))
                     ans=[ini[ind],inj[ind],ink[ind]]
                 else:
-                    #X=DroneNet.msg2state(disGame,k[1])
-                    #mask=DroneNet.msg2mask(disGame,k[1])
+                    #temps = getUnitClass()
+                    #temps.set_weights(dragoons.get_weights())
                     X=dragoons.msg2state(disGame,k[1])
                     mask = dragoons.msg2mask(disGame, k[1])
                     ans=dragoons.predict_ans_masked(X,mask)
-                #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 con.sendall(pickle.dumps(ans))
                 if(last_state!=None):
                     buf.add(last_state,last_action,k[1],(last_mineral==1 and k[1][1][1]==0))
@@ -97,4 +93,5 @@ if(__name__=='__main__'):
     while(True):
         con,addr=soc.accept()
         k=threading.Thread(target=unit_RL,args=[con])
+        time.sleep(1)
         k.start()
