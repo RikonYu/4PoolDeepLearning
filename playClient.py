@@ -4,38 +4,34 @@ import util32
 import socket,os
 import struct
 import threading
+#import matplotlib.pyplot as plt
 from pybrood import BaseAI, run, game, Color
-droneSocks={}
+Socks={}
 address='linux.cs.uwaterloo.ca'
 #address='127.0.0.1'
-droneThreads={}
+unitThreads={}
+targetType='Protoss_Dragoon''
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
     
 def send(u,tp,sock):
-    msg=util32.game2msgDrone(u)
+    msg=util32.game2msg(u)
     send_msg(sock,pickle.dumps([tp,msg]))
 def send_reg():
     soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     soc.connect((address,12346))
-    
-    send_msg(soc,pickle.dumps(['reg',util32.reg2msg()]))
+    send_msg(soc,pickle.dumps(['reg',util32.reg2msg(),targetType]))
     k=soc.recv(16)
     soc.close()
 def receive(soc):
     k=soc.recv(16384)
-    #print('client recv',len(k))
     while(len(k)==0):
         k=soc.recv(16384)
-        
-        #print('client recv',len(k))
     return pickle.loads(k)
 def unit_thread(ind):
-    send(game.getUnit(ind),'drone',droneSocks[ind])
-    #print('send %d'%ind)
-    k=receive(droneSocks[ind])
-    print(k)
+    send(game.getUnit(ind),'drone',Socks[ind])
+    k=receive(Socks[ind])
     util32.command(game.getUnit(ind),k)
 class PlayAI(BaseAI):
     def prepare(self):
@@ -45,21 +41,21 @@ class PlayAI(BaseAI):
         if(game.getFrameCount()%10!=0):
             return
         for i in game.getAllUnits():
-            if(i.getType().getName()=='Zerg_Drone' and i.getPlayer()==self.playerMe):
-                if(i.getID() in droneSocks):
+            if(i.getType().getName()==targetType and i.getPlayer()==self.playerMe):
+                if(i.getID() in Socks):
                     continue
-                droneSocks[i.getID()]=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                droneSocks[i.getID()].connect((address,12346))
-        for i in droneSocks.keys():
+                Socks[i.getID()]=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                Socks[i.getID()].connect((address,12346))
+        for i in Socks.keys():
             if(game.getUnit(i).exists()==False):
-                droneSocks[i].close()
-                droneSocks.pop(i,None)
-                droneThreads.pop(i,None)
+                Socks[i].close()
+                Socks.pop(i,None)
+                unitThreads.pop(i,None)
             else:
-                droneThreads[i]=threading.Thread(target=unit_thread,args=[i])
-                droneThreads[i].start()
-        for i in droneThreads.keys():
-            droneThreads[i].join()
+                unitThreads[i]=threading.Thread(target=unit_thread,args=[i])
+                unitThreads[i].start()
+        for i in unitThreads.keys():
+            unitThreads[i].join()
     def finished(self):
         pass
 

@@ -35,9 +35,7 @@ class DroneNet(UnitNet):
 
                 self.deconv1=deconv_block(self.pool3,2)
                 self.up1=UpSampling2D((2,2))(self.deconv1)
-                #print(self.up1.get_shape(),self.conv3.get_shape())
                 self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),1)
-                #self.deconv2=deconv_block(self.pool2,1)
                 self.up2=UpSampling2D((2,2))(self.deconv2)
                 self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),1)
                 self.up3=UpSampling2D((2,2))(self.deconv3)
@@ -55,9 +53,10 @@ class DroneNet(UnitNet):
                 if(os.path.isfile('DroneNet.h5') and loading==True):
                     self.model=load_model("DroneNet.h5")
                 #self.model._make_prediction_function()
+
     @staticmethod
     def msg2mask(disGame,msg):
-        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,6])
+        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._out_channel])
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[:,:,5]=(msg[1][1] or msg[1][2])
         x=msg[0][0]
@@ -66,17 +65,18 @@ class DroneNet(UnitNet):
         ay=max(0,WINDOW_SIZE//2-y)
         hei,wid=disGame.regions.shape
         print(hei,wid)
+        '''
         print(ax,min(WINDOW_SIZE,hei-x+WINDOW_SIZE//2),
                 ay,min(WINDOW_SIZE,wid-y+WINDOW_SIZE//2),
               max(0,x-WINDOW_SIZE//2),min(x+WINDOW_SIZE//2,hei),
               max(0,y-WINDOW_SIZE//2),min(y+WINDOW_SIZE//2,wid))
-        
+
         ans[ax:min(WINDOW_SIZE,hei-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,wid-y+WINDOW_SIZE//2),1]=disGame.hground[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,hei),
                                                                         max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,wid)]
-
+        '''
         ans[ax:min(WINDOW_SIZE,hei-x+WINDOW_SIZE//2),
-            ay:min(WINDOW_SIZE,wid-y+WINDOW_SIZE//2),1]*=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,hei),
+            ay:min(WINDOW_SIZE,wid-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,hei),
                                                                          max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,wid)]
         if(msg[1][3]==0):
             for i in msg[2]:
@@ -85,10 +85,12 @@ class DroneNet(UnitNet):
                 ans[i[0][0]-x+WINDOW_SIZE//2,i[0][1]-y+WINDOW_SIZE//2,4]=1-i[2]
 
         for i in msg[4]:
-            ans[i[1][0]-x+WINDOW_SIZE//2,i[1][1]-y+WINDOW_SIZE//2,3]=i[0]
+            if(i[0]):
+                ans[i[1][0]-x+WINDOW_SIZE//2,i[1][1]-y+WINDOW_SIZE//2,3]=1
         for i in msg[5]:
             ans[i[1][0]-x+WINDOW_SIZE//2,i[1][1]-y+WINDOW_SIZE//2,3]=1
         return ans
+
     @staticmethod
     def y2state(ind):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._out_channel])
@@ -146,10 +148,12 @@ class DroneNet(UnitNet):
         ay=max(0,WINDOW_SIZE//2-y)
         X=disGame.hground.shape[0]
         Y=disGame.hground.shape[1]
+        '''
         print(ax,min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay,min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),
               max(0,x-WINDOW_SIZE//2),min(x+WINDOW_SIZE//2,X),
               max(0,y-WINDOW_SIZE//2),min(y+WINDOW_SIZE//2,Y))
+        '''
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),10]=disGame.hground[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                        max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]

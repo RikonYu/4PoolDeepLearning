@@ -7,7 +7,7 @@ class ReplayBuffer:
         self.maxlen=length
     def add(self,state,action,new_state,reward):
         if(len(self.buffer)>=self.maxlen):
-            self.buffer[self._ind]=[state,action,new_state]
+            self.buffer[self._ind]=[state,action,new_state,reward]
             self._ind=(self._ind+1)%self.maxlen
         else:
             self.buffer.append([state,action,new_state,reward])

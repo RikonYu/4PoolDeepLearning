@@ -5,38 +5,46 @@ import random
 import numpy
 import ReplayBuffer
 from DroneNet import DroneNet
+from DragoonNet import DragoonNet
 import threading
-
+from consts import WINDOW_SIZE
 #Deep Q Learning
 batch_size=32
 disGame=None
 learning=threading.Semaphore(value=1)
 buf=ReplayBuffer.ReplayBuffer(20000)
-drones=DroneNet(True)
-target=DroneNet(True)
+#drones=DroneNet(True)
+#target=DroneNet(True)
+targetType=''
+dragoons=util64.getUnitClass(targetType,True)
+target=util64.getUnitClass(targetType,True)
+
 epsilon=0.3
 discount=0.9
+learn_epoch=0
 def learner():
-    global drones,buf,disgame,target,discount,learning
+    global drones,buf,disGame,target,discount,learning,learn_epoch
+    replace_every=500
     learning.aquire()
-    new_agent=DroneNet.DroneNet()
-    new_agent.set_weights(drones.get_weights())
     samples=buf.sample(batch_size)
-    if(sample==None):
+    if(samples==None):
         learning.release()
         return
-    X=numpy.array([util64.game2stateDrone(i) for i in samples[0]])
+    X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r in samples])
     Y=drones.predict_all(X)
-    maxes=target.predict_max(numpy.array([util64.game2stateDrone(i) for i in samples[2]]))
-    Y_=[(samples[i][3]+discountmaxes[i]) for i in range(batch_size)]
-    diff=numpy.zeros(Y.shape)
+    aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r in samples))
+    Y_=[(samples[i][3]+discount*aprime[i]) for i in range(batch_size)]
+    diff=numpy.copy(Y)
     for i in range(batch_size):
-        diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]=Y_[i]
-    diff+=Y
-    new_agent.fix(X,diff)
+        diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]+=Y_[i]
+    #new_agent.fit(X,diff)
+    dragoons.train(X,diff)
+    if(learn_epoch%replace_every==0):
+        target.set_weights(dragoons.get_weights())
+    learn_epoch+=1
     learning.release()
 def unit_RL(con):
-    global disGame,buf,drones,epsilon
+    global disGame,buf,drones,epsilon,targetType
     last_state=None
     last_action=None
     last_mineral=None
@@ -47,16 +55,20 @@ def unit_RL(con):
             #print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
+                targetType=k[2]
                 con.send(b'ok')
+
                 break
             else:
                 ans=0
                 if(numpy.random.random()<epsilon):
-                    ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
+                    ans=[random.randint(0,WINDOW_SIZE-1),random.randint(0,WINDOW_SIZE-1),random.randint(0,5)]
                 else:
-                    X=DroneNet.msg2state(disGame,k[1])
-                    mask=DroneNet.msg2mask(disGame,k[1])
-                    ans=drones.predict_ans_masked(X,mask)
+                    #X=DroneNet.msg2state(disGame,k[1])
+                    #mask=DroneNet.msg2mask(disGame,k[1])
+                    X=dragoons.msg2state(disGame,k[1])
+                    mask = dragoons.msg2mask(disGame, k[1])
+                    ans=dragoons.predict_ans_masked(X,mask)
                 #ans=[random.randint(0,359),random.randint(0,359),random.randint(0,5)]
                 con.sendall(pickle.dumps(ans))
                 if(last_state!=None):

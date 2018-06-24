@@ -7,6 +7,7 @@ import win32con
 import time
 import subprocess
 import shutil
+import random
 from consts import WINDOW_SIZE
 terrain=numpy.zeros([1,1])
 hground=numpy.zeros([1,1])
@@ -29,7 +30,7 @@ def inReach(unit,me):
     if(abs(up[0]-mp[0])<WINDOW_SIZE//2 and abs(up[1]-mp[1])<WINDOW_SIZE//2):
         return True
     return False
-#0idle, 1move, 2build, 3gather, 4attack, 5returnCargoo
+#Y:0idle, 1move, 2build, 3gather, 4attack, 5returnCargoo
 def ord2cmd(order):
     if(order==6):
         return 1
@@ -56,20 +57,31 @@ def type2cmd(cmdType):
     if(cmdType.getName() in ['Stop', 'Hold_Position']):
         return 0
     raise Exception
-    
+#Drones:
+#X:
 #0terrain,1friendly ground,2friendly air,3friendly building,4enemy ground, 5enemy air,
 #6enemy building, 7mineral, 8naked gas, 9geyser, 10highground, 11self hp, 12ally hp,
 #13enemy hp, 14dmg dealt, 15dmg receive, 16has mineral, 17has gas
+#Dragoons:
+#0terrain,1friendly ground,2enemy ground,3selfhp+sheild, 4allyhp+shield, 5enemyhp, 6dmg dealt, 7dmg redeive
 def reg2msg():
     ans=[[(game.mapHeight(),game.mapWidth())]]
     ans.append([(i.getBoundsTop(),i.getBoundsBottom(),i.getBoundsLeft(),i.getBoundsRight(),i.isAccessible(),i.isHigherGround()) for i in game.getAllRegions()])
     return ans
-#0myPos,1[myHp,hasMineral,hasGas, groudWeaponCooldown],2enemies[coordinate, HP,isFlyer,isBuilding, dmgTo,dmgFrom],3Ally[coordinate, Hp, isFlyer, isBuilding]
-#4resource[isMineral,coord], 5my_extractor[coord]
-def game2msgDrone(me):
+#msg:
+# 0myPos,1[myHp,hasMineral,hasGas, groudWeaponCooldown],
+# 2enemies[coordinate, HP,isFlyer,isBuilding, dmgTo,dmgFrom，(top,bot,left,right).(gminRange,gmaxRange,aminRange,amaxrange)],
+# 3Ally[coordinate, Hp, isFlyer, isBuilding,(top,bot,left,right)]
+# 4resource[isMineral,coord,(top,bot,left,right)],
+# 5my_extractor[coord]
+def game2msg(me):
     ans=[]
+    typeMe=me.getType()
     ans.append(me.getPosition())
-    ans.append((me.getHitPoints(),me.isCarryingMinerals(),me.isCarryingGas(),me.getGroundWeaponCooldown()))
+    ans.append((me.getHitPoints()+me.getShields() ,me.isCarryingMinerals(),me.isCarryingGas(),
+                (typeMe.groundWeapon()!=pybrood.WeaponTypes.None_,me.getGroundWeaponCooldown(),typeMe.groundWeapon().maxRange()),
+                (typeMe.airWeapon()!=pybrood.WeaponTypes.None_,me.getAirWeaponCooldown(),typeMe.airWeapon().maxRange()),
+                ))
     enemy=[]
     ally=[]
     resource=[]
@@ -85,35 +97,58 @@ def game2msgDrone(me):
             elif(u.getType().getName()=='Zerg_Extractor' and u.getPlayer()==me.getPlayer()):
                 extra.append(coor)
             elif(u.getPlayer()==me.getPlayer()):
-                ally.append((coor,u.getHitPoints(),tu.isFlyer(),tu.isBuilding()))
+                ally.append((coor,u.getHitPoints()+u.getShields() ,tu.isFlyer(),tu.isBuilding(),
+                             (u.getTop(), u.getBottom(), u.getLeft(), u.getRight())
+                             ))
             else:
-                enemy.append((coor,u.getHitPoints(),tu.isFlyer(),tu.isBuilding(),game.getDamageTo(me.getType(),u.getType(),me.getPlayer(),u.getPlayer()),
-                                                                                game.getDamageFrom(me.getType(),u.getType(),me.getPlayer(),u.getPlayer())))
+                enemy.append((coor,u.getHitPoints()+u.getShields() ,tu.isFlyer(),tu.isBuilding(),
+                              game.getDamageTo(me.getType(),u.getType(),me.getPlayer(),u.getPlayer()),
+                              game.getDamageFrom(me.getType(),u.getType(),me.getPlayer(),u.getPlayer()),
+                              (u.getTop(),u.getBottom(),u.getLeft(),u.getRight()),
+                              (u.getType().groundWeapon().minRange(),u.getType().groundWeapon().maxRange()),
+                              (u.getType().airWeapon().minRange(), u.getType().airWeapon().maxRange()),
+                              ))
     ans.append(enemy)
     ans.append(ally)
     ans.append(resource)
     ans.append(extra)
     return ans
     return ans
+def get_all_mineral():
+    ans=[]
+    for i in game.getAllUnits():
+        if(i.getType().getName()=='Resource_Mineral_Field'):
+            ans.append(i.getPosition())
+    return ans
+def get_all_drones():
+    ans=[]
+    for i in game.getAllUnits():
+        if(i.getType().getName()=='Zerg_Drone'):
+            ans.append(i.getPosition())
+    return ans
 def command(unit,order):
+    #order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord=unit.getPosition()
     coord[0]+=order[0]
     coord[1]+=order[1]
     lcmd=unit.getLastCommand()
-    print('cmd',lcmd.getType(),lcmd.getTargetPosition())
+    print('cmd',lcmd.getType().getName(),lcmd.getTargetPosition())
     if(lcmd.getTargetPosition()==coord and type2cmd(lcmd.getType())==order[2]):
         return
     if(order[2]==0):
+        print('holding')
         unit.holdPosition()
     elif(order[2]==1):
+        print('moving to',coord)
         unit.move(coord)
     elif(order[2]==2):
+        print('building')
         unit.build(pybrood.UnitTypes.Zerg_Spawning_Pool, coord)
     elif(order[2]==3):
-        print('gathering ',unit.getPosition(),game.getClosestUnit(coord).getPosition())
+        print('gathering ',coord,get_all_mineral())
         unit.gather(game.getClosestUnit(coord))
     elif(order[2]==4):
-        print('attacking ',unit.getPosition(),game.getClosestUnit(coord).getPosition())
+        print('attacking ',coord,get_all_drones())
         unit.attack(game.getClosestUnit(coord))
     elif(order[2]==5):
         unit.returnCargo()

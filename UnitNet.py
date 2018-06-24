@@ -43,10 +43,10 @@ class UnitNet:
             with self.graph.as_default():
                 return self.model.evaluate(X,Y,verbose=0)
     @staticmethod
-    def msg2mask(disGame):
+    def msg2mask(disGame, msg):
         pass
     @staticmethod
-    def msg2state(disGame):
+    def msg2state(disGame, msg):
         pass
     @staticmethod
     def y2state(ind):

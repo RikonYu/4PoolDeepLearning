@@ -14,3 +14,5 @@ pybrood/abc.py
 *.txt
 *.jpeg
 *.bat
+*.xml
+*.iml
