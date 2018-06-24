@@ -7,7 +7,7 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam
 from keras import backend as KTF
 import numpy
-from util64 import conv_block, deconv_block
+from util64 import conv_block, deconv_block, shrinkScr
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
 import os,sys
@@ -50,6 +50,8 @@ class DragoonNet(UnitNet):
     def msg2state(disGame, msg):
         x,y=msg[0]
         X,Y=disGame.regions.shape
+        ax=max(0,WINDOW_SIZE//2-x)
+        ay=max(0,WINDOW_SIZE//2-y)
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DragoonNet._in_channel])
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
@@ -73,6 +75,8 @@ class DragoonNet(UnitNet):
         ans=numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DragoonNet._out_channel])
         x,y=msg[0]
         X, Y = disGame.regions.shape
+        ax=max(0,WINDOW_SIZE//2-x)
+        ay=max(0,WINDOW_SIZE//2-y)
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
