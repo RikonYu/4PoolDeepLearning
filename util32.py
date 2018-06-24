@@ -65,8 +65,12 @@ def type2cmd(cmdType):
 #Dragoons:
 #0terrain,1friendly ground,2enemy ground,3selfhp+sheild, 4allyhp+shield, 5enemyhp, 6dmg dealt, 7dmg redeive
 def reg2msg():
-    ans=[[(game.mapHeight(),game.mapWidth())]]
-    ans.append([(i.getBoundsTop(),i.getBoundsBottom(),i.getBoundsLeft(),i.getBoundsRight(),i.isAccessible(),i.isHigherGround()) for i in game.getAllRegions()])
+    #ans=[[(game.mapHeight(),game.mapWidth())]]
+    #ans.append([(i.getBoundsTop(),i.getBoundsBottom(),i.getBoundsLeft(),i.getBoundsRight(),i.isAccessible(),i.isHigherGround()) for i in game.getAllRegions()])
+    ans=numpy.zeros([game.mapHeight()*32,game.mapWidth()*32])
+    for i in range(game.mapHeight() * 4):
+        for j in range(game.mapWidth() * 4):
+            ans[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = game.isWalkable([i, j])
     return ans
 #msg:
 # 0myPos,1[myHp,hasMineral,hasGas, groudWeaponCooldown],
@@ -78,9 +82,9 @@ def game2msg(me):
     ans=[]
     typeMe=me.getType()
     ans.append(me.getPosition())
-    ans.append((me.getHitPoints()+me.getShields() ,me.isCarryingMinerals(),me.isCarryingGas(),
+    ans.append((me.getHitPoints()+me.getShields() ,me.getKillCount(),me.isCarryingGas(),
                 (typeMe.groundWeapon()!=pybrood.WeaponTypes.None_,me.getGroundWeaponCooldown(),typeMe.groundWeapon().maxRange()),
-                (typeMe.airWeapon()!=pybrood.WeaponTypes.None_,me.getAirWeaponCooldown(),typeMe.airWeapon().maxRange()),
+                (typeMe.airWeapon()!=pybrood.WeaponTypes.None_,me.getAirWeaponCooldown(),typeMe.airWeapon().maxRange())
                 ))
     enemy=[]
     ally=[]

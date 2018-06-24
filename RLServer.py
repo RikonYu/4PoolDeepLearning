@@ -30,6 +30,7 @@ def learner():
     if(samples==None):
         learning.release()
         return
+    print('training')
     X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r in samples])
     Y=drones.predict_all(X)
     aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r in samples))
@@ -44,10 +45,10 @@ def learner():
     learn_epoch+=1
     learning.release()
 def unit_RL(con):
-    global disGame,buf,dragoons,epsilon,targetType
+    global disGame,buf,dragoons,epsilon,targetType,target
     last_state=None
     last_action=None
-    last_mineral=None
+    last_value=0
     while(True):
         try:
             data=util64.recv_msg(con)
@@ -75,12 +76,12 @@ def unit_RL(con):
                     ans=dragoons.predict_ans_masked(X,mask)
                 con.sendall(pickle.dumps(ans))
                 if(last_state!=None):
-                    buf.add(last_state,last_action,k[1],(last_mineral==1 and k[1][1][1]==0))
+                    buf.add(last_state,last_action,k[1],(k[1][1]-last_value))
                     last_state=k[1]
                     last_action=ans
-                    last_mineral=k[1][1][1]
+                    last_value=k[1][1]
                     if(numpy.random.randint(1,10)==3):
-                        lx=threaing.Thread(target=learner,args=[])
+                        lx=threading.Thread(target=learner,args=[])
                         lx.start()
         except EOFError:
             break

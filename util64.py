@@ -65,10 +65,7 @@ def shrinkScr(x):
 
 class gameInstance:
     def __init__(self,reg):
-        self.regions=numpy.zeros([reg[0][0][1]*32+1,reg[0][0][0]*32+1])
-        self.hground=numpy.zeros([reg[0][0][1]*32+1,reg[0][0][0]*32+1])
-        for i in reg[1]:
-            self.regions[i[0]:i[1],i[2]:i[3]]=i[4]
-            self.hground[i[0]:i[1],i[2]:i[3]]=i[5]
+        self.regions=numpy.array(reg[1])
+
 
     
