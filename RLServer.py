@@ -66,7 +66,10 @@ def unit_RL(con):
             else:
                 ans=0
                 if(numpy.random.random()<epsilon):
-                    ans=[random.randint(0,WINDOW_SIZE-1),random.randint(0,WINDOW_SIZE-1),random.randint(0,5)]
+                    places=dragoons.msg2mask(disGame,k[1])
+                    ini,inj,ink=numpy.nonzero(places)
+                    ind=numpy.random.choice(len(kk))
+                    ans=places[ind[ind],inj[ind],ink[ind]]
                 else:
                     #X=DroneNet.msg2state(disGame,k[1])
                     #mask=DroneNet.msg2mask(disGame,k[1])
@@ -90,6 +93,7 @@ if(__name__=='__main__'):
     host='linux.cs.uwaterloo.ca'
     soc.bind((host,12346))
     soc.listen(5)
+    print('listening')
     while(True):
         con,addr=soc.accept()
         k=threading.Thread(target=unit_RL,args=[con])

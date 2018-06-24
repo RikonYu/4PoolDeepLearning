@@ -69,7 +69,7 @@ class DragoonNet(UnitNet):
         return ans
     @staticmethod
     def msg2mask(disgame, msg):
-        ans=numpy.zeros(WINDOW_SIZE, WINDOW_SIZE, DragoonNet._out_channel)
+        ans=numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DragoonNet._out_channel])
         x,y=msg[0]
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
