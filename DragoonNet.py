@@ -49,6 +49,7 @@ class DragoonNet(UnitNet):
     @staticmethod
     def msg2state(disGame, msg):
         x,y=msg[0]
+        X,Y=disGame.regions.shape
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DragoonNet._in_channel])
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
@@ -71,6 +72,7 @@ class DragoonNet(UnitNet):
     def msg2mask(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DragoonNet._out_channel])
         x,y=msg[0]
+        X, Y = disGame.regions.shape
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
