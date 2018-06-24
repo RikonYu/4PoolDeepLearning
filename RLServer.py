@@ -6,6 +6,7 @@ import numpy
 import ReplayBuffer
 from DroneNet import DroneNet
 from DragoonNet import DragoonNet
+from ClassConstr import getUnitClass
 import threading
 from consts import WINDOW_SIZE
 #Deep Q Learning
@@ -16,8 +17,8 @@ buf=ReplayBuffer.ReplayBuffer(20000)
 #drones=DroneNet(True)
 #target=DroneNet(True)
 targetType=''
-dragoons=util64.getUnitClass(targetType,True)
-target=util64.getUnitClass(targetType,True)
+dragoons=getUnitClass(targetType,True)
+target=getUnitClass(targetType,True)
 
 epsilon=0.3
 discount=0.9

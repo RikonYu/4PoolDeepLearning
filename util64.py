@@ -11,10 +11,7 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam
 from keras import backend as KTF
 from consts import WINDOW_SIZE
-from DragoonNet import DragoonNet
-def getUnitClass(name,loading=False):
-    if(name=='Protoss_Dragoon'):
-        return DragoonNet(loading)
+
 def conv_block(inp,times,has_input=False):
     x=inp
     for i in range(times):

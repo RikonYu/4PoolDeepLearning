@@ -10,7 +10,7 @@ Socks={}
 address='linux.cs.uwaterloo.ca'
 #address='127.0.0.1'
 unitThreads={}
-targetType='Protoss_Dragoon''
+targetType='Protoss_Dragoon'
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
