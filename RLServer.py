@@ -17,14 +17,15 @@ buf=ReplayBuffer.ReplayBuffer(20000)
 #drones=DroneNet(True)
 #target=DroneNet(True)
 targetType=''
-dragoons=getUnitClass(targetType,True)
-target=getUnitClass(targetType,True)
+dragoons=None
+target=None
 
 epsilon=0.3
 discount=0.9
 learn_epoch=0
 def learner():
-    global drones,buf,disGame,target,discount,learning,learn_epoch
+    global dragoons,buf,disGame,target,discount,learning,learn_epoch
+
     replace_every=500
     learning.aquire()
     samples=buf.sample(batch_size)
@@ -45,7 +46,7 @@ def learner():
     learn_epoch+=1
     learning.release()
 def unit_RL(con):
-    global disGame,buf,drones,epsilon,targetType
+    global disGame,buf,dragoons,epsilon,targetType
     last_state=None
     last_action=None
     last_mineral=None
@@ -57,6 +58,8 @@ def unit_RL(con):
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
                 targetType=k[2]
+                dragoons = getUnitClass(targetType, True)
+                target = getUnitClass(targetType, True)
                 con.send(b'ok')
 
                 break
