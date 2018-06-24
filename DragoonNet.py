@@ -49,7 +49,7 @@ class DragoonNet(UnitNet):
     @staticmethod
     def msg2state(disGame, msg):
         x,y=msg[0]
-        ans=numpy.zeros(WINDOW_SIZE,WINDOW_SIZE,DragoonNet._in_channel)
+        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DragoonNet._in_channel])
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
@@ -68,7 +68,7 @@ class DragoonNet(UnitNet):
         ans[:,:,3]=msg[1][0]
         return ans
     @staticmethod
-    def msg2mask(disgame, msg):
+    def msg2mask(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DragoonNet._out_channel])
         x,y=msg[0]
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
@@ -83,6 +83,7 @@ class DragoonNet(UnitNet):
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         for u in msg[3]:
+            top,bot,left,right=u[4]
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         return ans
