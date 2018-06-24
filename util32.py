@@ -113,7 +113,6 @@ def game2msg(me):
     ans.append(resource)
     ans.append(extra)
     return ans
-    return ans
 def get_all_mineral():
     ans=[]
     for i in game.getAllUnits():
@@ -127,6 +126,7 @@ def get_all_drones():
             ans.append(i.getPosition())
     return ans
 def command(unit,order):
+    print(order)
     #order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord=unit.getPosition()
     coord[0]+=order[0]
