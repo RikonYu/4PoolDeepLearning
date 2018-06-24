@@ -16,8 +16,8 @@ class DragoonNet(UnitNet):
     _in_channel=8
     _out_channel=6
     def __init__(self,loading=False):
-        self._in_channel = _in_channel
-        self._out_channel = _out_channel
+        self._in_channel = DragoonNet._in_channel
+        self._out_channel = DragoonNet._out_channel
         self.session=KTF.get_session()
         self.graph=tf.get_default_graph()
         with self.session.as_default():
