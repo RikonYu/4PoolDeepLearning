@@ -68,7 +68,7 @@ def unit_RL(con):
                 if(numpy.random.random()<epsilon):
                     places=dragoons.msg2mask(disGame,k[1])
                     ini,inj,ink=numpy.nonzero(places)
-                    ind=numpy.random.choice(len(kk))
+                    ind=numpy.random.choice(len(ini))
                     ans=places[ind[ind],inj[ind],ink[ind]]
                 else:
                     #X=DroneNet.msg2state(disGame,k[1])
