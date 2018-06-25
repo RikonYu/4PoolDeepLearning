@@ -13,6 +13,6 @@ class ReplayBuffer:
             self.buffer.append([state,action,new_state,reward])
     def sample(self,batch_size):
         if(len(self.buffer)<batch_size):
-            return None
+            return []
         inds=numpy.random.choice(len(self.buffer),batch_size)
         return [self.buffer[i] for i in inds]

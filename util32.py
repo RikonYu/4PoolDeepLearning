@@ -73,7 +73,7 @@ def reg2msg():
             ans[i, j] = game.isWalkable([i, j])
     return ans
 #msg:
-# 0myPos,1[myHp,hasMineral,hasGas, groudWeaponCooldown],
+# 0myPos,1[myHp,hasMineral/killCount,hasGas, groudWeaponCooldown],
 # 2enemies[coordinate, HP,isFlyer,isBuilding, dmgTo,dmgFrom，(top,bot,left,right).(gminRange,gmaxRange,aminRange,amaxrange)],
 # 3Ally[coordinate, Hp, isFlyer, isBuilding,(top,bot,left,right)]
 # 4resource[isMineral,coord,(top,bot,left,right)],

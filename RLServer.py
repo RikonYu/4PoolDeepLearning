@@ -21,16 +21,16 @@ epsilon=0.3
 discount=0.9
 learn_epoch=0
 def learner():
-    global dragoons,buf,disGame,target,discount,learning,learn_epoch
+    global dragoons,buf,disGame,target,discount,learn_epoch
     replace_every=500
     while(True):
         samples=buf.sample(batch_size)
-        if(samples==None):
+        if(len(samples)):
             time.sleep(2)
             continue
         print('training')
         X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r,_it in samples])
-        Y=drones.predict_all(X)
+        Y=dragoons.predict_all(X)
         aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r,_it in samples))
         Y_=[(samples[i][3]+discount*aprime[i]*(1-samples[i][4])) for i in range(batch_size)]
         diff=numpy.copy(Y)
@@ -62,14 +62,14 @@ def unit_RL(con):
                 break
             else:
                 ans=0
-                if(k[0]=='terminal'):
-                    if (last_state != None):
-                        if (k[1][1] != last_value):
-                            print('reward', last_value, k[1][1])
-                        buf.add(last_state, last_action, k[1], (k[1][1] - last_value),1)
-                    last_state = k[1]
+                X = dragoons.msg2state(disGame, k[1])
+                if (k[0]=='terminal' and last_action != None):
+                    if (k[1][1][1] != last_value):
+                        print('reward', last_value, k[1][1][1])
+                    buf.add(last_state, last_action, X, (k[1][1][1] - last_value), 1)
+                    last_state = X
                     last_action = ans
-                    last_value = k[1][1]
+                    last_value = k[1][1][1]
                     return
                 if(visited.shape[0]==1):
                     visited=numpy.zeros(disGame.regions.shape)
@@ -98,7 +98,6 @@ def unit_RL(con):
                 else:
                     #temps = getUnitClass()
                     #temps.set_weights(dragoons.get_weights())
-                    X=dragoons.msg2state(disGame,k[1])
                     mask = dragoons.msg2mask(disGame, k[1])
                     '''
                     ftest=open('masks.txt','wb')
@@ -107,13 +106,13 @@ def unit_RL(con):
                     '''
                     ans=dragoons.predict_ans_masked(X,mask)
                 con.sendall(pickle.dumps(ans))
-                if(last_state!=None):
-                    if(k[1][1]!=last_value):
-                        print('reward',last_value,k[1][1])
-                    buf.add(last_state,last_action,k[1],(k[1][1]-last_value),0)
-                last_state=k[1]
+                if(last_action!=None):
+                    if(k[1][1][1]!=last_value):
+                        print('reward',last_value,k[1][1][1])
+                    buf.add(last_state,last_action,X,(k[1][1][1]-last_value),0)
+                last_state=X
                 last_action=ans
-                last_value=k[1][1]
+                last_value=k[1][1][1]
         except EOFError:
             break
 if(__name__=='__main__'):
