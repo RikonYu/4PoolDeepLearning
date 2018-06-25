@@ -11,7 +11,7 @@ import threading
 from consts import WINDOW_SIZE
 
 # Deep Q Learning
-batch_size = 32
+batch_size = 64
 disGame = None
 buf = ReplayBuffer.ReplayBuffer(20000)
 targetType = ''
@@ -29,15 +29,16 @@ lock = util64.RWLock()
 def learner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd, batch_size
     replace_every = 500
+    train_every=256
     while (True):
-        samples = buf.sample(batch_size)
-        if (len(samples) == 0):
-            time.sleep(2)
+        if(buf.getCount()<train_every):
             continue
+        buf.count-=train_every
+        samples = buf.sample(batch_size)
         print('training')
-        lock.acquire_write()
+        lock.acquire_read()
         tempd.set_weights(dragoons.get_weights())
-        lock.release_write()
+        lock.release_read()
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
         Y = dragoons.predict_all(X)
         print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
@@ -55,7 +56,6 @@ def learner():
         lock.acquire_write()
         dragoons.set_weights(tempd.get_weights())
         lock.release_write()
-        time.sleep(5)
         learn_epoch += 1
 
 
