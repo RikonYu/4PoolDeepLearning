@@ -31,6 +31,8 @@ def learner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd, batch_size
     replace_every = 500
     train_every=256
+    rl = lock.genRlock()
+    wl = lock.genWlock()
     while (True):
         if(buf.count<train_every):
             #print('not enough samples')
@@ -38,7 +40,6 @@ def learner():
             continue
         samples = buf.sample(batch_size)
         print('training')
-        rl=lock.genRlock()
         rl.acquire()
         tempd.set_weights(dragoons.get_weights())
         rl.release()
@@ -56,7 +57,7 @@ def learner():
         if (learn_epoch % replace_every == 0):
             tempd.save()
             target.set_weights(tempd.get_weights())
-        wl=lock.genWlock()
+
         wl.aqcuire()
         dragoons.set_weights(tempd.get_weights())
         wl.release()
@@ -70,6 +71,7 @@ def unit_RL(con):
     last_action = None
     last_value = 0
     visited = numpy.zeros([1, 1])
+    rl = lock.genRlock()
     while (True):
         try:
             data = util64.recv_msg(con)
@@ -129,7 +131,6 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
-                    rl=lock.genRlock()
                     rl.acquire()
                     ans = dragoons.predict_ans_masked(X, mask)
                     rl.release()
