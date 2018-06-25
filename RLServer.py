@@ -55,6 +55,7 @@ def learner():
         lock.acquire_write()
         dragoons.set_weights(tempd.get_weights())
         lock.release_write()
+        time.sleep(5)
         learn_epoch += 1
 
 
