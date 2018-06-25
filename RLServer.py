@@ -75,7 +75,7 @@ def unit_RL(con):
                     last_state = X
                     last_action = ans
                     last_value = k[1][1][1]
-                    return
+                    break
                 if(visited.shape[0]==1):
                     visited=numpy.zeros(disGame.regions.shape)
                 #print(k)
@@ -99,7 +99,7 @@ def unit_RL(con):
                     ind=numpy.argmax(probs[ini,inj])
                     #ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
                     ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
-                    print(ans)
+                    #print(ans)
                 else:
                     #temps = getUnitClass()
                     #temps.set_weights(dragoons.get_weights())
