@@ -27,7 +27,7 @@ lock = util64.RWLock()
 
 
 def learner():
-    global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd
+    global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd, batch_size
     replace_every = 500
     while (True):
         samples = buf.sample(batch_size)
@@ -135,7 +135,7 @@ def unit_RL(con):
                     if (k[1][1][1] != last_value):
                         print('reward', last_value, k[1][1][1])
                     buf.add(last_state, last_action, X, (k[1][1][1] - last_value), 0)
-                last_state = X
+                last_state = k[1]
                 last_action = ans
                 last_value = k[1][1][1]
         except EOFError:
