@@ -79,11 +79,12 @@ def unit_RL(con):
                                                                         max(0, x - WINDOW_SIZE // 2):min(x + WINDOW_SIZE // 2, visited.shape[0]),
                                                                         max(0, y - WINDOW_SIZE // 2):min(y + WINDOW_SIZE // 2, visited.shape[1])])
                     ini,inj,ink=numpy.nonzero(places)
-                    top5=numpy.argpartition(probs[ini,inj],-5)[-5:]
-                    print('options',numpy.unravel_index(top5,probs.shape),probs[ini,inj][top5],len(ini))
-                    ind=numpy.random.choice(5,p=probs[ini,inj][top5]/sum(probs[ini,inj][top5]))
+                    #top5=numpy.argpartition(probs[ini,inj],-5)[-5:]
+                    #print('options',numpy.unravel_index(top5,probs.shape),probs[ini,inj][top5],len(ini))
+                    #ind=numpy.random.choice(5,p=probs[ini,inj][top5]/sum(probs[ini,inj][top5]))
+                    ind=numpy.argmax(probs[ini,inj])
                     #ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
-                    ans = [ini[top5[ind]] - WINDOW_SIZE // 2, inj[top5[ind]] - WINDOW_SIZE // 2, ink[ind]]
+                    ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
                     print(ans)
                 else:
                     #temps = getUnitClass()
