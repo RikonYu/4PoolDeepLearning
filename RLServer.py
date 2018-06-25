@@ -59,8 +59,10 @@ def learner():
             target.set_weights(tempd.get_weights())
 
         wl.acquire()
+        print('acquired')
         dragoons.set_weights(tempd.get_weights())
         wl.release()
+        print('released')
         buf.count = 0
         learn_epoch += 1
 
