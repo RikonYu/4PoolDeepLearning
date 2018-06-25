@@ -242,7 +242,22 @@ class RWLock(object):
                     self.__condition.wait()
         finally:
             self.__condition.release()
-
+    def releaseWrite(self):
+        self.__writercount -= 1
+        if not self.__writercount:
+            # No more write locks; take our writer position away and
+            # notify waiters of the new circumstances.
+            self.__writer = None
+            self.__condition.notifyAll()
+    def releaseRead(self):
+        self.__readers[me] -= 1
+        if not self.__readers[me]:
+            # No more read locks, take our reader position away.
+            del self.__readers[me]
+            if not self.__readers:
+                # No more readers, notify waiters of the new
+                # circumstances.
+                self.__condition.notifyAll()
     def release(self):
         """Release the currently held lock.
 
