@@ -58,7 +58,7 @@ def learner():
             tempd.save()
             target.set_weights(tempd.get_weights())
 
-        wl.aqcuire()
+        wl.acquire()
         dragoons.set_weights(tempd.get_weights())
         wl.release()
         buf.count = 0
