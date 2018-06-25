@@ -50,7 +50,7 @@ def unit_RL(con):
     last_state=None
     last_action=None
     last_value=0
-    visited=numpy.zeros(disGame.shape)
+    visited=None
     while(True):
         try:
             data=util64.recv_msg(con)
@@ -58,6 +58,7 @@ def unit_RL(con):
             #print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
+                visited=numpy.zeros(disGame.regions.shape)
                 targetType=k[2]
                 dragoons = getUnitClass(targetType, True)
                 target = getUnitClass(targetType, True)
