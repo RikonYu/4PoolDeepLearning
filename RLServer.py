@@ -38,8 +38,10 @@ def learner():
             continue
         samples = buf.sample(batch_size)
         print('training')
-        with lock.gen_rlock():
+        with lock.genRlock() as rl:
+            rl.acquire()
             tempd.set_weights(dragoons.get_weights())
+            rl.release()
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
         Y = dragoons.predict_all(X)
         print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
@@ -54,8 +56,10 @@ def learner():
         if (learn_epoch % replace_every == 0):
             tempd.save()
             target.set_weights(tempd.get_weights())
-        with lock.gen_wlock():
+        with lock.genWlock() as wl:
+            wl.aqcuire()
             dragoons.set_weights(tempd.get_weights())
+            wl.release()
         buf.count = 0
         learn_epoch += 1
 
@@ -125,8 +129,10 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
-                    with lock.gen_rlock():
+                    with lock.genRlock() as rl:
+                        rl.acquire()
                         ans = dragoons.predict_ans_masked(X, mask)
+                        rl.release()
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
