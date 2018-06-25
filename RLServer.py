@@ -9,6 +9,7 @@ from DragoonNet import DragoonNet
 from ClassConstr import getUnitClass
 import threading
 from consts import WINDOW_SIZE
+from readerwriterlock import RWLock
 
 # Deep Q Learning
 batch_size = 64
@@ -23,7 +24,7 @@ tempd=None
 epsilon = 0.3
 discount = 0.9
 learn_epoch = 0
-lock = util64.RWLock()
+lock = RWLock.RWLockWrite()
 
 
 def learner():
@@ -37,9 +38,8 @@ def learner():
             continue
         samples = buf.sample(batch_size)
         print('training')
-        lock.acquireRead()
-        tempd.set_weights(dragoons.get_weights())
-        lock.releaseWrite()
+        with lock.gen_rlock():
+            tempd.set_weights(dragoons.get_weights())
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
         Y = dragoons.predict_all(X)
         print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
@@ -54,9 +54,8 @@ def learner():
         if (learn_epoch % replace_every == 0):
             tempd.save()
             target.set_weights(tempd.get_weights())
-        lock.acquireWrite()
-        dragoons.set_weights(tempd.get_weights())
-        lock.releaseWrite()
+        with lock.gen_wlock():
+            dragoons.set_weights(tempd.get_weights())
         buf.count = 0
         learn_epoch += 1
 
@@ -126,9 +125,8 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
-                    lock.acquireRead()
-                    ans = dragoons.predict_ans_masked(X, mask)
-                    lock.releaseRead()
+                    with lock.gen_rlock():
+                        ans = dragoons.predict_ans_masked(X, mask)
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
