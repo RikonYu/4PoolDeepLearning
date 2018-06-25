@@ -11,6 +11,7 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam
 from keras import backend as KTF
 from consts import WINDOW_SIZE
+import threading
 
 def conv_block(inp,times,has_input=False):
     x=inp
@@ -72,3 +73,40 @@ class gameInstance:
                 self.regions[i*8:i*8+8,j*8:j*8+8]=reg[i,j]
 
     
+class RWLock:
+    """ A lock object that allows many simultaneous "read locks", but
+    only one "write lock." """
+
+    def __init__(self):
+        self._read_ready = threading.Condition(threading.Lock(  ))
+        self._readers = 0
+
+    def acquire_read(self):
+        """ Acquire a read lock. Blocks only if a thread has
+        acquired the write lock. """
+        self._read_ready.acquire(  )
+        try:
+            self._readers += 1
+        finally:
+            self._read_ready.release(  )
+
+    def release_read(self):
+        """ Release a read lock. """
+        self._read_ready.acquire(  )
+        try:
+            self._readers -= 1
+            if not self._readers:
+                self._read_ready.notifyAll(  )
+        finally:
+            self._read_ready.release(  )
+
+    def acquire_write(self):
+        """ Acquire a write lock. Blocks until there are no
+        acquired read or write locks. """
+        self._read_ready.acquire(  )
+        while self._readers > 0:
+            self._read_ready.wait(  )
+
+    def release_write(self):
+        """ Release a write lock. """
+        self._read_ready.release(  )

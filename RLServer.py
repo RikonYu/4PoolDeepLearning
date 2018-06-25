@@ -14,14 +14,16 @@ batch_size=32
 disGame=None
 buf=ReplayBuffer.ReplayBuffer(20000)
 targetType=''
+training=threading.Semaphore(1)
 dragoons=None
 target=None
 
 epsilon=0.3
 discount=0.9
 learn_epoch=0
+lock=util64.RWLock()
 def learner():
-    global dragoons,buf,disGame,target,discount,learn_epoch,targetType
+    global dragoons,buf,disGame,target,discount,learn_epoch,targetType,lock
     replace_every=500
     while(True):
         samples=buf.sample(batch_size)
@@ -29,7 +31,6 @@ def learner():
             time.sleep(2)
             continue
         print('training')
-
         temp = getUnitClass(targetType)
         temp.set_weights(dragoons.get_weights())
         X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r,_it in samples])
@@ -44,8 +45,10 @@ def learner():
         temp.train(X,diff)
         if(learn_epoch%replace_every==0):
             temp.save()
-            target.set_weights(dragoons.get_weights())
+            target.set_weights(temp.get_weights())
+        lock.aquire_write()
         dragoons.set_weights(temp.get_weights())
+        lock.release_write()
         learn_epoch+=1
 def unit_RL(con):
     global disGame,buf,dragoons,epsilon,targetType,target
@@ -109,7 +112,9 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
+                    lock.acquire_read()
                     ans=dragoons.predict_ans_masked(X,mask)
+                    lock.release_read()
                 con.sendall(pickle.dumps(ans))
                 if(last_action!=None):
                     if(k[1][1][1]!=last_value):
