@@ -58,7 +58,6 @@ def unit_RL(con):
             #print(k)
             if(k[0]=='reg'):
                 disGame=util64.gameInstance(k[1])
-                visited=numpy.zeros(disGame.regions.shape)
                 targetType=k[2]
                 dragoons = getUnitClass(targetType, True)
                 target = getUnitClass(targetType, True)
@@ -66,6 +65,8 @@ def unit_RL(con):
                 break
             else:
                 ans=0
+                if(visited==None):
+                    visited=numpy.zeros(disGame.regions.shape)
                 visited[k[0][0], k[0][1]] += 1
                 if(numpy.random.random()<epsilon):
                     places=dragoons.msg2mask(disGame,k[1])
