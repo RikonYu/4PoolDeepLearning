@@ -78,13 +78,14 @@ def unit_RL(con):
                           ay:min(WINDOW_SIZE, visited.shape[1] - y + WINDOW_SIZE // 2)] = numpy.exp(-visited[
                                                                         max(0, x - WINDOW_SIZE // 2):min(x + WINDOW_SIZE // 2, visited.shape[0]),
                                                                         max(0, y - WINDOW_SIZE // 2):min(y + WINDOW_SIZE // 2, visited.shape[1])])
-                    print(sum(visited[max(0, x - WINDOW_SIZE // 2):min(x + WINDOW_SIZE // 2, visited.shape[0]),
-                                max(0, y - WINDOW_SIZE // 2):min(y + WINDOW_SIZE // 2, visited.shape[1])]),x,y)
+                    print(numpy.sum(probs),x,y)
                     ini,inj,ink=numpy.nonzero(places)
                     top5=numpy.argpartition(probs[ini,inj],5)[:5]
+                    print(top5,probs[ini,inj][top5])
                     ind=numpy.random.choice(5,p=probs[ini,inj][top5]/sum(probs[ini,inj][top5]))
                     #ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
                     ans = [ini[top5[ind]] - WINDOW_SIZE // 2, inj[top5[ind]] - WINDOW_SIZE // 2, ink[ind]]
+                    print(ans)
                 else:
                     #temps = getUnitClass()
                     #temps.set_weights(dragoons.get_weights())

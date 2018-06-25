@@ -136,7 +136,7 @@ def command(unit,order):
     coord[0]+=order[0]
     coord[1]+=order[1]
     lcmd=unit.getLastCommand()
-    print('cmd',lcmd.getType().getName(),lcmd.getTargetPosition())
+    #print('cmd',lcmd.getType().getName(),lcmd.getTargetPosition())
     if(lcmd.getTargetPosition()==coord and type2cmd(lcmd.getType())==order[2]):
         return
     if(order[2]==0):
