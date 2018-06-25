@@ -11,15 +11,17 @@ from util64 import conv_block, deconv_block, shrinkScr
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
 import os,sys
-
+common_session=KTF.get_session()
+common_graph=tf.get_default_graph()
 class DragoonNet(UnitNet):
     _in_channel=8
     _out_channel=6
     def __init__(self,loading=False):
+        global common_graph, common_session
         self._in_channel = DragoonNet._in_channel
         self._out_channel = DragoonNet._out_channel
-        self.session=KTF.get_session()
-        self.graph=tf.get_default_graph()
+        self.session=common_session
+        self.graph=common_graph
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
