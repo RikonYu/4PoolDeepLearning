@@ -12,17 +12,19 @@ from consts import WINDOW_SIZE
 from UnitNet import UnitNet
 import os,sys
 
-common_graph=tf.Graph()
-common_session=tf.Session(graph=common_graph)
+#common_graph=tf.Graph()
+#common_session=tf.Session(graph=common_graph)
 class DragoonNet(UnitNet):
     _in_channel=8
     _out_channel=6
     def __init__(self,loading=False):
-        global common_graph, common_session
+        #global common_graph, common_session
         self._in_channel = DragoonNet._in_channel
         self._out_channel = DragoonNet._out_channel
-        self.session=common_session
-        self.graph=common_graph
+        #self.session=common_session
+        #self.graph=common_graph
+        self.graph=tf.Graph()
+        self.session =tf.Session(graph=self.graph)
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')

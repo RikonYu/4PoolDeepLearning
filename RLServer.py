@@ -18,6 +18,7 @@ targetType = ''
 dragoons = None
 target = None
 tempd=None
+#dragoon_weights=None
 
 epsilon = 0.3
 discount = 0.9
