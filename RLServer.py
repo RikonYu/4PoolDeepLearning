@@ -34,7 +34,7 @@ def learner():
             time.sleep(2)
             continue
         print('training')
-        lock.aquire_write()
+        lock.acquire_write()
         tempd.set_weights(dragoons.get_weights())
         lock.release_write()
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
@@ -50,7 +50,7 @@ def learner():
         if (learn_epoch % replace_every == 0):
             temp.save()
             target.set_weights(temp.get_weights())
-        lock.aquire_write()
+        lock.acquire_write()
         dragoons.set_weights(temp.get_weights())
         lock.release_write()
         learn_epoch += 1
