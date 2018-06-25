@@ -40,7 +40,8 @@ def learner():
         lock.release_write()
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
         Y = dragoons.predict_all(X)
-        aprime = target.predict_max(numpy.array(dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples))
+        print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
+        aprime = target.predict_max([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples])
         Y_ = [(samples[i][3] + discount * aprime[i] * (1 - samples[i][4])) for i in range(batch_size)]
         diff = numpy.copy(Y)
         for i in range(batch_size):
