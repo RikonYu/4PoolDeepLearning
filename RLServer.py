@@ -29,10 +29,10 @@ def learner():
             time.sleep(2)
             continue
         print('training')
-        X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r in samples])
+        X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r,_it in samples])
         Y=drones.predict_all(X)
-        aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r in samples))
-        Y_=[(samples[i][3]+discount*aprime[i]) for i in range(batch_size)]
+        aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r,_it in samples))
+        Y_=[(samples[i][3]+discount*aprime[i]*(1-samples[i][4])) for i in range(batch_size)]
         diff=numpy.copy(Y)
         for i in range(batch_size):
             diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]+=Y_[i]
@@ -62,6 +62,15 @@ def unit_RL(con):
                 break
             else:
                 ans=0
+                if(k[0]=='terminal'):
+                    if (last_state != None):
+                        if (k[1][1] != last_value):
+                            print('reward', last_value, k[1][1])
+                        buf.add(last_state, last_action, k[1], (k[1][1] - last_value),1)
+                    last_state = k[1]
+                    last_action = ans
+                    last_value = k[1][1]
+                    return
                 if(visited.shape[0]==1):
                     visited=numpy.zeros(disGame.regions.shape)
                 #print(k)
@@ -101,7 +110,7 @@ def unit_RL(con):
                 if(last_state!=None):
                     if(k[1][1]!=last_value):
                         print('reward',last_value,k[1][1])
-                    buf.add(last_state,last_action,k[1],(k[1][1]-last_value))
+                    buf.add(last_state,last_action,k[1],(k[1][1]-last_value),0)
                 last_state=k[1]
                 last_action=ans
                 last_value=k[1][1]

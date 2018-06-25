@@ -29,6 +29,10 @@ def receive(soc):
     while(len(k)==0):
         k=soc.recv(16384)
     return pickle.loads(k)
+def dead_unit(ind):
+    send(game.getUnit(ind),'terminal',Socks[ind])
+    k=receive(Socks[ind])
+    util32.command(game.getUnit(ind),k)
 def unit_thread(ind):
     send(game.getUnit(ind),'drone',Socks[ind])
     k=receive(Socks[ind])
@@ -47,17 +51,20 @@ class PlayAI(BaseAI):
                 Socks[i.getID()]=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                 Socks[i.getID()].connect((address,12346))
 
-        kys=Socks.keys()
-        for i in list(kys):
+        kys=list(Socks.keys())
+        for i in kys:
             if(game.getUnit(i).exists()==False):
-                Socks[i].close()
-                Socks.pop(i,None)
-                unitThreads.pop(i,None)
+                unitThreads[i] = threading.Thread(target=dead_unit, args=[i])
             else:
                 unitThreads[i]=threading.Thread(target=unit_thread,args=[i])
                 unitThreads[i].start()
         for i in unitThreads.keys():
             unitThreads[i].join()
+        for i in kys:
+            if (game.getUnit(i).exists() == False):
+                Socks[i].close()
+                Socks.pop(i, None)
+                unitThreads.pop(i, None)
     def finished(self):
         pass
 
