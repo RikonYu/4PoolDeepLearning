@@ -10,7 +10,7 @@ class ReplayBuffer:
             self.buffer[self._ind]=[state,action,new_state,reward,is_terminal]
             self._ind=(self._ind+1)%self.maxlen
         else:
-            self.buffer.append([state,action,new_state,reward])
+            self.buffer.append([state,action,new_state,reward,is_terminal])
     def sample(self,batch_size):
         if(len(self.buffer)<batch_size):
             return []
