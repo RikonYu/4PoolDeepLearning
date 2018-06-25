@@ -47,7 +47,7 @@ def learner():
             temp.save()
             target.set_weights(temp.get_weights())
         lock.aquire_write()
-        dragoons.set_weights(temp.get_weights())
+        #dragoons.set_weights(temp.get_weights())
         lock.release_write()
         learn_epoch+=1
 def unit_RL(con):
