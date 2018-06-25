@@ -84,6 +84,7 @@ class RWLock:
     def acquire_read(self):
         """ Acquire a read lock. Blocks only if a thread has
         acquired the write lock. """
+        print('getting read')
         self._read_ready.acquire(  )
         try:
             self._readers += 1
@@ -91,6 +92,7 @@ class RWLock:
             self._read_ready.release(  )
 
     def release_read(self):
+        print('releasing read')
         """ Release a read lock. """
         self._read_ready.acquire(  )
         try:
@@ -101,6 +103,7 @@ class RWLock:
             self._read_ready.release(  )
 
     def acquire_write(self):
+        print('getting write')
         """ Acquire a write lock. Blocks until there are no
         acquired read or write locks. """
         self._read_ready.acquire(  )
@@ -108,5 +111,6 @@ class RWLock:
             self._read_ready.wait(  )
 
     def release_write(self):
+        print('releasing write')
         """ Release a write lock. """
         self._read_ready.release(  )

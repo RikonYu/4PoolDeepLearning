@@ -32,7 +32,7 @@ def learner():
     train_every=256
     while (True):
         if(buf.count<train_every):
-            print('not enough samples')
+            #print('not enough samples')
             time.sleep(10)
             continue
         samples = buf.sample(batch_size)
