@@ -14,7 +14,9 @@ class UnitNet:
     def __init__(self,loading=False):
         self.model=None
     def set_weights(self,weights):
-        self.model.set_weights(weights)
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model.set_weights(weights)
     def get_weights(self):
         return self.model.get_weights()
     def save(self):
