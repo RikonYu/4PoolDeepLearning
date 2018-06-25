@@ -37,6 +37,8 @@ def learner():
         for i in range(batch_size):
             diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]+=Y_[i]
         #new_agent.fit(X,diff)
+
+        continue
         dragoons.train(X,diff)
         if(learn_epoch%replace_every==0):
             dragoons.save()
