@@ -67,7 +67,8 @@ def unit_RL(con):
                 ans=0
                 if(visited==None):
                     visited=numpy.zeros(disGame.regions.shape)
-                visited[k[0][0], k[0][1]] += 1
+                print(k)
+                visited[k[1][0], k[1][1]] += 1
                 if(numpy.random.random()<epsilon):
                     places=dragoons.msg2mask(disGame,k[1])
                     probs=numpy.exp(-visited)
