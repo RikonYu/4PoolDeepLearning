@@ -41,6 +41,7 @@ def learner():
     #new_agent.fit(X,diff)
     dragoons.train(X,diff)
     if(learn_epoch%replace_every==0):
+        dragoons.save()
         target.set_weights(dragoons.get_weights())
     learn_epoch+=1
     learning.release()
@@ -49,6 +50,7 @@ def unit_RL(con):
     last_state=None
     last_action=None
     last_value=0
+    visited=numpy.zeros(disgame.shape)
     while(True):
         try:
             data=util64.recv_msg(con)
@@ -63,10 +65,12 @@ def unit_RL(con):
                 break
             else:
                 ans=0
+                visited[k[0][0], k[0][1]] += 1
                 if(numpy.random.random()<epsilon):
                     places=dragoons.msg2mask(disGame,k[1])
+                    probs=numpy.exp(-visited)
                     ini,inj,ink=numpy.nonzero(places)
-                    ind=numpy.random.choice(len(ini))
+                    ind=numpy.random.choice(len(ini),p=probs[ini,inj]/sum(probs[ini,inj]))
                     ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
                 else:
                     #temps = getUnitClass()

@@ -46,6 +46,8 @@ class DragoonNet(UnitNet):
                 self.model._make_train_function()
                 if(loading and os.path.isfile('DragoonNet.h5')):
                     self.model=load_model('DragoonNet.h5')
+    def save(self):
+        self.model.save('DragoonNet.h5')
     @staticmethod
     def msg2state(disGame, msg):
         x,y=msg[0]
