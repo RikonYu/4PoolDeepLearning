@@ -27,7 +27,7 @@ lock = util64.RWLock()
 
 
 def learner():
-    global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock
+    global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd
     replace_every = 500
     while (True):
         samples = buf.sample(batch_size)
@@ -49,10 +49,10 @@ def learner():
 
         temp.train(X, diff)
         if (learn_epoch % replace_every == 0):
-            temp.save()
-            target.set_weights(temp.get_weights())
+            tempd.save()
+            target.set_weights(tempd.get_weights())
         lock.acquire_write()
-        dragoons.set_weights(temp.get_weights())
+        dragoons.set_weights(tempd.get_weights())
         lock.release_write()
         learn_epoch += 1
 
@@ -74,6 +74,7 @@ def unit_RL(con):
                 dragoons = getUnitClass(targetType, True)
                 target = getUnitClass(targetType, True)
                 tempd = getUnitClass(targetType)
+                temptd.set_weights(dragoons.get_weights())
                 con.send(b'ok')
                 break
             else:
