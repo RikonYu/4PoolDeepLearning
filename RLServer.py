@@ -31,7 +31,9 @@ def learner():
     replace_every = 500
     train_every=256
     while (True):
-        if(buf.getCount()<train_every):
+        if(buf.count<train_every):
+            print('not enough samples')
+            time.sleep(1)
             continue
         buf.count-=train_every
         samples = buf.sample(batch_size)

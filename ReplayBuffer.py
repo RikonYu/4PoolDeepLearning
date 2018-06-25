@@ -6,8 +6,6 @@ class ReplayBuffer:
         self._ind=0
         self.maxlen=length
         self.count=0
-    def getCount(self):
-        return self.count
     def add(self,state,action,new_state,reward,is_terminal):
         self.count+=1
         if(len(self.buffer)>=self.maxlen):
