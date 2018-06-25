@@ -83,7 +83,7 @@ def unit_RL(con):
                 if (k[0] == 'terminal' and last_action != None):
                     if (k[1][1][1] != last_value):
                         print('reward', last_value, k[1][1][1])
-                    buf.add(last_state, last_action, X, (k[1][1][1] - last_value), 1)
+                    buf.add(last_state, last_action, k[1] (k[1][1][1] - last_value), 1)
                     last_state = k[1]
                     last_action = ans
                     last_value = k[1][1][1]
@@ -134,7 +134,7 @@ def unit_RL(con):
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
                         print('reward', last_value, k[1][1][1])
-                    buf.add(last_state, last_action, X, (k[1][1][1] - last_value), 0)
+                    buf.add(last_state, last_action, k[1], (k[1][1][1] - last_value), 0)
                 last_state = k[1]
                 last_action = ans
                 last_value = k[1][1][1]
