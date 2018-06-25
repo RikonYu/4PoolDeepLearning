@@ -126,6 +126,7 @@ if(__name__=='__main__'):
     soc.bind((host,12346))
     soc.listen(5)
     lx = threading.Thread(target=learner, args=[])
+    time.sleep(1)
     lx.start()
 
     print('listening')
