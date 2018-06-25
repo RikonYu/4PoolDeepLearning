@@ -23,14 +23,15 @@ learn_epoch=0
 def learner():
     global dragoons,buf,disGame,target,discount,learn_epoch,targetType
     replace_every=500
-    temp=getUnitClass(targetType)
-    temp.set_weights(dragoons.get_weights())
     while(True):
         samples=buf.sample(batch_size)
         if(len(samples)==0):
             time.sleep(2)
             continue
         print('training')
+
+        temp = getUnitClass(targetType)
+        temp.set_weights(dragoons.get_weights())
         X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r,_it in samples])
         Y=dragoons.predict_all(X)
         aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r,_it in samples))
