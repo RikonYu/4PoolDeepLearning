@@ -11,8 +11,9 @@ from util64 import conv_block, deconv_block, shrinkScr
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
 import os,sys
-#common_session=KTF.get_session()
-#common_graph=tf.get_default_graph()
+
+common_graph=tf.Graph()
+common_session=tf.Session(graph=common_graph)
 class DragoonNet(UnitNet):
     _in_channel=8
     _out_channel=6
@@ -20,36 +21,34 @@ class DragoonNet(UnitNet):
         global common_graph, common_session
         self._in_channel = DragoonNet._in_channel
         self._out_channel = DragoonNet._out_channel
-        '''
         self.session=common_session
         self.graph=common_graph
         with self.session.as_default():
             with self.graph.as_default():
-        '''
-        self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
-        self.conv1=Conv2D(32,(1,1),activation='relu',padding='same')(self.inp)
-        self.pool1=MaxPooling2D((2,2))(self.conv1)
-        self.conv2=conv_block(self.pool1,1)
-        self.pool2=MaxPooling2D((2,2))(self.conv2)
-        self.conv3=conv_block(self.pool2,1)
-        self.pool3=MaxPooling2D((2,2))(self.conv3)
+                self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
+                self.conv1=Conv2D(32,(1,1),activation='relu',padding='same')(self.inp)
+                self.pool1=MaxPooling2D((2,2))(self.conv1)
+                self.conv2=conv_block(self.pool1,1)
+                self.pool2=MaxPooling2D((2,2))(self.conv2)
+                self.conv3=conv_block(self.pool2,1)
+                self.pool3=MaxPooling2D((2,2))(self.conv3)
 
-        self.deconv1=deconv_block(self.pool3,2)
-        self.up1=UpSampling2D((2,2))(self.deconv1)
-        self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),1)
-        self.up2=UpSampling2D((2,2))(self.deconv2)
-        self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),1)
-        self.up3=UpSampling2D((2,2))(self.deconv3)
-        self.deconv4=Conv2DTranspose(64,(3,3),activation='relu',padding='same')(self.up3)
-        self.out=Conv2DTranspose(self._out_channel,(3,3),activation='softmax',padding='same')(self.deconv4)
-        self.model=Model(inputs=self.inp,outputs=self.out)
-        opt=Adam(lr=0.0001)
-        self.model.compile(optimizer=opt,loss='categorical_crossentropy')
-        self.model._make_predict_function()
-        self.model._make_test_function()
-        self.model._make_train_function()
-        if(loading and os.path.isfile('DragoonNet.h5')):
-            self.model=load_model('DragoonNet.h5')
+                self.deconv1=deconv_block(self.pool3,2)
+                self.up1=UpSampling2D((2,2))(self.deconv1)
+                self.deconv2=deconv_block(Concatenate(axis=3)([self.up1,self.conv3]),1)
+                self.up2=UpSampling2D((2,2))(self.deconv2)
+                self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),1)
+                self.up3=UpSampling2D((2,2))(self.deconv3)
+                self.deconv4=Conv2DTranspose(64,(3,3),activation='relu',padding='same')(self.up3)
+                self.out=Conv2DTranspose(self._out_channel,(3,3),activation='softmax',padding='same')(self.deconv4)
+                self.model=Model(inputs=self.inp,outputs=self.out)
+                opt=Adam(lr=0.0001)
+                self.model.compile(optimizer=opt,loss='categorical_crossentropy')
+                self.model._make_predict_function()
+                self.model._make_test_function()
+                self.model._make_train_function()
+                if(loading and os.path.isfile('DragoonNet.h5')):
+                    self.model=load_model('DragoonNet.h5')
     def save(self):
         self.model.save('DragoonNet.h5')
     @staticmethod

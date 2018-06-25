@@ -20,9 +20,8 @@ class UnitNet:
     def save(self):
         self.model.save('DroneNet.h5')
     def predict_all(self,X):
-        #with self.session.as_default():
-        #    with self.graph.as_default():
-
+        with self.session.as_default():
+            with self.graph.as_default():
         return self.model.predict(numpy.reshape(X,[-1,WINDOW_SIZE,WINDOW_SIZE,self._in_channel]))
     def predict_ans(self,X):
         ans=numpy.argmax(self.predict_all([X]))
