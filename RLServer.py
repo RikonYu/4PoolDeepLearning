@@ -21,8 +21,10 @@ epsilon=0.3
 discount=0.9
 learn_epoch=0
 def learner():
-    global dragoons,buf,disGame,target,discount,learn_epoch
+    global dragoons,buf,disGame,target,discount,learn_epoch,targetType
     replace_every=500
+    temp=getUnitClass(targetType)
+    temp.set_weights(dragoons.get_weights())
     while(True):
         samples=buf.sample(batch_size)
         if(len(samples)==0):
@@ -38,11 +40,11 @@ def learner():
             diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]+=Y_[i]
         #new_agent.fit(X,diff)
 
-        continue
-        dragoons.train(X,diff)
+        temp.train(X,diff)
         if(learn_epoch%replace_every==0):
-            dragoons.save()
+            temp.save()
             target.set_weights(dragoons.get_weights())
+        dragoons.set_weights(temp.get_weights())
         learn_epoch+=1
 def unit_RL(con):
     global disGame,buf,dragoons,epsilon,targetType,target

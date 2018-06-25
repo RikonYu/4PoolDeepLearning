@@ -55,6 +55,7 @@ class PlayAI(BaseAI):
         for i in kys:
             if(game.getUnit(i).exists()==False):
                 unitThreads[i] = threading.Thread(target=dead_unit, args=[i])
+                unitThreads[i].start()
             else:
                 unitThreads[i]=threading.Thread(target=unit_thread,args=[i])
                 unitThreads[i].start()
