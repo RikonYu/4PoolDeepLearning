@@ -153,6 +153,6 @@ def command(unit,order):
         unit.gather(game.getClosestUnit(coord))
     elif(order[2]==4):
         print('attacking ',coord,get_all_drones())
-        unit.attack(game.getClosestUnit(coord))
+        unit.attack(game.getClosestUnit(coord,radius=1))
     elif(order[2]==5):
         unit.returnCargo()

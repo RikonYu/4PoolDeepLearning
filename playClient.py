@@ -48,7 +48,7 @@ class PlayAI(BaseAI):
                 Socks[i.getID()].connect((address,12346))
 
         kys=Socks.keys()
-        for i in kys:
+        for i in list(kys):
             if(game.getUnit(i).exists()==False):
                 Socks[i].close()
                 Socks.pop(i,None)
