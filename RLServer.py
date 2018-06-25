@@ -134,8 +134,10 @@ def unit_RL(con):
                     ftest.close()
                     '''
                     rl.acquire()
+                    print('read acquired')
                     ans = dragoons.predict_ans_masked(X, mask)
                     rl.release()
+                    print('read released')
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
