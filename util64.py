@@ -92,31 +92,7 @@ from time import time
 # Read write lock
 # ---------------
 
-class ReadWriteLock(object):
-    """Read-Write lock class. A read-write lock differs from a standard
-    threading.RLock() by allowing multiple threads to simultaneously hold a
-    read lock, while allowing only a single thread to hold a write lock at the
-    same point of time.
-
-    When a read lock is requested while a write lock is held, the reader
-    is blocked; when a write lock is requested while another write lock is
-    held or there are read locks, the writer is blocked.
-
-    Writers are always preferred by this implementation: if there are blocked
-    threads waiting for a write lock, current readers may request more read
-    locks (which they eventually should free, as they starve the waiting
-    writers otherwise), but a new thread requesting a read lock will not
-    be granted one, and block. This might mean starvation for readers if
-    two writer threads interweave their calls to acquireWrite() without
-    leaving a window only for readers.
-
-    In case a current reader requests a write lock, this can and will be
-    satisfied without giving up the read locks first, but, only one thread
-    may perform this kind of lock upgrade, as a deadlock would otherwise
-    occur. After the write lock has been granted, the thread will hold a
-    full write lock, and not be downgraded after the upgrading call to
-    acquireWrite() has been match by a corresponding release().
-    """
+class RWLock(object):
 
     def __init__(self):
         """Initialize this read-write lock."""
