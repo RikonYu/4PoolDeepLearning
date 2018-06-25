@@ -130,7 +130,7 @@ def get_all_drones():
             ans.append(i.getPosition())
     return ans
 def command(unit,order):
-    print(order)
+    print(order,end=' -> ')
     #order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord=unit.getPosition()
     coord[0]+=order[0]

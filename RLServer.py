@@ -84,7 +84,7 @@ def unit_RL(con):
                     if (k[1][1][1] != last_value):
                         print('reward', last_value, k[1][1][1])
                     buf.add(last_state, last_action, X, (k[1][1][1] - last_value), 1)
-                    last_state = X
+                    last_state = k[1]
                     last_action = ans
                     last_value = k[1][1][1]
                     break
