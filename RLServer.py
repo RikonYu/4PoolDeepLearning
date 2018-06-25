@@ -82,7 +82,7 @@ def unit_RL(con):
                 ans = 0
                 X = dragoons.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action != None):
-                    buf.add(last_state, last_action, last_state, 0, 1)
+                    buf.add(last_state, last_action, last_state, -1, 1)
                     break
                 if (visited.shape[0] == 1):
                     visited = numpy.zeros(disGame.regions.shape)
