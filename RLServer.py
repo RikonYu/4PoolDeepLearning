@@ -74,7 +74,7 @@ def unit_RL(con):
                 dragoons = getUnitClass(targetType, True)
                 target = getUnitClass(targetType, True)
                 tempd = getUnitClass(targetType)
-                temptd.set_weights(dragoons.get_weights())
+                tempd.set_weights(dragoons.get_weights())
                 con.send(b'ok')
                 break
             else:
