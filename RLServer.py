@@ -133,6 +133,7 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
+                    print('trying to acquire read')
                     rl.acquire()
                     print('read acquired')
                     ans = dragoons.predict_ans_masked(X, mask)
