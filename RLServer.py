@@ -79,8 +79,8 @@ def unit_RL(con):
                     ay = max(0, WINDOW_SIZE // 2 - y)
                     probs[ax:min(WINDOW_SIZE, visited.shape[0] - x + WINDOW_SIZE // 2),
                           ay:min(WINDOW_SIZE, visited.shape[1] - y + WINDOW_SIZE // 2)] = numpy.exp(-visited[
-                                                                        max(0, x - WINDOW_SIZE // 2):min(x + WINDOW_SIZE // 2, X),
-                                                                        max(0, y - WINDOW_SIZE // 2):min(y + WINDOW_SIZE // 2, Y)]_
+                                                                        max(0, x - WINDOW_SIZE // 2):min(x + WINDOW_SIZE // 2, visited.shape[0]),
+                                                                        max(0, y - WINDOW_SIZE // 2):min(y + WINDOW_SIZE // 2, visited.shape[1])])
                     ini,inj,ink=numpy.nonzero(places)
                     ind=numpy.random.choice(len(ini),p=probs[ini,inj]/sum(probs[ini,inj]))
                     ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
