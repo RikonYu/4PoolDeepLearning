@@ -48,7 +48,7 @@ def learner():
             diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] += Y_[i]
         # new_agent.fit(X,diff)
 
-        temp.train(X, diff)
+        tempd.train(X, diff)
         if (learn_epoch % replace_every == 0):
             tempd.save()
             target.set_weights(tempd.get_weights())
@@ -84,10 +84,7 @@ def unit_RL(con):
                 if (k[0] == 'terminal' and last_action != None):
                     if (k[1][1][1] != last_value):
                         print('reward', last_value, k[1][1][1])
-                    buf.add(last_state, last_action, k[1] (k[1][1][1] - last_value), 1)
-                    last_state = k[1]
-                    last_action = ans
-                    last_value = k[1][1][1]
+                    buf.add(last_state, last_action, last_state 0, 1)
                     break
                 if (visited.shape[0] == 1):
                     visited = numpy.zeros(disGame.regions.shape)
