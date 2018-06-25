@@ -12,7 +12,6 @@ from consts import WINDOW_SIZE
 #Deep Q Learning
 batch_size=32
 disGame=None
-learning=threading.Semaphore(value=1)
 buf=ReplayBuffer.ReplayBuffer(20000)
 targetType=''
 dragoons=None
@@ -23,28 +22,25 @@ discount=0.9
 learn_epoch=0
 def learner():
     global dragoons,buf,disGame,target,discount,learning,learn_epoch
-
     replace_every=500
-    learning.aquire()
-    samples=buf.sample(batch_size)
-    if(samples==None):
-        learning.release()
-        return
-    print('training')
-    X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r in samples])
-    Y=drones.predict_all(X)
-    aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r in samples))
-    Y_=[(samples[i][3]+discount*aprime[i]) for i in range(batch_size)]
-    diff=numpy.copy(Y)
-    for i in range(batch_size):
-        diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]+=Y_[i]
-    #new_agent.fit(X,diff)
-    dragoons.train(X,diff)
-    if(learn_epoch%replace_every==0):
-        dragoons.save()
-        target.set_weights(dragoons.get_weights())
-    learn_epoch+=1
-    learning.release()
+    while(True):
+        samples=buf.sample(batch_size)
+        if(samples==None):
+            return
+        print('training')
+        X=numpy.array([dragoons.msg2state(disGame,i) for i,_a,_sp,_r in samples])
+        Y=drones.predict_all(X)
+        aprime=target.predict_max(numpy.array(dragoons.msg2state(disGame,i) for _s,_a,i,_r in samples))
+        Y_=[(samples[i][3]+discount*aprime[i]) for i in range(batch_size)]
+        diff=numpy.copy(Y)
+        for i in range(batch_size):
+            diff[i,samples[i][1][0],samples[i][1][1],samples[i][1][2]]+=Y_[i]
+        #new_agent.fit(X,diff)
+        dragoons.train(X,diff)
+        if(learn_epoch%replace_every==0):
+            dragoons.save()
+            target.set_weights(dragoons.get_weights())
+        learn_epoch+=1
 def unit_RL(con):
     global disGame,buf,dragoons,epsilon,targetType,target
     last_state=None
@@ -81,9 +77,12 @@ def unit_RL(con):
                           ay:min(WINDOW_SIZE, visited.shape[1] - y + WINDOW_SIZE // 2)] = numpy.exp(-visited[
                                                                         max(0, x - WINDOW_SIZE // 2):min(x + WINDOW_SIZE // 2, visited.shape[0]),
                                                                         max(0, y - WINDOW_SIZE // 2):min(y + WINDOW_SIZE // 2, visited.shape[1])])
+                    print(probs)
                     ini,inj,ink=numpy.nonzero(places)
-                    ind=numpy.argmax(probs[ini,inj])
-                    ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
+                    top5=numpy.argpartition(probs[ini,inj],5)[:5]
+                    ind=numpy.random.choice(5,p=probs[ini,inj][top5]/sum(probs[ini,inj][top5]))
+                    #ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
+                    ans = [ini[top5[ind]] - WINDOW_SIZE // 2, inj[top5[ind]] - WINDOW_SIZE // 2, ink[ind]]
                 else:
                     #temps = getUnitClass()
                     #temps.set_weights(dragoons.get_weights())
@@ -97,13 +96,12 @@ def unit_RL(con):
                     ans=dragoons.predict_ans_masked(X,mask)
                 con.sendall(pickle.dumps(ans))
                 if(last_state!=None):
+                    if(k[1][1]!=last_value):
+                        print('reward',last_value,k[1][1])
                     buf.add(last_state,last_action,k[1],(k[1][1]-last_value))
                     last_state=k[1]
                     last_action=ans
                     last_value=k[1][1]
-                    if(numpy.random.randint(1,10)==3):
-                        lx=threading.Thread(target=learner,args=[])
-                        lx.start()
         except EOFError:
             break
 if(__name__=='__main__'):
@@ -111,7 +109,11 @@ if(__name__=='__main__'):
     host='linux.cs.uwaterloo.ca'
     soc.bind((host,12346))
     soc.listen(5)
+    lx = threading.Thread(target=learner, args=[])
+    lx.start()
+
     print('listening')
+
     while(True):
         con,addr=soc.accept()
         k=threading.Thread(target=unit_RL,args=[con])
