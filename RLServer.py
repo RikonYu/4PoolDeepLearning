@@ -50,7 +50,7 @@ def unit_RL(con):
     last_state=None
     last_action=None
     last_value=0
-    visited=numpy.zeros(disgame.shape)
+    visited=numpy.zeros(disGame.shape)
     while(True):
         try:
             data=util64.recv_msg(con)
