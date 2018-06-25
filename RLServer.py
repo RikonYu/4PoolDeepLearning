@@ -66,7 +66,7 @@ def learner():
 
 
 def unit_RL(con):
-    global disGame, buf, dragoons, epsilon, targetType, target,tempd
+    global disGame, buf, dragoons, epsilon, targetType, target,tempd, lock
     last_state = None
     last_action = None
     last_value = 0
