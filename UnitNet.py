@@ -18,7 +18,9 @@ class UnitNet:
             with self.graph.as_default():
                 self.model.set_weights(weights)
     def get_weights(self):
-        return self.model.get_weights()
+        with self.session.as_default():
+            with self.graph.as_default():
+                return self.model.get_weights()
     def save(self):
         self.model.save('DroneNet.h5')
     def predict_all(self,X):
