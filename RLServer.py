@@ -25,7 +25,7 @@ def learner():
     replace_every=500
     while(True):
         samples=buf.sample(batch_size)
-        if(len(samples)):
+        if(len(samples)==0):
             time.sleep(2)
             continue
         print('training')
