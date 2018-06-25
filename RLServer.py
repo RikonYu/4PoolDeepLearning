@@ -33,9 +33,8 @@ def learner():
     while (True):
         if(buf.count<train_every):
             print('not enough samples')
-            time.sleep(1)
+            time.sleep(10)
             continue
-        buf.count-=train_every
         samples = buf.sample(batch_size)
         print('training')
         lock.acquire_read()
@@ -58,6 +57,7 @@ def learner():
         lock.acquire_write()
         dragoons.set_weights(tempd.get_weights())
         lock.release_write()
+        buf.count = 0
         learn_epoch += 1
 
 
