@@ -12,7 +12,7 @@ from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 
 # Deep Q Learning
-batch_size = 4
+batch_size =64
 disGame = None
 buf = ReplayBuffer.ReplayBuffer(20000)
 targetType = ''
@@ -30,7 +30,7 @@ lock = RWLock.RWLockWrite()
 def learner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd, batch_size
     replace_every = 500
-    train_every=4
+    train_every=128
     wl = lock.genWlock()
     while (True):
         if(buf.count<train_every):
@@ -55,10 +55,10 @@ def learner():
             tempd.save()
             target.set_weights(tempd.get_weights())
         wl.acquire()
-        print('acquired')
+        #print('acquired')
         dragoons.set_weights(tempd.get_weights())
         wl.release()
-        print('released')
+        #print('released')
         buf.count = 0
         learn_epoch += 1
 

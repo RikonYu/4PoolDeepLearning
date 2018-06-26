@@ -41,15 +41,13 @@ def receive(soc):
 
 def dead_unit(ind):
     send(game.getUnit(ind), 'terminal', Socks[ind])
-    k = receive(Socks[ind])
-    util32.command(game.getUnit(ind), k)
 
 
 def unit_thread(ind):
     send(game.getUnit(ind), targetType, Socks[ind])
-    print('%d sent at %d'%(ind,game.getFrameCount()))
+    #print('%d sent at %d'%(ind,game.getFrameCount()))
     k = receive(Socks[ind])
-    print('%d recv at %d'%(ind,game.getFrameCount()))
+    #print('%d recv at %d'%(ind,game.getFrameCount()))
     util32.command(game.getUnit(ind), k)
 
 
@@ -65,7 +63,7 @@ class PlayAI(BaseAI):
             if (i.getType().getName() == targetType and i.getPlayer() == self.playerMe):
                 if (i.getID() in Socks):
                     continue
-                print('dragoon %d'%i.getID(),i.getPosition())
+                #print('dragoon %d'%i.getID(),i.getPosition())
                 Socks[i.getID()] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 Socks[i.getID()].connect((address, 12346))
 
@@ -84,7 +82,7 @@ class PlayAI(BaseAI):
                 Socks[i].close()
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
-        print(len(Socks.keys()))
+        #print(len(Socks.keys()))
     def finished(self):
         pass
 
