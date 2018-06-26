@@ -57,12 +57,13 @@ def learner():
         if (learn_epoch % replace_every == 0):
             tempd.save()
             target.set_weights(tempd.get_weights())
-
+        '''
         wl.acquire()
         print('acquired')
         dragoons.set_weights(tempd.get_weights())
         wl.release()
         print('released')
+        '''
         buf.count = 0
         learn_epoch += 1
 
@@ -133,12 +134,12 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
-                    print('trying to acquire read')
+                    #print('trying to acquire read')
                     rl.acquire()
-                    print('read acquired')
+                    #print('read acquired')
                     ans = dragoons.predict_ans_masked(X, mask)
                     rl.release()
-                    print('read released')
+                    #print('read released')
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
@@ -148,6 +149,7 @@ def unit_RL(con):
                 last_action = ans
                 last_value = k[1][1][1]
         except EOFError:
+            print('exception found')
             break
 
 
