@@ -147,9 +147,10 @@ def get_all_drones():
             ans.append(i.getPosition())
     return ans
 
-
 def command(unit, order):
-    print(order, end=' -> ')
+    showCommands=0
+    if(showCommands):
+        print(order, end=' -> ')
     # order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord = unit.getPosition()
     coord[0] += order[0]
@@ -159,19 +160,24 @@ def command(unit, order):
     if (lcmd.getTargetPosition() == coord and type2cmd(lcmd.getType()) == order[2]):
         return
     if (order[2] == 0):
-        print('holding')
+        if (showCommands):
+            print('holding')
         unit.holdPosition()
     elif (order[2] == 1):
-        print('moving to', coord)
+        if (showCommands):
+            print('moving to', coord)
         unit.move(coord)
     elif (order[2] == 2):
-        print('building')
+        if (showCommands):
+            print('building')
         unit.build(pybrood.UnitTypes.Zerg_Spawning_Pool, coord)
     elif (order[2] == 3):
-        print('gathering ', coord, get_all_mineral())
+        if (showCommands):
+            print('gathering ', coord, get_all_mineral())
         unit.gather(game.getClosestUnit(coord))
     elif (order[2] == 4):
-        print('attacking ', coord, get_all_drones())
+        if (showCommands):
+            print('attacking ', coord, get_all_drones())
         unit.attack(game.getClosestUnit(coord, radius=1))
     elif (order[2] == 5):
         unit.returnCargo()
