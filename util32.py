@@ -89,6 +89,7 @@ def reg2msg():
 # 3Ally[coordinate, Hp, isFlyer, isBuilding,(top,bot,left,right)]
 # 4resource[isMineral,coord,(top,bot,left,right)],
 # 5my_extractor[coord]
+# 6 minimap explored
 def game2msg(me):
     ans = []
     typeMe = me.getType()
@@ -129,6 +130,11 @@ def game2msg(me):
     ans.append(ally)
     ans.append(resource)
     ans.append(extra)
+    explored=numpy.zeros([game.mapHeight(),game.mapWidth()])
+    for i in range(game.mapHeight()):
+        for j in range(game.mapWidth()):
+            explored[i,j]=game.isExplored(i,j)
+    ans.append(explored)
     return ans
 
 

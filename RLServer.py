@@ -24,11 +24,13 @@ tempd=None
 epsilon = 0.3
 discount = 0.9
 learn_epoch = 0
+exploration_weight=0.0001
 lock = RWLock.RWLockWrite()
 
 
 def learner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock,tempd, batch_size
+    global exploration_weight
     replace_every = 500
     train_every=128
     wl = lock.genWlock()
@@ -69,6 +71,7 @@ def unit_RL(con):
     last_action = None
     last_value = 0
     visited = numpy.zeros([1, 1])
+    unvisited=0
     rl = lock.genRlock()
     while (True):
         try:
@@ -91,9 +94,14 @@ def unit_RL(con):
                     buf.add(last_state, last_action, last_state, -1, 1)
                     break
                 if (visited.shape[0] == 1):
+
                     visited = numpy.zeros(disGame.regions.shape)
+                    unvisited = visited.shape[0]*visited.shape[1]
+                    last_value=-exploration_weight*unvisited
                 # print(k)
                 visited[k[1][0][0], k[1][0][1]] += 1
+                if(visited[k[1][0][0], k[1][0][1]]==1):
+                    unvisited-=1
                 if (numpy.random.random() < epsilon):
                     places = dragoons.msg2mask(disGame, k[1])
                     # probs=numpy.exp(-visited[])
@@ -141,10 +149,10 @@ def unit_RL(con):
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
                         print('reward', last_value, k[1][1][1])
-                    buf.add(last_state, last_action, k[1], (k[1][1][1] - last_value), 0)
+                    buf.add(last_state, last_action, k[1], (k[1][1][1]-exploration_weight*unvisited - last_value), 0)
                 last_state = k[1]
                 last_action = ans
-                last_value = k[1][1][1]
+                last_value = k[1][1][1]-exploration_weight*unvisited
         except EOFError:
             print('exception found')
             break

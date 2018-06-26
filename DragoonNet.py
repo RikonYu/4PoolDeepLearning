@@ -10,12 +10,13 @@ import numpy
 from util64 import conv_block, deconv_block, shrinkScr
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
+from scipy import misc
 import os,sys
 
 #common_graph=tf.Graph()
 #common_session=tf.Session(graph=common_graph)
 class DragoonNet(UnitNet):
-    _in_channel=8
+    _in_channel=10
     _out_channel=6
     def __init__(self,loading=False):
         #global common_graph, common_session
@@ -78,6 +79,9 @@ class DragoonNet(UnitNet):
             ans[nx, ny, 1] = 1
             ans[nx, ny, 4] = u[1]
         ans[:,:,3]=msg[1][0]
+        ans[:,:,8]=misc.imresize(msg[6],[WINDOW_SIZE,WINDOW_SIZE])
+        ans[:,:,8]/=255
+        ans[x//32,y//32,9]=1
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
