@@ -134,12 +134,12 @@ def unit_RL(con):
                     pickle.dump(mask,ftest)
                     ftest.close()
                     '''
-                    print('trying to acquire read %d'%threading.current_thread())
+                    print('trying to acquire read %d'%threading.get_ident())
                     rl.acquire()
-                    print('read acquired %d'%threading.current_thread())
+                    print('read acquired %d'%threading.get_ident())
                     ans = dragoons.predict_ans_masked(X, mask)
                     rl.release()
-                    print('read released %d'%threading.current_thread())
+                    print('read released %d'%threading.get_ident())
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
                     if (k[1][1][1] != last_value):
