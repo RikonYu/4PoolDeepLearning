@@ -81,7 +81,8 @@ class DragoonNet(UnitNet):
         ans[:,:,3]=msg[1][0]
         for i in range(WINDOW_SIZE*32//X):
             for j in range(WINDOW_SIZE * 32 // X):
-                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE,8]=msg[6]
+                print([i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8].shape,msg[6].shape)
+                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8]=msg[6]
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,9]=1
         return ans
     @staticmethod
