@@ -81,7 +81,7 @@ class PlayAI(BaseAI):
                 Socks[i].close()
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
-
+        print(len(Socks.keys()))
     def finished(self):
         pass
 
