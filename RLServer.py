@@ -79,6 +79,8 @@ def unit_RL(con):
             k = pickle.loads(data)
             # print(k)
             if (k[0] == 'reg'):
+                if(disGame!=None):
+                    break
                 disGame = util64.gameInstance(k[1])
                 targetType = k[2]
                 dragoons = getUnitClass(targetType, True)
@@ -147,8 +149,8 @@ def unit_RL(con):
                     #print('read released %d'%threading.get_ident())
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
-                    if (k[1][1][1] != last_value):
-                        print('reward', last_value, k[1][1][1])
+                    #if (k[1][1][1] != last_value):
+                        #print('reward', last_value, k[1][1][1])
                     buf.add(last_state, last_action, k[1], (k[1][1][1]-exploration_weight*unvisited - last_value), 0)
                 last_state = k[1]
                 last_action = ans
