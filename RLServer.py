@@ -42,7 +42,7 @@ def learner():
         tempd.set_weights(dragoons.get_weights())
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
         Y = dragoons.predict_all(X)
-        print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
+        #print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
         aprime = target.predict_max([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples])
         Y_ = [(samples[i][3] + discount * aprime[i] * (1 - samples[i][4])) for i in range(batch_size)]
         diff = numpy.copy(Y)
@@ -116,7 +116,9 @@ def unit_RL(con):
                     # top5=numpy.argpartition(probs[ini,inj],-5)[-5:]
                     # print('options',numpy.unravel_index(top5,probs.shape),probs[ini,inj][top5],len(ini))
                     # ind=numpy.random.choice(5,p=probs[ini,inj][top5]/sum(probs[ini,inj][top5]))
-                    ind = numpy.argmax(probs[ini, inj])
+                    #ind = numpy.argmax(probs[ini, inj])
+                    probsum=numpy.sum(probs[ini,inj])
+                    ind=numpy.random.choice(len(ini),p=probs[ini,inj]/probsum)
                     # ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
                     ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
                     # print(ans)
