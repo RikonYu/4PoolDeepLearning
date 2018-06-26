@@ -79,9 +79,10 @@ class DragoonNet(UnitNet):
             ans[nx, ny, 1] = 1
             ans[nx, ny, 4] = u[1]
         ans[:,:,3]=msg[1][0]
-        ans[:,:,8]=misc.imresize(msg[6],[WINDOW_SIZE,WINDOW_SIZE])
-        ans[:,:,8]/=255
-        ans[x//32,y//32,9]=1
+        for i in range(WINDOW_SIZE*32//X):
+            for j in range(WINDOW_SIZE * 32 // X):
+                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE,8]=msg[6]
+        ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,9]=1
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
