@@ -153,6 +153,7 @@ def unit_RL(con):
                 last_state = k[1]
                 last_action = ans
                 last_value = k[1][1][1]-exploration_weight*unvisited
+                print(last_value)
         except EOFError:
             print('exception found')
             break
