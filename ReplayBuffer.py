@@ -26,7 +26,7 @@ class SegTree:
         self.a=numpy.zeros(ln*4+1)
         self.left=numpy.zeros(ln*4+1)
         self.right=numpy.zeros(ln*4+1)
-        self.build(1,ln,1)
+        self.build(0,ln-1,1)
     def build(self,left,right,ind):
         self.left[ind]=left
         self.right[ind]=right
