@@ -66,7 +66,7 @@ class PriortizedReplayBuffer:
         else:
             self.buffers.append([[state,action,new_state,reward,is_terminal],max_prt])
         self.psum+=numpy.exp(max_prt)
-        self.prts.set(self._ind,max_prt)
+        self.prts.set(self._ind,max_prt,1)
         self._ind=(self._ind+1)%self.maxlen
         self.count+=1
 
@@ -81,6 +81,6 @@ class PriortizedReplayBuffer:
     def update(self,ind,p):
         for i in range(ind):
             self.psum-=numpy.exp(self.buffers[ind[i]][1])
-            self.prts.set(ind[i],abs(p[i]))
+            self.prts.set(ind[i],abs(p[i]),1)
             self.psum+=numpy.exp(abs(p[i]))
             self.buffers[ind[i]][1]=abs(p[i])
