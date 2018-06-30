@@ -23,9 +23,9 @@ class ReplayBuffer:
 
 class SegTree:
     def __init__(self,ln):
-        self.a=numpy.zeros(ln*4+1)
-        self.left=numpy.zeros(ln*4+1)
-        self.right=numpy.zeros(ln*4+1)
+        self.a=numpy.zeros(ln*8+1)
+        self.left=numpy.zeros(ln*8+1)
+        self.right=numpy.zeros(ln*8+1)
         self.build(1,ln,1)
     def build(self,left,right,ind):
         self.left[ind]=left
