@@ -49,7 +49,7 @@ class PriortizedReplayBuffer:
         self.buffers=[]
         self._ind=0
         self.maxlen=length
-        self.prts=None
+        self.prts=SegTree(length)
         self.psum=0
         self.count=0
         self.beta=1
