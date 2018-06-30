@@ -74,9 +74,14 @@ class PriortizedReplayBuffer:
     def sample(self,batch_size):
         if(len(self.buffers)<batch_size):
             return []
-        probs=numpy.exp([i[1] for i in self.buffers])/self.psum
-        inds=numpy.random.choice(len(self.buffers),batch_size,replace=False,p=probs)
-        bias=numpy.power((self.count*probs[inds]),self.beta)
+        probs=0
+        try:
+            probs=numpy.exp([i[1] for i in self.buffers])/self.psum
+            inds=numpy.random.choice(len(self.buffers),batch_size,replace=False,p=probs)
+            bias=numpy.power((self.count*probs[inds]),self.beta)
+        except:
+            print(len(self.buffers),len(probs))
+
         return [self.buffers[i][0] for i in inds],inds,bias
 
     def update(self,ind,p):

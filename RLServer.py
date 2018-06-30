@@ -39,7 +39,9 @@ def learner():
             # print('not enough samples')
             time.sleep(10)
             continue
+        buflock.acquire()
         samples,indx,bias = buf.sample(batch_size)
+        buflock.release()
         print('training')
         tempd.set_weights(dragoons.get_weights())
         X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
@@ -64,7 +66,9 @@ def learner():
         dragoons.set_weights(tempd.get_weights())
         wl.release()
         # print('released')
+        buflock.acquire()
         buf.count = 0
+        buflock.release()
         learn_epoch += 1
 
 
