@@ -24,8 +24,8 @@ class ReplayBuffer:
 class SegTree:
     def __init__(self,ln):
         self.a=numpy.zeros(ln*4+1)
-        self.left=numpy.zeros(ln*4+1)
-        self.right=numpy.zeros(ln*4+1)
+        self.left=numpy.zeros(ln*4+1).astype(int)
+        self.right=numpy.zeros(ln*4+1).astype(int)
         self.build(0,ln-1,1)
     def build(self,left,right,ind):
         self.left[ind]=left
@@ -39,11 +39,12 @@ class SegTree:
         return self.a[1]
 
     def set(self,ind,val,pos):
+        #print('set',self.left[pos],self.right[pos],(self.left[pos]+self.right[pos])//2,ind)
         self.a[pos]=max(self.a[pos],val)
         if(self.left[pos]==ind and self.right[pos]==ind):
             self.a[pos]=val
             return
-        if((self.left[pos]+self.right[pos])//2>ind):
+        if((self.left[pos]+self.right[pos])//2>=ind):
             self.set(ind,val,pos*2)
         else:
             self.set(ind,val,pos*2+1)
@@ -53,7 +54,7 @@ class PriortizedReplayBuffer:
         self.buffers=[]
         self._ind=0
         self.maxlen=length
-        self.prts=SegTree(length)
+        self.prts=SegTree(length+1)
         self.psum=0
         self.count=0
         self.beta=1
@@ -84,3 +85,9 @@ class PriortizedReplayBuffer:
             self.prts.set(ind[i],abs(p[i]),1)
             self.psum+=numpy.exp(abs(p[i]))
             self.buffers[ind[i]][1]=abs(p[i])
+
+'''
+a=SegTree(50000)
+for i in range(100):
+    a.set(i,1,1)
+'''
