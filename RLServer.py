@@ -102,7 +102,8 @@ def unit_RL(con):
                 X = dragoons.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action != None):
                     buflock.acquire()
-                    buf.add(last_state, last_action, last_state, -1, 1)
+                    #buf.add(last_state, last_action, last_state, -1, 1)
+                    buf.add(last_state, last_action, last_state, 0, 1)
                     buflock.release()
                     break
                 if (visited.shape[0] == 1):
