@@ -4,8 +4,6 @@ import socket
 import time
 import numpy
 import ReplayBuffer
-from DroneNet import DroneNet
-from DragoonNet import DragoonNet
 from ClassConstr import getUnitClass
 import threading
 from consts import WINDOW_SIZE
@@ -151,20 +149,18 @@ def unit_RL(con):
                     # print('read released %d'%threading.get_ident())
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
-                    # if (k[1][1][1] != last_value):
-                    # print('reward', last_value, k[1][1][1])
-                    #buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)
+                    buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)
 
                 last_state = k[1]
                 last_action = ans
                 last_value = k[1][1][1] - exploration_weight * unvisited
-                f.writeline(last_value)
+                feval.write(str(last_value)+'\n')
                 #print(last_value)
-                f.flush()
+                feval.flush()
         except EOFError:
             print('exception found')
             break
-        f.close()
+    feval.close()
 
 
 if (__name__ == '__main__'):
