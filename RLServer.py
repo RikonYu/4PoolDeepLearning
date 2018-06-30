@@ -13,6 +13,7 @@ from readerwriterlock import RWLock
 batch_size = 64
 disGame = None
 #buf = ReplayBuffer.ReplayBuffer(20000)
+buflock=threading.Semaphore(1)
 buf=ReplayBuffer.PriortizedReplayBuffer(50000)
 targetType = ''
 dragoons = None
@@ -51,7 +52,9 @@ def learner():
             diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
 
         #not using bias for now
+        buflock.acquire()
         buf.update(indx,list(Y_[i]-Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(batch_size)))
+        buflock.release()
         tempd.train(X, diff)
         if (learn_epoch % replace_every == 0):
             tempd.save()
@@ -94,7 +97,9 @@ def unit_RL(con):
                 ans = 0
                 X = dragoons.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action != None):
+                    buflock.acquire()
                     buf.add(last_state, last_action, last_state, -1, 1)
+                    buflock.release()
                     break
                 if (visited.shape[0] == 1):
                     visited = numpy.zeros(disGame.regions.shape)
@@ -149,8 +154,9 @@ def unit_RL(con):
                     # print('read released %d'%threading.get_ident())
                 con.sendall(pickle.dumps(ans))
                 if (last_action != None):
+                    buflock.acquire()
                     buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)
-
+                    buflock.release()
                 last_state = k[1]
                 last_action = ans
                 last_value = k[1][1][1] - exploration_weight * unvisited

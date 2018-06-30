@@ -80,7 +80,7 @@ class PriortizedReplayBuffer:
         return [self.buffers[i][0] for i in inds],inds,bias
 
     def update(self,ind,p):
-        for i in range(ind):
+        for i in range(len(ind)):
             self.psum-=numpy.exp(self.buffers[ind[i]][1])
             self.prts.set(ind[i],abs(p[i]),1)
             self.psum+=numpy.exp(abs(p[i]))
