@@ -93,5 +93,4 @@ def printer(k):
 if (__name__ == '__main__'):
     # soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     # soc.connect(('linux.cs.uwaterloo.ca',12346))
-    threading.Thread(target=printer_thread).start()
     run(PlayAI)
