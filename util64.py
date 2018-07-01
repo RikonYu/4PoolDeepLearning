@@ -78,12 +78,11 @@ class gameInstance:
             for j in range(reg.shape[1]):
                 self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
 
+def send_msg(sock, msg):
+    msg = struct.pack('>I', len(msg)) + msg
+    sock.sendall(msg)
 
-# -*- coding: iso-8859-15 -*-
-"""locks.py - Read-Write lock thread lock implementation
-
-See the class documentation for more info.
-
-Copyright (C) 2007, Heiko Wundram.
-Released under the BSD-license.
-"""
+def send_graph(addr,X):
+    soc=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    soc.connect((addr,12348))
+    send_msg(pickle.dumps(X))

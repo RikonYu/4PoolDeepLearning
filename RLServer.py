@@ -28,7 +28,7 @@ exploration_weight = 0.0001
 lock = RWLock.RWLockWrite()
 
 
-def learner():
+def Qlearner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock, tempd, batch_size
     global exploration_weight
     replace_every = 500
@@ -179,7 +179,7 @@ if (__name__ == '__main__'):
     host = 'linux.cs.uwaterloo.ca'
     soc.bind((host, 12346))
     soc.listen(5)
-    lx = threading.Thread(target=learner, args=[])
+    lx = threading.Thread(target=Qlearner, args=[])
     time.sleep(1)
     lx.start()
 
@@ -187,6 +187,7 @@ if (__name__ == '__main__'):
 
     while (True):
         con, addr = soc.accept()
+        print(addr)
         k = threading.Thread(target=unit_RL, args=[con])
         time.sleep(1)
         k.start()
