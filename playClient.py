@@ -45,7 +45,7 @@ def dead_unit(ind):
 def unit_thread(ind):
     send(game.getUnit(ind), targetType, Socks[ind])
     #print('%d sent at %d'%(ind,game.getFrameCount()))
-    k,X = pickle.load(util32.recv_msg(Socks[ind]))
+    k,X = pickle.loads(util32.recv_msg(Socks[ind]))
     #print('%d recv at %d'%(ind,game.getFrameCount()))
     printer(X)
     util32.command(game.getUnit(ind), k)

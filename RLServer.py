@@ -160,7 +160,7 @@ def unit_RL(con):
                     rl.release()
                     # print('read released %d'%threading.get_ident())
                 #con.sendall(pickle.dumps(ans))
-                util64.send_msg(con,pickle.dums([ans,X]))
+                util64.send_msg(con,pickle.dumps([ans,X]))
                 if (last_action != None):
                     buflock.acquire()
                     buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)
