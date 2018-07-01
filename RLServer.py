@@ -27,7 +27,7 @@ learn_epoch = 0
 exploration_weight = 0.0001
 lock = RWLock.RWLockWrite()
 
-
+addr=0
 def Qlearner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock, tempd, batch_size
     global exploration_weight
@@ -100,6 +100,8 @@ def unit_RL(con):
             else:
                 ans = 0
                 X = dragoons.msg2state(disGame, k[1])
+                sendback=threading.Thread(target=util64.send_graph(addr,X))
+                sendback.start()
                 if (k[0] == 'terminal' and last_action != None):
                     buflock.acquire()
                     #buf.add(last_state, last_action, last_state, -1, 1)
@@ -175,6 +177,7 @@ def unit_RL(con):
 
 
 if (__name__ == '__main__'):
+    global addr
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = 'linux.cs.uwaterloo.ca'
     soc.bind((host, 12346))
@@ -187,7 +190,7 @@ if (__name__ == '__main__'):
 
     while (True):
         con, addr = soc.accept()
-        print(addr)
+        #print(addr)
         k = threading.Thread(target=unit_RL, args=[con])
         time.sleep(1)
         k.start()

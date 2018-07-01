@@ -4,6 +4,7 @@ import util32
 import socket, os
 import struct
 import threading
+from PIL import Image
 # import matplotlib.pyplot as plt
 from pybrood import BaseAI, run, game, Color
 
@@ -90,6 +91,14 @@ class PlayAI(BaseAI):
     def finished(self):
         pass
 
+def printer_thread():
+    soc=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    soc.bind(('10.22.205.26',12348))
+    while(True):
+        con,addr=soc.accept()
+        k=pickle.loads(util32.recv_msg(con))
+        for i in range(k.shape[2]):
+            Image.fromarray(k[:,:,i]).show(title='%d'%i)
 
 if (__name__ == '__main__'):
     # soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
