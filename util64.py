@@ -1,8 +1,5 @@
 import numpy
-import keras
-import scipy
-import pickle
-import socket
+import struct
 import struct
 # import matplotlib.pyplot as plt
 from keras.models import Sequential, Model, load_model
@@ -11,7 +8,6 @@ from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv
 from keras.optimizers import Adam
 from keras import backend as KTF
 from consts import WINDOW_SIZE
-import threading
 
 
 def conv_block(inp, times, has_input=False):
