@@ -100,8 +100,8 @@ def unit_RL(con):
             else:
                 ans = 0
                 X = dragoons.msg2state(disGame, k[1])
-                sendback=threading.Thread(target=util64.send_graph(addr,X))
-                sendback.start()
+                #sendback=threading.Thread(target=util64.send_graph(addr,X))
+                #sendback.start()
                 if (k[0] == 'terminal' and last_action != None):
                     buflock.acquire()
                     #buf.add(last_state, last_action, last_state, -1, 1)
@@ -159,7 +159,8 @@ def unit_RL(con):
                     ans = dragoons.predict_ans_masked(X, mask)
                     rl.release()
                     # print('read released %d'%threading.get_ident())
-                con.sendall(pickle.dumps(ans))
+                #con.sendall(pickle.dumps(ans))
+                util64.send_msg(con,pickle.dump([ans,X]))
                 if (last_action != None):
                     buflock.acquire()
                     buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)

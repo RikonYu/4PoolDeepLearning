@@ -84,5 +84,5 @@ def send_msg(sock, msg):
 
 def send_graph(addr,X):
     soc=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.connect((addr[0],12348))
+    soc.connect(('10.22.205.26',12348))
     send_msg(pickle.dumps(X))

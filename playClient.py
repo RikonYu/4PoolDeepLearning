@@ -37,12 +37,6 @@ def send_reg():
     soc.close()
 
 
-def receive(soc):
-    k = soc.recv(16384)
-    while (len(k) == 0):
-        k = soc.recv(16384)
-    return pickle.loads(k)
-
 
 def dead_unit(ind):
     send(game.getUnit(ind), 'terminal', Socks[ind])
@@ -51,8 +45,9 @@ def dead_unit(ind):
 def unit_thread(ind):
     send(game.getUnit(ind), targetType, Socks[ind])
     #print('%d sent at %d'%(ind,game.getFrameCount()))
-    k = receive(Socks[ind])
+    k,X = pickle.load(util32.recv_msg(Socks[ind]))
     #print('%d recv at %d'%(ind,game.getFrameCount()))
+    printer(X)
     util32.command(game.getUnit(ind), k)
 
 
@@ -91,14 +86,9 @@ class PlayAI(BaseAI):
     def finished(self):
         pass
 
-def printer_thread():
-    soc=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.bind(('10.22.205.26',12348))
-    while(True):
-        con,addr=soc.accept()
-        k=pickle.loads(util32.recv_msg(con))
-        for i in range(k.shape[2]):
-            Image.fromarray(k[:,:,i]).show(title='%d'%i)
+def printer(k):
+    for i in range(k.shape[2]):
+        Image.fromarray(k[:,:,i]).show(title='%d'%i)
 
 if (__name__ == '__main__'):
     # soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
