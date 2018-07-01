@@ -79,6 +79,7 @@ def unit_RL(con):
     last_value = 0
     visited = numpy.zeros([1, 1])
     unvisited = 0
+    mask = numpy.zeros(1)
     rl = lock.genRlock()
     feval = open('rewards.txt', 'w')
     while (True):
@@ -160,7 +161,7 @@ def unit_RL(con):
                     rl.release()
                     # print('read released %d'%threading.get_ident())
                 #con.sendall(pickle.dumps(ans))
-                util64.send_msg(con,pickle.dumps([ans,X]))
+                util64.send_msg(con,pickle.dumps([ans,mask]))
                 if (last_action != None):
                     buflock.acquire()
                     buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)

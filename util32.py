@@ -6,6 +6,7 @@ import win32api
 import win32con
 import time
 import subprocess
+import struct
 import shutil
 import random
 from consts import WINDOW_SIZE
