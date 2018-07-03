@@ -186,7 +186,8 @@ def unit_RL(con, is_first):
         except EOFError:
             print('exception found')
             break
-    feval.close()
+    if(is_first):
+        feval.close()
 
 
 if (__name__ == '__main__'):
