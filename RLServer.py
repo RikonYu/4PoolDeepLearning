@@ -31,7 +31,7 @@ addr=0
 def Qlearner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock, tempd, batch_size
     global exploration_weight
-    replace_every = 500
+    replace_every = 50
     train_every = 128
     wl = lock.genWlock()
     while (True):
@@ -58,8 +58,8 @@ def Qlearner():
         buf.update(indx,list(Y_[i]-Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(batch_size)))
         buflock.release()
         tempd.train(X, diff)
-        if (learn_epoch % replace_every == 0):
-            tempd.save()
+        tempd.save()
+        if(learn_epoch % replace_every==0):
             target.set_weights(tempd.get_weights())
         wl.acquire()
         # print('acquired')
@@ -67,12 +67,12 @@ def Qlearner():
         wl.release()
         # print('released')
         buflock.acquire()
-        buf.count = 0
+        buf.count -= train_every
         buflock.release()
         learn_epoch += 1
 
 
-def unit_RL(con):
+def unit_RL(con, is_first):
     global disGame, buf, dragoons, epsilon, targetType, target, tempd, lock
     last_state = None
     last_action = None
@@ -82,7 +82,9 @@ def unit_RL(con):
     unvisited = 0
     mask = numpy.zeros(1)
     rl = lock.genRlock()
-    feval = open('rewards.txt', 'w')
+    if(is_first):
+        feval = open('rewards.txt', 'w')
+        fq = open('Qvals.txt','w')
     while (True):
         try:
             data = util64.recv_msg(con)
@@ -158,23 +160,27 @@ def unit_RL(con):
                     # print('trying to acquire read %d'%threading.get_ident())
                     rl.acquire()
                     # print('read acquired %d'%threading.get_ident())
-                    ans = dragoons.predict_ans_masked(X, mask)
+                    ans = dragoons.predict_ans_masked(X, mask, is_first)
                     rl.release()
                     # print('read released %d'%threading.get_ident())
                 #con.sendall(pickle.dumps(ans))
                 #util64.send_msg(con,pickle.dumps([ans,mask]))
+                if(is_first):
+                    ans, qv=ans
+                    fq.write(str(qv)+'\n')
+                    fq.flush()
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action != None):
                     buflock.acquire()
-                    buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value + (last_mine-mine_count)*0.2),0)
+                    buf.add(last_state, last_action, k[1], ((k[1][1][1] - exploration_weight * unvisited - mine_count*0.2) - (last_value - last_mine *0.2)),0)
                     buflock.release()
                 last_state = k[1]
                 last_action = ans
                 last_mine=mine_count
                 last_value = k[1][1][1] - exploration_weight * unvisited
-                feval.write(str(last_value)+'\n')
-                #print(last_value)
-                feval.flush()
+                if(is_first):
+                    feval.write(str(last_value-last_mine*0.2)+'\n')
+                    feval.flush()
         except EOFError:
             print('exception found')
             break
@@ -183,6 +189,7 @@ def unit_RL(con):
 
 if (__name__ == '__main__'):
     global addr
+    first_agent = True
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = 'linux.cs.uwaterloo.ca'
     soc.bind((host, 12346))
@@ -196,6 +203,7 @@ if (__name__ == '__main__'):
     while (True):
         con, addr = soc.accept()
         #print(addr)
-        k = threading.Thread(target=unit_RL, args=[con])
+        k = threading.Thread(target=unit_RL, args=[con,first_agent])
+        first_agent=False
         time.sleep(1)
         k.start()

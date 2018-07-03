@@ -86,7 +86,11 @@ class PlayAI(BaseAI):
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
         if(game.getFrameCount()>=MAX_FRAME):
-
+            ans=0
+            for u in game.getAllUnits():
+                if(u.getType()==pybrood.UnitTypes.Vulture_Spider_Mine):
+                    ans+=1
+            print('mines left:',ans,'defused',self.playerMe.minerals())
             game.leaveGame()
         #print(len(Socks.keys()))
     def finished(self):

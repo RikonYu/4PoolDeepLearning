@@ -37,8 +37,11 @@ class UnitNet:
     def predict_all_masked(self,X,mask):
         Y=self.predict_all(X)
         return numpy.where(mask,Y,-1234)
-    def predict_ans_masked(self,X,mask):
-        ans=numpy.argmax(self.predict_all_masked(X,mask))
+    def predict_ans_masked(self,X,mask, want_val=False):
+        allval=self.predict_all_masked(X,mask)
+        ans=numpy.argmax(allval)
+        if(want_val):
+            return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel)), allval[ans]
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
     def train(self,X,Y):
         with self.session.as_default():
