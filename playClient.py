@@ -81,11 +81,12 @@ class PlayAI(BaseAI):
         for i in unitThreads.keys():
             unitThreads[i].join()
         for i in kys:
-            if (game.getUnit(i).exists() == False):
+            if (game.getUnit(i).exists() == False or game.getFrameCount()>=MAX_FRAME):
                 Socks[i].close()
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
         if(game.getFrameCount()>=MAX_FRAME):
+
             game.leaveGame()
         #print(len(Socks.keys()))
     def finished(self):
