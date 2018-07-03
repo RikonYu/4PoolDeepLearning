@@ -77,6 +77,7 @@ def unit_RL(con):
     last_state = None
     last_action = None
     last_value = 0
+    last_mine = 0
     visited = numpy.zeros([1, 1])
     unvisited = 0
     mask = numpy.zeros(1)
@@ -89,6 +90,7 @@ def unit_RL(con):
             # print(k)
             if (k[0] == 'reg'):
                 if (disGame != None):
+                    con.send(b'ok')
                     break
                 disGame = util64.gameInstance(k[1])
                 targetType = k[2]
@@ -100,11 +102,12 @@ def unit_RL(con):
                 break
             else:
                 ans = 0
+                mine_count=k[1][1][5]
                 X = dragoons.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action != None):
                     buflock.acquire()
                     #buf.add(last_state, last_action, last_state, -1, 1)
-                    buf.add(last_state, last_action, last_state, 0, 1)
+                    buf.add(last_state, last_action, last_state, (last_mine-mine_count)*0.2, 1)
                     buflock.release()
                     break
                 if (visited.shape[0] == 1):
@@ -163,10 +166,11 @@ def unit_RL(con):
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action != None):
                     buflock.acquire()
-                    buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value),0)
+                    buf.add(last_state, last_action, k[1], (k[1][1][1] - exploration_weight * unvisited - last_value + (last_mine-mine_count)*0.2),0)
                     buflock.release()
                 last_state = k[1]
                 last_action = ans
+                last_mine=mine_count
                 last_value = k[1][1][1] - exploration_weight * unvisited
                 feval.write(str(last_value)+'\n')
                 #print(last_value)

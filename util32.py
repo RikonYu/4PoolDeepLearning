@@ -94,19 +94,26 @@ def reg2msg():
 def game2msg(me):
     ans = []
     typeMe = me.getType()
+    enemyCount=0
+    for u in game.getAllUnits():
+        if(u.getType()==pybrood.UnitTypes.Terran_Vulture_Spider_Mine):
+            enemyCount+=1
     ans.append(me.getPosition())
-    ans.append((me.getHitPoints() + me.getShields(), me.getKillCount(), me.isCarryingGas(),
+    ans.append((me.getHitPoints() + me.getShields(),
+                me.getKillCount(),
+                me.isCarryingGas(),
                 (typeMe.groundWeapon() != pybrood.WeaponTypes.None_, me.getGroundWeaponCooldown(),
                  typeMe.groundWeapon().maxRange()),
                 (typeMe.airWeapon() != pybrood.WeaponTypes.None_, me.getAirWeaponCooldown(),
-                 typeMe.airWeapon().maxRange())
+                 typeMe.airWeapon().maxRange()),
+                enemyCount
                 ))
     enemy = []
     ally = []
     resource = []
     extra = []
     for u in game.getAllUnits():
-        if (inReach(u, me)):
+        if (inReach(u, me) and u.getID()!=me.getID()):
             coor = u.getPosition()
             tu = u.getType()
             # print(tu.getName())
@@ -117,7 +124,7 @@ def game2msg(me):
                 extra.append(coor)
             elif (u.getPlayer() == me.getPlayer()):
                 ally.append((coor, u.getHitPoints() + u.getShields(), tu.isFlyer(), tu.isBuilding(),
-                             (u.getTop(), u.getBottom(), u.getLeft(), u.getRight())
+                             (u.getTop(), u.getBottom(), u.getLeft(), u.getRight()),
                              ))
             else:
                 enemy.append((coor, u.getHitPoints() + u.getShields(), tu.isFlyer(), tu.isBuilding(),

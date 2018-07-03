@@ -6,6 +6,7 @@ import struct
 import threading
 import time
 from PIL import Image
+from consts import MAX_FRAME
 # import matplotlib.pyplot as plt
 from pybrood import BaseAI, run, game, Color
 
@@ -71,7 +72,7 @@ class PlayAI(BaseAI):
 
         kys = list(Socks.keys())
         for i in kys:
-            if (game.getUnit(i).exists() == False):
+            if (game.getUnit(i).exists() == False or game.getFrameCount()>=MAX_FRAME):
                 unitThreads[i] = threading.Thread(target=dead_unit, args=[i])
                 unitThreads[i].start()
             else:
@@ -84,8 +85,11 @@ class PlayAI(BaseAI):
                 Socks[i].close()
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
+        if(game.getFrameCount()>=MAX_FRAME):
+            game.leaveGame()
         #print(len(Socks.keys()))
     def finished(self):
+
         pass
 
 def printer(k):
