@@ -32,7 +32,7 @@ def Qlearner():
     global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock, tempd, batch_size
     global exploration_weight
     replace_every = 50
-    train_every = 128
+    train_every = 64
     wl = lock.genWlock()
     while (True):
         if (buf.count < train_every):
@@ -82,6 +82,8 @@ def unit_RL(con, is_first):
     unvisited = 0
     mask = numpy.zeros(1)
     rl = lock.genRlock()
+    feval=0
+    fq=0
     if(is_first):
         feval = open('rewards.txt', 'w')
         fq = open('Qvals.txt','w')
