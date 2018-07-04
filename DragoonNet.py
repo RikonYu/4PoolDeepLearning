@@ -46,7 +46,7 @@ class DragoonNet(UnitNet):
                 self.out=Conv2DTranspose(self._out_channel,(3,3),activation='softmax',padding='same')(self.deconv4)
                 self.model=Model(inputs=self.inp,outputs=self.out)
                 opt=Adam(lr=0.0001)
-                self.model.compile(optimizer=opt,loss='categorical_crossentropy')
+                self.model.compile(optimizer=opt,loss='MSE')
                 self.model._make_predict_function()
                 self.model._make_test_function()
                 self.model._make_train_function()
