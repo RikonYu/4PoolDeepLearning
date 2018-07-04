@@ -9,6 +9,7 @@ from PIL import Image
 from consts import MAX_FRAME
 # import matplotlib.pyplot as plt
 from pybrood import BaseAI, run, game, Color
+import pybrood
 
 Socks = {}
 address = 'linux.cs.uwaterloo.ca'

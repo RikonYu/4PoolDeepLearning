@@ -164,6 +164,7 @@ def unit_RL(con, is_first):
                     # print('read acquired %d'%threading.get_ident())
                     ans = dragoons.predict_ans_masked(X, mask, is_first)
                     rl.release()
+                    print(ans)
                     # print('read released %d'%threading.get_ident())
                 #con.sendall(pickle.dumps(ans))
                 #util64.send_msg(con,pickle.dumps([ans,mask]))
@@ -188,6 +189,7 @@ def unit_RL(con, is_first):
             break
     if(is_first):
         feval.close()
+        fq.close()
 
 
 if (__name__ == '__main__'):
