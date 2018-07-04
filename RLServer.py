@@ -174,11 +174,11 @@ def unit_RL(con, is_first):
                     # print('read released %d'%threading.get_ident())
                 # con.sendall(pickle.dumps(ans))
                 # util64.send_msg(con,pickle.dumps([ans,mask]))
-                if (is_first == 1):
-                    fq.write(str(ans[1]) + '\n')
-                    fq.flush()
-                    os.fsync(fq.fileno())
-                    ans=ans[0]
+                    if (is_first == 1):
+                        fq.write(str(ans[1]) + '\n')
+                        fq.flush()
+                        os.fsync(fq.fileno())
+                        ans=ans[0]
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action is not None):
                     buflock.acquire()
