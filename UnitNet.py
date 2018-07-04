@@ -42,7 +42,7 @@ class UnitNet:
         ans=numpy.argmax(allval)
         if(want_val):
             ans=numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
-            return (ans, allval[tuple(ans)])
+            return (ans, allval[0][tuple(ans)])
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
     def train(self,X,Y):
         with self.session.as_default():
