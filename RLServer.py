@@ -77,6 +77,7 @@ def Qlearner():
 
 
 def unit_RL(con, is_first):
+    print(is_first)
     global disGame, buf, dragoons, epsilon, targetType, target, tempd, lock
     last_state = None
     last_action = None
