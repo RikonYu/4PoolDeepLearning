@@ -167,7 +167,7 @@ def unit_RL(con, is_first):
                     # print('trying to acquire read %d'%threading.get_ident())
                     rl.acquire()
                     # print('read acquired %d'%threading.get_ident())
-                    ans = dragoons.predict_ans_masked(X, mask, is_first)
+                    ans = dragoons.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
                     if (is_first == 1):
                         print('exploiting', ans)
