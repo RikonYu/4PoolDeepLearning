@@ -159,7 +159,7 @@ def unit_RL(con, is_first):
                     # temps.set_weights(dragoons.get_weights())
                     mask = dragoons.msg2mask(disGame, k[1])
                     if(is_first==1):
-                        print('mask:',numpy.sum(mask),mask)
+                        print('mask:',numpy.sum(mask))
                     '''
                     ftest=open('masks.txt','wb')
                     pickle.dump(mask,ftest)
