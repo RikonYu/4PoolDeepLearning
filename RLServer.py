@@ -89,7 +89,7 @@ def unit_RL(con, is_first):
     rl = lock.genRlock()
     feval = 0
     fq = 0
-    if (is_first):
+    if (is_first == 1):
         feval = open('rewards.txt', 'w')
         fq = open('Qvals.txt', 'w')
     while (True):
@@ -152,7 +152,7 @@ def unit_RL(con, is_first):
                     ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
                     # ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
                     ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
-                    if (is_first):
+                    if (is_first == 1):
                         print('exploring', ans)
                     # print(ans)
                 else:
@@ -169,12 +169,12 @@ def unit_RL(con, is_first):
                     # print('read acquired %d'%threading.get_ident())
                     ans = dragoons.predict_ans_masked(X, mask, is_first)
                     rl.release()
-                    if (is_first):
+                    if (is_first == 1):
                         print('exploiting', ans)
                     # print('read released %d'%threading.get_ident())
                 # con.sendall(pickle.dumps(ans))
                 # util64.send_msg(con,pickle.dumps([ans,mask]))
-                if (is_first):
+                if (is_first == 1):
                     ans, qv = ans
                     fq.write(str(qv) + '\n')
                     fq.flush()
@@ -190,20 +190,20 @@ def unit_RL(con, is_first):
                 last_action = ans
                 last_mine = mine_count
                 last_value = k[1][1][1] - exploration_weight * unvisited
-                if (is_first):
+                if (is_first == 1):
                     feval.write(str(last_value - last_mine * 0.2) + '\n')
                     feval.flush()
                     os.fsync(feval.fileno())
         except EOFError:
             print('exception found')
             break
-    if (is_first):
+    if (is_first == 1):
         feval.close()
         fq.close()
 
 
 if (__name__ == '__main__'):
-    first_agent = True
+    first_agent = 0
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = 'linux.cs.uwaterloo.ca'
     soc.bind((host, 12346))
@@ -218,6 +218,6 @@ if (__name__ == '__main__'):
         con, addr = soc.accept()
         # print(addr)
         k = threading.Thread(target=unit_RL, args=[con, first_agent])
-        first_agent = False
+        first_agent += 1
         time.sleep(1)
         k.start()
