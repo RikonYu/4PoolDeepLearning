@@ -175,11 +175,10 @@ def unit_RL(con, is_first):
                 # con.sendall(pickle.dumps(ans))
                 # util64.send_msg(con,pickle.dumps([ans,mask]))
                 if (is_first == 1):
-                    qans, qv = ans
-                    fq.write(str(qv) + '\n')
+                    fq.write(str(ans[1]) + '\n')
                     fq.flush()
                     os.fsync(fq.fileno())
-                    ans=qans
+                    ans=ans[0]
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action is not None):
                     buflock.acquire()
