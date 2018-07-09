@@ -17,7 +17,7 @@ disGame = None
 buflock = threading.Semaphore(1)
 buf = ReplayBuffer.PriortizedReplayBuffer(50000)
 targetType = ''
-dragoons = None
+units = None
 target = None
 tempd = None
 # dragoon_weights=None
@@ -30,7 +30,7 @@ lock = RWLock.RWLockWrite()
 
 
 def Qlearner():
-    global dragoons, buf, disGame, target, discount, learn_epoch, targetType, lock, tempd, batch_size
+    global units, buf, disGame, target, discount, learn_epoch, targetType, lock, tempd, batch_size
     global exploration_weight
     replace_every = 50
     train_every = 64
@@ -44,12 +44,12 @@ def Qlearner():
         samples, indx, bias = buf.sample(batch_size)
         buflock.release()
         print('training')
-        tempd.set_weights(dragoons.get_weights())
-        X = numpy.array([dragoons.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
-        Y = dragoons.predict_all(X)  # Q(s,a)
-        # print(numpy.array([dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
+        tempd.set_weights(units.get_weights())
+        X = numpy.array([units.msg2state(disGame, i) for i, _a, _sp, _r, _it in samples])
+        Y = units.predict_all(X)  # Q(s,a)
+        # print(numpy.array([units.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
         aprime = target.predict_max(
-            [dragoons.msg2state(disGame, i) for _s, _a, i, _r, _it in samples])  # max_aQ'(s',a')
+            [units.msg2state(disGame, i) for _s, _a, i, _r, _it in samples])  # max_aQ'(s',a')
         Y_ = [(samples[i][3] + discount * aprime[i] * (1 - samples[i][4])) for i in
               range(batch_size)]  # r+discount*max_aq'(s',a')
         diff = numpy.copy(Y)
@@ -67,7 +67,7 @@ def Qlearner():
             target.set_weights(tempd.get_weights())
         wl.acquire()
         # print('acquired')
-        dragoons.set_weights(tempd.get_weights())
+        units.set_weights(tempd.get_weights())
         wl.release()
         # print('released')
         buflock.acquire()
@@ -77,7 +77,7 @@ def Qlearner():
 
 
 def unit_RL(con, is_first):
-    global disGame, buf, dragoons, epsilon, targetType, target, tempd, lock
+    global disGame, buf, units, epsilon, targetType, target, tempd, lock
     last_state = None
     last_action = None
     last_value = 0
@@ -101,16 +101,16 @@ def unit_RL(con, is_first):
                     break
                 disGame = util64.gameInstance(k[1])
                 targetType = k[2]
-                dragoons = getUnitClass(targetType, True)
+                units = getUnitClass(targetType, True)
                 target = getUnitClass(targetType, True)
                 tempd = getUnitClass(targetType, True)
-                tempd.set_weights(dragoons.get_weights())
+                tempd.set_weights(units.get_weights())
                 con.send(b'ok')
                 break
             else:
                 ans = 0
                 mine_count = k[1][1][5]
-                X = dragoons.msg2state(disGame, k[1])
+                X = units.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action is not None):
                     buflock.acquire()
                     buf.add(last_state, last_action, last_state, (last_mine - mine_count) * 0.2, 1)
@@ -125,7 +125,7 @@ def unit_RL(con, is_first):
                 if (visited[k[1][0][0], k[1][0][1]] == 1):
                     unvisited -= 1
                 if (numpy.random.random() < epsilon):
-                    places = dragoons.msg2mask(disGame, k[1])
+                    places = units.msg2mask(disGame, k[1])
                     probs = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE])
                     x = k[1][0][0]
                     y = k[1][0][1]
@@ -145,16 +145,14 @@ def unit_RL(con, is_first):
 
                     probsum = numpy.sum(probs[ini, inj])
                     ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
-
                     ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
                     if (is_first == 1):
                         print('exploring', ans)
                     # print(ans)
                 else:
-                    mask = dragoons.msg2mask(disGame, k[1])
-
+                    mask = units.msg2mask(disGame, k[1])
                     rl.acquire()
-                    ans = dragoons.predict_ans_masked(X, mask, is_first == 1)
+                    ans = units.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
                     if (is_first == 1):
                         print('exploiting', ans)
@@ -167,16 +165,15 @@ def unit_RL(con, is_first):
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action is not None):
                     buflock.acquire()
-                    buf.add(last_state, last_action, k[1], (
-                            (k[1][1][1] - exploration_weight * unvisited - mine_count * 0.2) - (
-                            last_value - last_mine * 0.2)), 0)
+                    buf.add(last_state, last_action, k[1],
+                            (k[2] - exploration_weight * unvisited +last_value), 0)
                     buflock.release()
                 last_state = k[1]
                 last_action = ans
                 last_mine = mine_count
-                last_value = k[1][1][1] - exploration_weight * unvisited
+                last_value = k[2]
                 if (is_first == 1):
-                    feval.write(str(last_value - last_mine * 0.2) + '\n')
+                    feval.write(str(last_value-exploration_weight*unvisited) + '\n')
                     feval.flush()
                     os.fsync(feval.fileno())
         except EOFError:

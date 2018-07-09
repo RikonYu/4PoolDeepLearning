@@ -14,9 +14,8 @@ Socks = {}
 address = 'linux.cs.uwaterloo.ca'
 # address='127.0.0.1'
 unitThreads = {}
-targetType = 'Protoss_Dragoon'
 first_time=0
-
+curTask=taskDragoonDefuse
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
@@ -24,7 +23,7 @@ def send_msg(sock, msg):
 
 def send(u, tp, sock):
     msg = util32.game2msg(u)
-    send_msg(sock, pickle.dumps([tp, msg]))
+    send_msg(sock, pickle.dumps([tp, msg, curTask.valueFunc(u)]))
 
 
 def send_reg():
@@ -34,7 +33,7 @@ def send_reg():
     first_time=1
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect((address, 12346))
-    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), targetType]))
+    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0]]))
     k = soc.recv(16)
     soc.close()
 
@@ -45,22 +44,21 @@ def dead_unit(ind):
 
 
 def unit_thread(ind):
-    send(game.getUnit(ind), targetType, Socks[ind])
+    send(game.getUnit(ind), curTask.unitTypes[0], Socks[ind])
     k = pickle.loads(util32.recv_msg(Socks[ind]))
     util32.command(game.getUnit(ind), k)
 
 
 class PlayAI(BaseAI):
-    def prepare(self, task):
+    def prepare(self):
         self.playerMe = game.self()
         send_reg()
-        self.task=task
 
     def frame(self):
         if (game.getFrameCount() % 10 != 0):
             return
         for i in game.getAllUnits():
-            if (self.task.can_control(i,self.playerMe)):
+            if (curTask.can_control(i,self.playerMe)):
                 if (i.getID() in Socks):
                     continue
                 Socks[i.getID()] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -68,7 +66,7 @@ class PlayAI(BaseAI):
 
         kys = list(Socks.keys())
         for i in kys:
-            if (self.task.is_terminal(i)):
+            if (curTask.is_terminal(game.getUnit(i))):
                 unitThreads[i] = threading.Thread(target=dead_unit, args=[i])
                 unitThreads[i].start()
             else:
@@ -77,12 +75,12 @@ class PlayAI(BaseAI):
         for i in unitThreads.keys():
             unitThreads[i].join()
         for i in kys:
-            if (self.task.is_terminal(i)):
+            if (curTask.is_terminal(game.getUnit(i))):
                 Socks[i].close()
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
-        if(game.getFrameCount()>=self.task.maxFrame):
-            ans=self.task.valueFunc()
+        if(game.getFrameCount()>=curTask.maxFrame):
+            ans=curTask.valueFunc()
             print('final Value', ans)
             game.leaveGame()
         #print(len(Socks.keys()))
@@ -99,4 +97,4 @@ def printer(k):
 if (__name__ == '__main__'):
     # soc=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     # soc.connect(('linux.cs.uwaterloo.ca',12346))
-    run(PlayAI, taskDragoonDefuse)
+    run(PlayAI)
