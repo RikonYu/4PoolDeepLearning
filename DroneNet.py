@@ -144,6 +144,10 @@ class OldDroneNet(UnitNet):
 
     @staticmethod
     def y2state(ind):
+        x,y=msg[0]
+        X, Y = disGame.regions.shape
+        ax=max(0,WINDOW_SIZE//2-x)
+        ay=max(0,WINDOW_SIZE//2-y)
         ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DroneNet._out_channel])
         if (ind[2] in [0, 5]):
             ans[WINDOW_SIZE // 2, WINDOW_SIZE // 2, ind[2]] = 1
