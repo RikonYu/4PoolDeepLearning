@@ -27,6 +27,7 @@ discount = 0.9
 learn_epoch = 0
 exploration_weight = 0.0001
 lock = RWLock.RWLockWrite()
+agent_no=0
 
 
 def Qlearner():
@@ -97,6 +98,7 @@ def unit_RL(con, is_first):
 
             if (k[0] == 'reg'):
                 if (disGame is not None):
+                    agent_no=0
                     con.send(b'ok')
                     break
                 disGame = util64.gameInstance(k[1])
@@ -185,7 +187,6 @@ def unit_RL(con, is_first):
 
 
 if (__name__ == '__main__'):
-    first_agent = 0
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = 'linux.cs.uwaterloo.ca'
     soc.bind((host, 12346))
@@ -199,7 +200,7 @@ if (__name__ == '__main__'):
     while (True):
         con, addr = soc.accept()
         # print(addr)
-        k = threading.Thread(target=unit_RL, args=[con, first_agent])
-        first_agent += 1
+        k = threading.Thread(target=unit_RL, args=[con, agent_no])
+        agent_no += 1
         time.sleep(1)
         k.start()

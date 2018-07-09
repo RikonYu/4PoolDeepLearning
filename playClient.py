@@ -15,7 +15,7 @@ address = 'linux.cs.uwaterloo.ca'
 # address='127.0.0.1'
 unitThreads = {}
 first_time=0
-curTask=taskDragoonDefuse
+curTask=taskBaseScout
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
@@ -33,7 +33,7 @@ def send_reg():
     first_time=1
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect((address, 12346))
-    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0]]))
+    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0].getName()]))
     k = soc.recv(16)
     soc.close()
 
@@ -44,7 +44,7 @@ def dead_unit(ind):
 
 
 def unit_thread(ind):
-    send(game.getUnit(ind), curTask.unitTypes[0], Socks[ind])
+    send(game.getUnit(ind), curTask.unitTypes[0].getName(), Socks[ind])
     k = pickle.loads(util32.recv_msg(Socks[ind]))
     util32.command(game.getUnit(ind), k)
 
