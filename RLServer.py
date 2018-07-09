@@ -78,7 +78,7 @@ def Qlearner():
 
 
 def unit_RL(con, is_first):
-    global disGame, buf, units, epsilon, targetType, target, tempd, lock
+    global disGame, buf, units, epsilon, targetType, target, tempd, lock, agent_no
     last_state = None
     last_action = None
     last_value = 0
@@ -115,7 +115,7 @@ def unit_RL(con, is_first):
                 X = units.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action is not None):
                     buflock.acquire()
-                    buf.add(last_state, last_action, last_state, (last_mine - mine_count) * 0.2, 1)
+                    buf.add(last_state, last_action, last_state, (k[2] - exploration_weight * unvisited +last_value), 1)
                     buflock.release()
                     break
                 if (visited.shape[0] == 1):
@@ -147,7 +147,7 @@ def unit_RL(con, is_first):
 
                     probsum = numpy.sum(probs[ini, inj])
                     ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
-                    ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
+                    ans = [ini[ind] , inj[ind] , ink[ind]]
                     if (is_first == 1):
                         print('exploring', ans)
                     # print(ans)
@@ -164,18 +164,19 @@ def unit_RL(con, is_first):
                         fq.flush()
                         os.fsync(fq.fileno())
                         ans=ans[0]
+                ans[0]+=k[1][0][0]-WINDOW_SIZE//2
+                ans[1]+=k[1][0][1]-WINDOW_SIZE//2
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action is not None):
                     buflock.acquire()
                     buf.add(last_state, last_action, k[1],
-                            (k[2] - exploration_weight * unvisited +last_value), 0)
+                            (k[2] - exploration_weight * unvisited - last_value), 0)
                     buflock.release()
                 last_state = k[1]
                 last_action = ans
-                last_mine = mine_count
-                last_value = k[2]
+                last_value = k[2]- exploration_weight*unvisited
                 if (is_first == 1):
-                    feval.write(str(last_value-exploration_weight*unvisited) + '\n')
+                    feval.write(str(last_value) + '\n')
                     feval.flush()
                     os.fsync(feval.fileno())
         except EOFError:
