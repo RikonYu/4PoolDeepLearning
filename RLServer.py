@@ -164,8 +164,6 @@ def unit_RL(con, is_first):
                         fq.flush()
                         os.fsync(fq.fileno())
                         ans=ans[0]
-                ans[0]+=k[1][0][0]-WINDOW_SIZE//2
-                ans[1]+=k[1][0][1]-WINDOW_SIZE//2
                 util64.send_msg(con, pickle.dumps(ans))
                 if (last_action is not None):
                     buflock.acquire()

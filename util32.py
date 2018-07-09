@@ -169,8 +169,8 @@ def command(unit, order):
         print(order, end=' -> ')
     # order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord = unit.getPosition()
-    coord[0] += order[0]
-    coord[1] += order[1]
+    coord[0] += order[0] - WINDOW_SIZE//2
+    coord[1] += order[1] - WINDOW_SIZE//2
     lcmd = unit.getLastCommand()
     # print('cmd',lcmd.getType().getName(),lcmd.getTargetPosition())
     if (lcmd.getTargetPosition() == coord and type2cmd(lcmd.getType()) == order[2]):
