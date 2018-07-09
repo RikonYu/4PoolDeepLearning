@@ -49,6 +49,7 @@ class DroneNet(UnitNet):
                 self.model.save('DroneNet.h5')
     @staticmethod
     def msg2state(disGame, msg):
+        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
         x,y=msg[0]
         X,Y=disGame.regions.shape
         ax=max(0,WINDOW_SIZE//2-x)
@@ -63,6 +64,7 @@ class DroneNet(UnitNet):
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
     @staticmethod
     def msg2mask(disGame, msg):
+        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._out_channel])
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
