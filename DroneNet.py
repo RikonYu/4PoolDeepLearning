@@ -53,7 +53,7 @@ class DroneNet(UnitNet):
         X,Y=disGame.regions.shape
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
-        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DragoonNet._in_channel])
+        ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
