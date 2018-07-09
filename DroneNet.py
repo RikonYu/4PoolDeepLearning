@@ -28,7 +28,7 @@ class DroneNet(UnitNet):
                 self.conv2 = conv_block(self.pool1, 1)
                 self.pool2 = MaxPooling2D((2, 2))(self.conv2)
 
-                self.deconv1 = deconv_block(self.pool3, 2)
+                self.deconv1 = deconv_block(self.pool2, 2)
                 self.up1 = UpSampling2D((2, 2))(self.deconv1)
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv2)
