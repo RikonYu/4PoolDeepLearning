@@ -64,6 +64,10 @@ class DroneNet(UnitNet):
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
     @staticmethod
     def msg2mask(disGame, msg):
+        x,y=msg[0]
+        X, Y = disGame.regions.shape
+        ax=max(0,WINDOW_SIZE//2-x)
+        ay=max(0,WINDOW_SIZE//2-y)
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._out_channel])
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
@@ -144,10 +148,6 @@ class OldDroneNet(UnitNet):
 
     @staticmethod
     def y2state(ind):
-        x,y=msg[0]
-        X, Y = disGame.regions.shape
-        ax=max(0,WINDOW_SIZE//2-x)
-        ay=max(0,WINDOW_SIZE//2-y)
         ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DroneNet._out_channel])
         if (ind[2] in [0, 5]):
             ans[WINDOW_SIZE // 2, WINDOW_SIZE // 2, ind[2]] = 1
