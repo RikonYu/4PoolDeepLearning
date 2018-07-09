@@ -119,7 +119,9 @@ def game2msg(me):
             # print(tu.getName())
             if (u.getType().getName() in ['Resource_Mineral_Field', 'Resource_Vespene_Geyser']):
                 # print('mineral %s'%str(coor))
-                resource.append((u.getType().getName() == 'Resource_Mineral_Field', coor))
+                resource.append((u.getType().getName() == 'Resource_Mineral_Field', coor,
+                                 (u.getTop(), u.getBottom(), u.getLeft(), u.getRight())
+                                 ))
             elif (u.getType().getName() == 'Zerg_Extractor' and u.getPlayer() == me.getPlayer()):
                 extra.append(coor)
             elif (u.getPlayer() == me.getPlayer()):
