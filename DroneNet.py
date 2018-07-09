@@ -59,9 +59,8 @@ class DroneNet(UnitNet):
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
         for i in range(WINDOW_SIZE*32//X):
             for j in range(WINDOW_SIZE * 32 // X):
-                #print(ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8].shape,msg[6].shape)
-                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8]=msg[6]
-        ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,9]=1
+                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,2]=msg[6]
+        ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
     @staticmethod
     def msg2mask(disGame, msg):
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
