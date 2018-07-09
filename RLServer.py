@@ -84,7 +84,6 @@ def unit_RL(con, is_first):
     last_mine = 0
     visited = numpy.zeros([1, 1])
     unvisited = 0
-    mask = numpy.zeros(1)
     rl = lock.genRlock()
     feval = 0
     fq = 0
@@ -95,7 +94,7 @@ def unit_RL(con, is_first):
         try:
             data = util64.recv_msg(con)
             k = pickle.loads(data)
-            # print(k)
+
             if (k[0] == 'reg'):
                 if (disGame is not None):
                     con.send(b'ok')
@@ -143,38 +142,23 @@ def unit_RL(con, is_first):
                                                                                                    y + WINDOW_SIZE // 2,
                                                                                                    visited.shape[1])])
                     ini, inj, ink = numpy.nonzero(places)
-                    # top5=numpy.argpartition(probs[ini,inj],-5)[-5:]
-                    # print('options',numpy.unravel_index(top5,probs.shape),probs[ini,inj][top5],len(ini))
-                    # ind=numpy.random.choice(5,p=probs[ini,inj][top5]/sum(probs[ini,inj][top5]))
-                    # ind = numpy.argmax(probs[ini, inj])
+
                     probsum = numpy.sum(probs[ini, inj])
                     ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
-                    # ans=[ini[ind]-WINDOW_SIZE//2,inj[ind]-WINDOW_SIZE//2,ink[ind]]
+
                     ans = [ini[ind] - WINDOW_SIZE // 2, inj[ind] - WINDOW_SIZE // 2, ink[ind]]
                     if (is_first == 1):
                         print('exploring', ans)
                     # print(ans)
                 else:
-                    # temps = getUnitClass()
-                    # temps.set_weights(dragoons.get_weights())
                     mask = dragoons.msg2mask(disGame, k[1])
-                    if(is_first==1):
-                        print('mask:',numpy.sum(mask))
-                    '''
-                    ftest=open('masks.txt','wb')
-                    pickle.dump(mask,ftest)
-                    ftest.close()
-                    '''
-                    # print('trying to acquire read %d'%threading.get_ident())
+
                     rl.acquire()
-                    # print('read acquired %d'%threading.get_ident())
                     ans = dragoons.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
                     if (is_first == 1):
                         print('exploiting', ans)
-                    # print('read released %d'%threading.get_ident())
-                # con.sendall(pickle.dumps(ans))
-                # util64.send_msg(con,pickle.dumps([ans,mask]))
+
                     if (is_first == 1):
                         fq.write(str(ans[1]) + '\n')
                         fq.flush()
