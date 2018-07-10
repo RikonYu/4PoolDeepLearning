@@ -19,7 +19,7 @@ class DroneNet(UnitNet):
         self._in_channel=DroneNet._in_channel
         self._out_channel=DroneNet._out_channel
         self.session = KTF.get_session()
-        self.graph = tf.get_default_graph()
+        self.graph = tf.get_default_graph(graph=self.graph)
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')

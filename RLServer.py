@@ -89,8 +89,8 @@ def unit_RL(con, is_first):
     feval = 0
     fq = 0
     if (is_first == 1):
-        feval = open('rewards.txt', 'w')
-        fq = open('Qvals.txt', 'w')
+        feval = open('rewards.txt', 'w+')
+        fq = open('Qvals.txt', 'w+')
     while (True):
         try:
             data = util64.recv_msg(con)
@@ -193,7 +193,9 @@ if (__name__ == '__main__'):
     lx = threading.Thread(target=Qlearner, args=[])
     time.sleep(1)
     lx.start()
-
+    try:
+        os.remove('Qvals.txt')
+        os.remove('rewards.txt')
     print('listening')
 
     while (True):
