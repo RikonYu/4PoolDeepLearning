@@ -196,6 +196,8 @@ if (__name__ == '__main__'):
     try:
         os.remove('Qvals.txt')
         os.remove('rewards.txt')
+    except:
+        pass
     print('listening')
 
     while (True):
