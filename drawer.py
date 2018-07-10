@@ -18,11 +18,15 @@ k=pickle.load(fin4)
 plt.plot(range(0,2000,50),k,'g',label='valid')
 plt.legend()
 plt.show()
-'''
-fin=open('masks.txt','rb')
+fin=open'masks(.txt','rb')
 mask=pickle.load(fin)
 fig = plt.figure(figsize=(6, 6))
 for i in range(6):
     fig.add_subplot(2, 3, i + 1)
     plt.imshow(mask[:, :, i] * 255.0, cmap=plt.cm.gray)
+plt.show()
+'''
+fin=open('Qvals.txt','r')
+k=list(map(float,fin.read().splitlines()))
+plt.plot(k)
 plt.show()

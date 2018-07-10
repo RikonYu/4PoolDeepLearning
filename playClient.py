@@ -80,7 +80,7 @@ class PlayAI(BaseAI):
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
         if(game.getFrameCount()>=curTask.maxFrame):
-            ans=curTask.valueFunc()
+            ans=curTask.finalValueFunc()
             print('final Value', ans)
             game.leaveGame()
         #print(len(Socks.keys()))

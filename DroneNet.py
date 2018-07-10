@@ -13,7 +13,7 @@ import os, sys
 
 
 class DroneNet(UnitNet):
-    _in_channel=3
+    _in_channel=4
     _out_channel=2
     def __init__(self,loading=False):
         self._in_channel=DroneNet._in_channel
@@ -62,6 +62,8 @@ class DroneNet(UnitNet):
             for j in range(WINDOW_SIZE * 32 // X):
                 ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,2]=msg[6]
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
+        for u in msg[3]:
+            ans[u[0][0]*WINDOW_SIZE//X,u[0][1]*WINDOW_SIZE//Y,]3=1
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
