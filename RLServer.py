@@ -98,6 +98,7 @@ def unit_RL(con, is_first):
 
             if (k[0] == 'reg'):
                 if (disGame is not None):
+                    print('resetting')
                     agent_no=1
                     con.send(b'ok')
                     break
@@ -110,8 +111,6 @@ def unit_RL(con, is_first):
                 con.send(b'ok')
                 break
             else:
-                ans = 0
-                mine_count = k[1][1][5]
                 X = units.msg2state(disGame, k[1])
                 if (k[0] == 'terminal' and last_action is not None):
                     buflock.acquire()
