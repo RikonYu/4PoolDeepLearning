@@ -82,15 +82,14 @@ def unit_RL(con, is_first):
     last_state = None
     last_action = None
     last_value = 0
-    last_mine = 0
     visited = numpy.zeros([1, 1])
     unvisited = 0
     rl = lock.genRlock()
     feval = 0
     fq = 0
     if (is_first == 1):
-        feval = open('rewards.txt', 'w+')
-        fq = open('Qvals.txt', 'w+')
+        feval = open('rewards.txt', 'a')
+        fq = open('Qvals.txt', 'a')
     while (True):
         try:
             data = util64.recv_msg(con)
