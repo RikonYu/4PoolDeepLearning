@@ -204,6 +204,7 @@ if (__name__ == '__main__'):
         con, addr = soc.accept()
         # print(addr)
         k = threading.Thread(target=unit_RL, args=[con, agent_no])
+        print(agent_no)
         agent_no += 1
         time.sleep(1)
         k.start()
