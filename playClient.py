@@ -27,10 +27,6 @@ def send(u, tp, sock):
 
 
 def send_reg():
-    global first_time
-    if(first_time):
-        return
-    first_time=1
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect((address, 12346))
     send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0].getName()]))

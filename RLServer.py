@@ -90,7 +90,7 @@ def unit_RL(con, is_first):
     if (is_first == 1):
         feval = open('rewards.txt', 'a')
         fq = open('Qvals.txt', 'a')
-        print('appending')
+        #print('appending')
     while (True):
         try:
             data = util64.recv_msg(con)
@@ -98,7 +98,7 @@ def unit_RL(con, is_first):
 
             if (k[0] == 'reg'):
                 if (disGame is not None):
-                    print('resetting')
+                    #print('resetting')
                     agent_no=1
                     con.send(b'ok')
                     break
@@ -203,7 +203,7 @@ if (__name__ == '__main__'):
         con, addr = soc.accept()
         # print(addr)
         k = threading.Thread(target=unit_RL, args=[con, agent_no])
-        print(agent_no)
+        #print(agent_no)
         agent_no += 1
         time.sleep(1)
         k.start()
