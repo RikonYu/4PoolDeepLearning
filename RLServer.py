@@ -143,10 +143,10 @@ def unit_RL(con, is_first):
                                                                                                    y - WINDOW_SIZE // 2):min(
                                                                                                    y + WINDOW_SIZE // 2,
                                                                                                    visited.shape[1])])
+                                                                                                   
+                    probsum = numpy.sum(probs[ini, inj])
                     '''
                     ini, inj, ink = numpy.nonzero(places)
-
-                    probsum = numpy.sum(probs[ini, inj])
                     #ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
                     ind=numpy.random.choice(len(ini))
                     ans = [ini[ind] , inj[ind] , ink[ind]]
