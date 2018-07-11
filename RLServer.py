@@ -90,6 +90,7 @@ def unit_RL(con, is_first):
     if (is_first == 1):
         feval = open('rewards.txt', 'a')
         fq = open('Qvals.txt', 'a')
+        print('appending')
     while (True):
         try:
             data = util64.recv_msg(con)
@@ -97,7 +98,7 @@ def unit_RL(con, is_first):
 
             if (k[0] == 'reg'):
                 if (disGame is not None):
-                    agent_no=0
+                    agent_no=1
                     con.send(b'ok')
                     break
                 disGame = util64.gameInstance(k[1])
