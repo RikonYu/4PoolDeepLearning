@@ -164,14 +164,15 @@ def get_all_drones():
     return ans
 
 def command(unit, order):
-    showCommands=0
-    if(showCommands):
-        print(order, end=' -> ')
+    showCommands=1
     # order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord = unit.getPosition()
     coord[0] += order[0] - WINDOW_SIZE//2
     coord[1] += order[1] - WINDOW_SIZE//2
     lcmd = unit.getLastCommand()
+
+    if(showCommands):
+        print('to ', order[0]+coord[0], order[1]+coord[1])
     # print('cmd',lcmd.getType().getName(),lcmd.getTargetPosition())
     if (lcmd.getTargetPosition() == coord and type2cmd(lcmd.getType()) == order[2]):
         return

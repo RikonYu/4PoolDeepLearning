@@ -34,15 +34,30 @@ def dragoonDefusalFinalValue():
 def findEnemyBaseFinalValue():
     for u in game.getAllUnits():
         if(u.getType().getName() in ['Protoss_Nexus']):
-                return 1
+                return 0
     return 0
-
+    loc=game.getStartLocations()
+    myLoc=unit.getPlayer().getStartLocation()
+    ans=numpy.inf
+    for i in loc:
+        for u in game.getAllUnits():
+            if(u.getType().getName()=='Zerg_Drone'):
+                if(i!=myLoc and numpy.linalg.norm(numpy.array(myLoc)-i)<ans):
+                    ans=numpy.linalg.norm(numpy.array(myLoc)-i)
+    return ans
 def findEnemyBaseValue(unit):
+
     for u in game.getAllUnits():
-        if(u.getType().getName() in ['Protoss_Nexus', 'Terran_Command_Center', 'Zerg_Hatchery', 'Zerg_Hive', 'Zerg_Lair¶']):
+        if(u.getType().getName() in ['Protoss_Nexus']):
             if(u.getPlayer()!=unit.getPlayer()):
-                return 1
-    return 0
+                return 0
+    loc=game.getStartLocations()
+    myLoc=unit.getPlayer().getStartLocation()
+    ans=numpy.inf
+    for i in loc:
+        if(i!=myLoc and numpy.linalg.norm(numpy.array(myLoc)-i)<ans):
+            ans=numpy.linalg.norm(numpy.array(myLoc)-i)
+    return ans
 
 
 taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue)

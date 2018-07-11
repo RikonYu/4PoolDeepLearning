@@ -127,6 +127,7 @@ def unit_RL(con, is_first):
                     unvisited -= 1
                 if (numpy.random.random() < epsilon):
                     places = units.msg2mask(disGame, k[1])
+                    '''
                     probs = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE])
                     x = k[1][0][0]
                     y = k[1][0][1]
@@ -142,13 +143,15 @@ def unit_RL(con, is_first):
                                                                                                    y - WINDOW_SIZE // 2):min(
                                                                                                    y + WINDOW_SIZE // 2,
                                                                                                    visited.shape[1])])
+                    '''
                     ini, inj, ink = numpy.nonzero(places)
 
                     probsum = numpy.sum(probs[ini, inj])
-                    ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
+                    #ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
+                    ind=numpy.random.choice(len(ini))
                     ans = [ini[ind] , inj[ind] , ink[ind]]
                     if (is_first == 1):
-                        print('exploring', ans)
+                        print('exploring', ans, places[tuple(ans)])
                     # print(ans)
                 else:
                     mask = units.msg2mask(disGame, k[1])
@@ -156,7 +159,7 @@ def unit_RL(con, is_first):
                     ans = units.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
                     if (is_first == 1):
-                        print('exploiting', ans)
+                        print('exploiting', ans, mask[tuple(ans)])
 
                     if (is_first == 1):
                         fq.write(str(ans[1]) + '\n')
