@@ -63,7 +63,8 @@ class DroneNet(UnitNet):
         for u in msg[3]:
             ans[u[0][0]*WINDOW_SIZE//X,u[0][1]*WINDOW_SIZE//Y,3]=1
         for u in msg[4]:
-            if(u[0]==0):
+            print(u)
+            if(u[0]==False):
                 print(shrinkScr(u[1][0]-x+WINDOW_SIZE//2),shrinkScr(u[1][1]-y+WINDOW_SIZE//2))
                 ans[shrinkScr(u[1][0]-x+WINDOW_SIZE//2),shrinkScr(u[1][1]-y+WINDOW_SIZE//2),4]=1
         return ans
