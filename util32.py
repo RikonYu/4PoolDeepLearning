@@ -14,7 +14,10 @@ from consts import WINDOW_SIZE
 terrain = numpy.zeros([1, 1])
 hground = numpy.zeros([1, 1])
 
-
+def collide(pos,unit):
+    if(unit.getLeft() < pos[1] and pos[1]< unit.getRight() and unit.getTop() < pos[0] and pos[0]<unit.getBottom()):
+        return True
+    return False
 def init():
     global terrain, hground
     terrain = numpy.zeros([game.mapHeight() * 32, game.mapWidth() * 32])
@@ -164,7 +167,7 @@ def get_all_drones():
     return ans
 
 def command(unit, order):
-    showCommands=1
+    showCommands=0
     # order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord = unit.getPosition()
     coord[0] += order[0] - WINDOW_SIZE//2
@@ -172,7 +175,9 @@ def command(unit, order):
     lcmd = unit.getLastCommand()
 
     if(showCommands):
-        print('to ', order[0]+coord[0], order[1]+coord[1])
+        for uu in game.getAllUnits():
+            if (order[2]==1 and uu.getID()!=unit.getID() and collide(order, unit)):
+                print('conflict')
     # print('cmd',lcmd.getType().getName(),lcmd.getTargetPosition())
     if (lcmd.getTargetPosition() == coord and type2cmd(lcmd.getType()) == order[2]):
         return
