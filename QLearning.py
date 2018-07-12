@@ -92,18 +92,17 @@ class QLearning:
                 if (k[0] == 'reg'):
                     if(self.disGame is None):
                         self.disGame=util64.gameInstance(k[1])
+                        self.targetType = k[2]
+                        self.units = getUnitClass(self.targetType, True)
+                        self.target = getUnitClass(self.targetType, True)
+                        self.tempd = getUnitClass(self.targetType, True)
+                        self.tempd.set_weights(self.units.get_weights())
                     elif(self.mapName!=k[3]):
                         self.disGame(k[1])
-                        self.units.save()
                     else:
                         con.send(b'ok')
                         break
                     self.agent_no = 1
-                    self.targetType = k[2]
-                    self.units = getUnitClass(self.targetType, True)
-                    self.target = getUnitClass(self.targetType, True)
-                    self.tempd = getUnitClass(self.targetType, True)
-                    self.tempd.set_weights(self.units.get_weights())
                     con.send(b'ok')
                     break
                 else:
