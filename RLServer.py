@@ -16,7 +16,7 @@ if (__name__ == '__main__'):
     host = 'linux.cs.uwaterloo.ca'
     soc.bind((host, 12346))
     soc.listen(5)
-    lx = threading.Thread(target=QL.Qlearner, args=[])
+    lx = threading.Thread(target=QL.learner, args=[])
     time.sleep(1)
     lx.start()
     try:
@@ -29,7 +29,7 @@ if (__name__ == '__main__'):
     while (True):
         con, addr = soc.accept()
         # print(addr)
-        k = threading.Thread(target=QL.unit_RLQ, args=[con, QL.agent_no])
+        k = threading.Thread(target=QL.controller, args=[con, QL.agent_no])
         #print(agent_no)
         QL.agent_no += 1
         time.sleep(1)

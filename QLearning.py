@@ -71,7 +71,7 @@ class QLearning:
             self.learn_epoch += 1
 
 
-    def unit_RLQ(self, con, is_first):
+    def controller(self, con, is_first):
         last_state = None
         last_action = None
         last_value = 0

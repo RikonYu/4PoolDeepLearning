@@ -1,6 +1,10 @@
 import numpy
 from pybrood import game
 import pybrood
+
+def dist(p1,p2):
+    return numpy.linalg.norm(numpy.array(p1)-p2)
+
 class gameTask:
     def __init__(self, name, valueFunc, units, maxFrame, finalValue):
         self.name = name
@@ -55,7 +59,21 @@ def findEnemyBaseValue(unit):
             ans=numpy.linalg.norm(numpy.array(myLoc)-i)
     return -ans
 
+def findGasValue(unit):
+    gasPos=[11111,11111]
+    for u in game.getAllUnits():
+        if(u.getType()==pybrood.UnitTypes.Resource_Vespene_Geyser):
+            if(dist(u.getPosition,unit.getPlayer.getStartLocation())<dist(gasPos,unit.getPlayer.getStartLocation())):
+                gasPos=u.getPosition()
+    return -dist(unit,gasPos)
+
+def findGasFinalValue(player):
+    ans=0
+    for u in player.getAllUnits():
+        if(u.getType()==pybrood.UnitTypes.Zerg_Drone):
+            ans+=findGasValue(u)
+    return ans
 
 taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue)
 taskBaseScout=gameTask( 'findEnemyBase', findEnemyBaseValue, [pybrood.UnitTypes.Zerg_Drone], 2500,findEnemyBaseFinalValue)
-
+taskDebug=gameTask('findGas',findGasValue,[pybrood.UnitTypes.Zerg_Drone],150,findGasFinalValue)
