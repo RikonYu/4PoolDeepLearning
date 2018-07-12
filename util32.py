@@ -1,14 +1,9 @@
 import numpy
 import os
-from pybrood import BaseAI, run, game
+from pybrood import game
 import pybrood
-import win32api
-import win32con
-import time
 import subprocess
 import struct
-import shutil
-import random
 from consts import WINDOW_SIZE
 
 terrain = numpy.zeros([1, 1])
@@ -171,8 +166,12 @@ def command(unit, order):
     showCommands=0
     # order=[random.randint(-239,239),random.randint(-239,239),random.randint(0,5)]
     coord = unit.getPosition()
+
     coord[0] += order[0] - WINDOW_SIZE//2
     coord[1] += order[1] - WINDOW_SIZE//2
+    game.drawLineMap(unit.getPosition(), coord, pybrood.Colors.Red)
+    #game.drawLineMouse(unit.getPosition(), coord, pybrood.Colors.Red)
+    #game.drawLineScreen(unit.getPosition(), coord, pybrood.Colors.Red)
     lcmd = unit.getLastCommand()
 
     if(showCommands):

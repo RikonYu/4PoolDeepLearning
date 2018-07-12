@@ -18,6 +18,7 @@ class QLearning:
         self.target=None
         self.batch_size=batch_size
         self.disGame = None
+        self.mapName=''
         self.learn_epoch=0
         self.buflock=threading.Semaphore(1)
         self.buf = ReplayBuffer.PriortizedReplayBuffer(50000)
@@ -88,9 +89,8 @@ class QLearning:
             try:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
-
                 if (k[0] == 'reg'):
-                    if (self.disGame is not None):
+                    if (self.disGame is not None and self.mapName==k[3]):
                         # print('resetting')
                         self.agent_no = 1
                         con.send(b'ok')

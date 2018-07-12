@@ -29,7 +29,7 @@ def send(u, tp, sock):
 def send_reg():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect((address, 12346))
-    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0].getName()]))
+    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0].getName(), game.mapName()]))
     k = soc.recv(16)
     soc.close()
 
@@ -52,6 +52,9 @@ class PlayAI(BaseAI):
 
     def frame(self):
         if (game.getFrameCount() % 10 != 0):
+            for i in game.getAllUnits():
+                if(i.getLastCommand().getType().getName()=='Move'):
+                    game.drawLineMap(i.getPosition(),i.getLastCommand().getTargetPosition(),pybrood.Colors.Red)
             return
         for i in game.getAllUnits():
             if (curTask.can_control(i,self.playerMe)):
