@@ -92,7 +92,7 @@ class QLearning:
                 if (k[0] == 'reg'):
                     if (self.disGame is not None):
                         # print('resetting')
-                        agent_no = 1
+                        self.agent_no = 1
                         con.send(b'ok')
                         break
                     self.disGame = util64.gameInstance(k[1])
