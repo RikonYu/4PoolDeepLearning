@@ -26,19 +26,19 @@ for i in range(6):
     plt.imshow(mask[:, :, i] * 255.0, cmap=plt.cm.gray)
 plt.show()
 '''
-fin=open('rewards0.txt','r')
-k=list(map(float,fin.read().splitlines()))
-plt.plot(k,'r',label='beforeR')
 fin=open('rewards.txt','r')
 k=list(map(float,fin.read().splitlines()))
-plt.plot(k,'b',label='afterR')
+kk=[]
+for i in range(len(k)//250):
+    ans=0
+    for j in range(250):
+        ans+=numpy.power(0.9,j)*k[i*250+j]
+    kk.append(ans)
+plt.plot(kk,'r',label='R')
 plt.legend()
 plt.show()
 fin=open('Qvals.txt','r')
 k=list(map(float,fin.read().splitlines()))
-plt.plot(k,'r',label='beforeQ')
-fin=open('Qvals.txt','r')
-k=list(map(float,fin.read().splitlines()))
-plt.plot(k,'b',label='afterQ')
+plt.plot(k,'r',label='Q')
 plt.legend()
 plt.show()

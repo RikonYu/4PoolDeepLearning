@@ -25,24 +25,20 @@ def dragoonDefusalValue(unit):
         if(u.getType()==pybrood.UnitTypes.Terran_Vulture_Spider_Mine):
             ans+=1
     return unit.getKillCount()-ans*0.2
-def dragoonDefusalFinalValue():
-    for u in game.getAllUnits():
-        if(u.getType()==pybrood.UnitTypes.Terran_Vulture_Spider_Mine):
-            ans+=1
-    return ans
+def dragoonDefusalFinalValue(player):
+    return player.minerals()
 
-def findEnemyBaseFinalValue():
+def findEnemyBaseFinalValue(player):
     for u in game.getAllUnits():
         if(u.getType().getName() in ['Protoss_Nexus']):
                 return 0
-    return 0
     loc=game.getStartLocations()
-    myLoc=unit.getPlayer().getStartLocation()
+    myLoc=player.getStartLocation()
     ans=numpy.inf
     for i in loc:
         for u in game.getAllUnits():
             if(u.getType().getName()=='Zerg_Drone'):
-                if(i!=myLoc and numpy.linalg.norm(numpy.array(myLoc)-i)<ans):
+                if(i!=myLoc and numpy.linalg.norm(numpy.array(u.getPosition())-i)<ans):
                     ans=numpy.linalg.norm(numpy.array(myLoc)-i)
     return -ans
 def findEnemyBaseValue(unit):
@@ -50,7 +46,7 @@ def findEnemyBaseValue(unit):
     for u in game.getAllUnits():
         if(u.getType().getName() in ['Protoss_Nexus']):
             if(u.getPlayer()!=unit.getPlayer()):
-                return 0
+                return 'found'
     loc=game.getStartLocations()
     myLoc=unit.getPlayer().getStartLocation()
     ans=numpy.inf
