@@ -63,13 +63,13 @@ def findGasValue(unit):
     gasPos=[11111,11111]
     for u in game.getAllUnits():
         if(u.getType()==pybrood.UnitTypes.Resource_Vespene_Geyser):
-            if(dist(u.getPosition,unit.getPlayer.getStartLocation())<dist(gasPos,unit.getPlayer.getStartLocation())):
+            if(dist(u.getPosition(),unit.getPlayer().getStartLocation())<dist(gasPos,unit.getPlayer().getStartLocation())):
                 gasPos=u.getPosition()
-    return -dist(unit,gasPos)
+    return -dist(unit.getPosition(),gasPos)
 
 def findGasFinalValue(player):
     ans=0
-    for u in player.getAllUnits():
+    for u in player.getUnits():
         if(u.getType()==pybrood.UnitTypes.Zerg_Drone):
             ans+=findGasValue(u)
     return ans

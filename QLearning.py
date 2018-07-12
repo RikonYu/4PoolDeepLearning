@@ -95,11 +95,11 @@ class QLearning:
                         agent_no = 1
                         con.send(b'ok')
                         break
-                    disGame = util64.gameInstance(k[1])
-                    targetType = k[2]
-                    self.units = getUnitClass(targetType, True)
-                    self.target = getUnitClass(targetType, True)
-                    self.tempd = getUnitClass(targetType, True)
+                    self.disGame = util64.gameInstance(k[1])
+                    self.targetType = k[2]
+                    self.units = getUnitClass(self.targetType, True)
+                    self.target = getUnitClass(self.targetType, True)
+                    self.tempd = getUnitClass(self.targetType, True)
                     self.tempd.set_weights(self.units.get_weights())
                     con.send(b'ok')
                     break
