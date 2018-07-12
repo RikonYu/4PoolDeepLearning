@@ -159,7 +159,7 @@ def unit_RL(con, is_first):
                     ans = units.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
                     if (is_first == 1):
-                        print('exploiting', ans[1], mask[tuple(ans[1])])
+                        print('exploiting', ans[0], mask[tuple(ans[0])])
 
                     if (is_first == 1):
                         fq.write(str(ans[1]) + '\n')
