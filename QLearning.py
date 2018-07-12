@@ -43,7 +43,6 @@ class QLearning:
             self.tempd.set_weights(self.units.get_weights())
             X = numpy.array([self.units.msg2state(self.disGame, i) for i, _a, _sp, _r, _it in samples])
             Y = self.units.predict_all(X)  # Q(s,a)
-            # print(numpy.array([units.msg2state(disGame, i) for _s, _a, i, _r, _it in samples]).shape)
             aprime = self.target.predict_max(
                 [self.units.msg2state(self.disGame, i) for _s, _a, i, _r, _it in samples])  # max_aQ'(s',a')
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
@@ -62,10 +61,8 @@ class QLearning:
             if (self.learn_epoch % replace_every == 0):
                 self.target.set_weights(self.tempd.get_weights())
             wl.acquire()
-            # print('acquired')
             self.units.set_weights(self.tempd.get_weights())
             wl.release()
-            # print('released')
             self.buflock.acquire()
             self.buf.count -= train_every
             self.buflock.release()
@@ -84,7 +81,6 @@ class QLearning:
         if (is_first == 1):
             feval = open('rewards.txt', 'a')
             fq = open('Qvals.txt', 'a')
-            # print('appending')
         while (True):
             try:
                 data = util64.recv_msg(con)
@@ -108,7 +104,6 @@ class QLearning:
                     con.send(b'ok')
                     break
                 else:
-                    print(self.disGame.regions.shape)
                     X = self.units.msg2state(self.disGame, k[1])
                     if (k[0] == 'terminal' and last_action is not None):
                         self.buflock.acquire()
