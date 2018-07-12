@@ -90,12 +90,15 @@ class QLearning:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
                 if (k[0] == 'reg'):
-                    if (self.disGame is not None and self.mapName==k[3]):
-                        # print('resetting')
-                        self.agent_no = 1
+                    if(self.disGame is None):
+                        self.disGame=util64.gameInstance(k[1])
+                    elif(self.mapName!=k[3]):
+                        self.disGame(k[1])
+                        self.units.save()
+                    else:
                         con.send(b'ok')
                         break
-                    self.disGame = util64.gameInstance(k[1])
+                    self.agent_no = 1
                     self.targetType = k[2]
                     self.units = getUnitClass(self.targetType, True)
                     self.target = getUnitClass(self.targetType, True)
