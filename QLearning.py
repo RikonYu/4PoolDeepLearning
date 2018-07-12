@@ -99,9 +99,11 @@ class QLearning:
                         self.tempd.set_weights(self.units.get_weights())
                     elif(self.mapName!=k[3]):
                         self.disGame(k[1])
+                        print('new map')
                     else:
                         con.send(b'ok')
                         break
+                    self.mapName=k[3]
                     self.agent_no = 1
                     con.send(b'ok')
                     break

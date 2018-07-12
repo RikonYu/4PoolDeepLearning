@@ -73,6 +73,7 @@ class gameInstance:
         for i in range(reg.shape[0]):
             for j in range(reg.shape[1]):
                 self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
+
     def __call__(self,reg):
         self.regions = numpy.zeros([reg.shape[0] * 8, reg.shape[1] * 8])
         for i in range(reg.shape[0]):
