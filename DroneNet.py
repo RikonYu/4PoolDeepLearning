@@ -63,6 +63,7 @@ class DroneNet(UnitNet):
         for i in range(WINDOW_SIZE//miniX):
             for j in range(WINDOW_SIZE //miniY):
                 ans[i:i+(WINDOW_SIZE//miniX)*miniX:WINDOW_SIZE//miniX,j:j+(WINDOW_SIZE//miniY)*miniY:WINDOW_SIZE//miniY,2]=msg[6]
+        print(x,X,y,Y)
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
         for u in msg[3]:
             ans[u[0][0]*WINDOW_SIZE//X,u[0][1]*WINDOW_SIZE//Y,3]=1
@@ -75,7 +76,7 @@ class DroneNet(UnitNet):
     @staticmethod
     def msg2mask(disGame, msg):
         x,y=msg[0]
-        Y, X = disGame.regions.shape
+        X, Y = disGame.regions.shape
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._out_channel])

@@ -106,7 +106,7 @@ class QLearning:
                     if (k[0] == 'terminal' and last_action is not None):
                         self.buflock.acquire()
                         self.buf.add(last_state, last_action, last_state, (k[2] - self.exploration_weight * unvisited + last_value),
-                                1)
+                                1, self.mapName)
                         self.buflock.release()
                         break
                     if (visited.shape[0] == 1):
@@ -162,7 +162,7 @@ class QLearning:
                     if (last_action is not None):
                         self.buflock.acquire()
                         self.buf.add(last_state, last_action, k[1],
-                                (k[2] - self.exploration_weight * unvisited - last_value), 0)
+                                (k[2] - self.exploration_weight * unvisited - last_value), 0, self.mapName)
                         self.buflock.release()
                     last_state = k[1]
                     last_action = ans
