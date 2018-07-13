@@ -58,8 +58,8 @@ class DroneNet(UnitNet):
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
 
-        miniY=len(msg[6])
-        miniX=len(msg[6][0])
+        miniX=len(msg[6])
+        miniY=len(msg[6][0])
         for i in range(WINDOW_SIZE//miniX):
             for j in range(WINDOW_SIZE //miniY):
                 ans[i:i+(WINDOW_SIZE//miniX)*miniX:WINDOW_SIZE//miniX,j:j+(WINDOW_SIZE//miniY)*miniY:WINDOW_SIZE//miniY,2]=msg[6]
