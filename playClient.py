@@ -52,13 +52,14 @@ class PlayAI(BaseAI):
         send_reg()
 
     def frame(self):
-        if (game.getFrameCount() % 10 != 0):
+        if (game.getFrameCount() % 10 != 1):
             for i in game.getAllUnits():
                 if(i.getLastCommand().getType().getName()=='Move'):
                     game.drawLineMap(i.getPosition(),i.getLastCommand().getTargetPosition(),pybrood.Colors.Red)
             return
         for i in game.getAllUnits():
             if (curTask.can_control(i,self.playerMe)):
+                print(i.getPosition())
                 if (i.getID() in Socks):
                     continue
                 Socks[i.getID()] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
