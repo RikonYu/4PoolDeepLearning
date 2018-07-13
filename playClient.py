@@ -48,7 +48,7 @@ def unit_thread(ind):
 class PlayAI(BaseAI):
     def prepare(self):
         self.playerMe = game.self()
-        print(game.mapName())
+        print(game.mapName(),game.mapHeight()*32,game.mapWidth()*32)
         send_reg()
 
     def frame(self):
