@@ -39,7 +39,6 @@ class SegTree:
         return self.a[1]
 
     def set(self,ind,val,pos):
-        #print('set',self.left[pos],self.right[pos],(self.left[pos]+self.right[pos])//2,ind)
         self.a[pos]=max(self.a[pos],val)
         if(self.left[pos]==ind and self.right[pos]==ind):
             self.a[pos]=val

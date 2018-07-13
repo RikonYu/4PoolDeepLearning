@@ -99,6 +99,7 @@ class QLearning:
                     self.mapName=k[3]
                     self.agent_no = 1
                     con.send(b'ok')
+                    self.epsilon*=0.95
                     break
                 else:
                     #print(self.mapName)
