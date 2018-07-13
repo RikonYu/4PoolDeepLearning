@@ -85,6 +85,7 @@ class Maps:
         self.maps.append(map)
     def find_map(self,name):
         for i in self.maps:
+            print('finding',i.name,name)
             if(i.name==name):
                 return i
         return None
