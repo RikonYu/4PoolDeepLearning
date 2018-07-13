@@ -60,12 +60,13 @@ def findEnemyBaseValue(unit):
     return -ans
 
 def findGasValue(unit):
-    gasPos=[11111,11111]
+    #gasPos=[11111,11111]
+    ans=numpy.inf
     for u in game.getAllUnits():
         if(u.getType()==pybrood.UnitTypes.Resource_Vespene_Geyser):
-            if(dist(u.getPosition(),unit.getPlayer().getStartLocation())<dist(gasPos,unit.getPlayer().getStartLocation())):
-                gasPos=u.getPosition()
-    return -dist(unit.getPosition(),gasPos)
+            if(dist(u.getPosition(),unit.getPosition())<ans):
+                ans=dist(u.getPosition(),unit.getPosition())
+    return -ans
 
 def findGasFinalValue(player):
     ans=0

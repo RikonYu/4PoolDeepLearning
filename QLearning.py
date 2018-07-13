@@ -69,6 +69,39 @@ class QLearning:
             self.learn_epoch += 1
 
 
+    def exploiter(self, con, is_first):
+        rl=self.lock.genRlock()
+        while (True):
+            try:
+                data = util64.recv_msg(con)
+                k = pickle.loads(data)
+                if (k[0] == 'reg'):
+                    if (self.mapSet.is_empty()):
+                        self.mapSet.add_map(util64.gameMap(k[1], k[3]))
+                        self.targetType = k[2]
+                        self.units = getUnitClass(self.targetType, True)
+                        self.target = getUnitClass(self.targetType, True)
+                        self.tempd = getUnitClass(self.targetType, True)
+                        self.tempd.set_weights(self.units.get_weights())
+                    elif (self.mapSet.find_map(k[3]) is None):
+                        self.mapSet.add_map(util64.gameMap(k[1], k[3]))
+                        print('new map: ', k[3])
+                    self.mapName = k[3]
+                    self.agent_no = 1
+                    con.send(b'ok')
+                    self.epsilon *= 0.95
+                    break
+                else:
+                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), k[1])
+                    mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), k[1])
+                    rl.acquire()
+                    ans = self.units.predict_ans_masked(X, mask, is_first == 1)
+                    rl.release()
+                    if (is_first == 1):
+                        print('exploiting', ans[0], mask[tuple(ans[0])])
+                    util64.send_msg(con, pickle.dumps(ans))
+            except EOFError:
+                break
     def controller(self, con, is_first):
         last_state = None
         last_action = None

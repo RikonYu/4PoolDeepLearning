@@ -29,10 +29,10 @@ plt.show()
 fin=open('rewards.txt','r')
 k=list(map(float,fin.read().splitlines()))
 kk=[]
-for i in range(len(k)//250):
+for i in range(len(k)//15):
     ans=0
-    for j in range(250):
-        ans+=numpy.power(0.9,j)*k[i*250+j]
+    for j in range(15):
+        ans+=k[i*15+j]
     kk.append(ans)
 plt.plot(kk,'r',label='R')
 plt.legend()
