@@ -13,7 +13,7 @@ class gameTask:
         self.finalValueFunc=finalValue
         self.maxFrame = maxFrame
     def can_control(self, unit, playerMe):
-        if(unit.getType() in self.unitTypes and unit.getPlayer()==playerMe and unit.getPosition()[0]<=game.mapHeight() and unit.getPosition()[1]<=game.mapWidth()):
+        if(unit.getType() in self.unitTypes and unit.getPlayer()==playerMe and unit.getPosition()[0]<=game.mapHeight()*32 and unit.getPosition()[1]<=game.mapWidth()*32):
             return True
         return False
     def is_terminal(self, unit):
