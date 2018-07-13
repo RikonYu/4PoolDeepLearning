@@ -51,7 +51,7 @@ class DroneNet(UnitNet):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
         y, x = msg[0]
         X, Y = disGame.regions.shape
-        print(disGame.name, disGame.regions.shape,x,y)
+        #print(disGame.name, disGame.regions.shape,x,y)
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
