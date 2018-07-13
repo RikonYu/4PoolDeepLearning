@@ -74,7 +74,6 @@ class gameMap:
             for j in range(reg.shape[1]):
                 self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
         self.regions=numpy.transpose(self.regions)
-        print(numpy.sum(self.regions))
 
 class Maps:
     def __init__(self):
@@ -87,7 +86,7 @@ class Maps:
         for i in self.maps:
             if(i.name==name):
                 return i
-        return -1
+        return None
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)

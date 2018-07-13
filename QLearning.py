@@ -93,9 +93,9 @@ class QLearning:
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
                         self.tempd.set_weights(self.units.get_weights())
-                    elif(self.mapSet.find_map(k[3])==-1):
+                    elif(self.mapSet.find_map(k[3]) is None):
                         self.mapSet.add_map(util64.gameMap(k[1],k[3]))
-                        print('new map')
+                        print('new map: ',k[3])
                     self.mapName=k[3]
                     self.agent_no = 1
                     con.send(b'ok')
