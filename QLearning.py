@@ -99,6 +99,7 @@ class QLearning:
                     rl.release()
                     if (is_first == 1):
                         print('exploiting', ans[0], mask[tuple(ans[0])])
+                        ans=ans[0]
                     util64.send_msg(con, pickle.dumps(ans))
             except EOFError:
                 break
@@ -186,8 +187,6 @@ class QLearning:
                         rl.release()
                         if (is_first == 1):
                             print('exploiting', ans[0], mask[tuple(ans[0])])
-
-                        if (is_first == 1):
                             fq.write(str(ans[1]) + '\n')
                             fq.flush()
                             os.fsync(fq.fileno())
