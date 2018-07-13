@@ -65,20 +65,27 @@ def shrinkScr(x):
         return WINDOW_SIZE - 1
     return x
 
-
-class gameInstance:
-    def __init__(self, reg):
+class gameMap:
+    def __init__(self, reg, name):
         # print(reg,reg.shape)
+        self.name=name
         self.regions = numpy.zeros([reg.shape[0] * 8, reg.shape[1] * 8])
         for i in range(reg.shape[0]):
             for j in range(reg.shape[1]):
                 self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
 
-    def __call__(self,reg):
-        self.regions = numpy.zeros([reg.shape[0] * 8, reg.shape[1] * 8])
-        for i in range(reg.shape[0]):
-            for j in range(reg.shape[1]):
-                self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
+class Maps:
+    def __init__(self):
+        self.maps=[]
+    def is_empty(self):
+        return len(self.maps)==0
+    def add_map(self,map,name):
+        self.maps.append([map,name])
+    def find_map(self,name):
+        for i in self.maps:
+            if(i.name==name):
+                return i
+        return -1
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)

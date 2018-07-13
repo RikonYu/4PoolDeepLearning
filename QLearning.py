@@ -17,7 +17,7 @@ class QLearning:
         self.tempd=None
         self.target=None
         self.batch_size=batch_size
-        self.disGame = None
+        self.mapSet=util64.Maps()
         self.mapName=''
         self.learn_epoch=0
         self.buflock=threading.Semaphore(1)
@@ -41,10 +41,10 @@ class QLearning:
             self.buflock.release()
             print('training')
             self.tempd.set_weights(self.units.get_weights())
-            X = numpy.array([self.units.msg2state(self.disGame, i) for i, _a, _sp, _r, _it in samples])
+            X = numpy.array([self.units.msg2state(self.mapSet.find_map(map_name), i) for i, _act, _nextS, _reward, _is_terminal,map_name in samples])
             Y = self.units.predict_all(X)  # Q(s,a)
             aprime = self.target.predict_max(
-                [self.units.msg2state(self.disGame, i) for _s, _a, i, _r, _it in samples])  # max_aQ'(s',a')
+                [self.units.msg2state(self.mapSet.find_map(map_name), i) for _state, _aact, i, _reward, _is_terminal,map_name in samples])  # max_aQ'(s',a')
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
             diff = numpy.copy(Y)
@@ -86,26 +86,23 @@ class QLearning:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
                 if (k[0] == 'reg'):
-                    if(self.disGame is None):
-                        self.disGame=util64.gameInstance(k[1])
+                    if(self.mapSet.is_empty()):
+                        self.mapSet.add_map(util64.gameMap(k[1],k[3]),k[3])
                         self.targetType = k[2]
                         self.units = getUnitClass(self.targetType, True)
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
                         self.tempd.set_weights(self.units.get_weights())
-                    elif(self.mapName!=k[3]):
-                        self.disGame(k[1])
+                    elif(self.mapSet.find_map(k[3])==-1):
+                        self.mapSet.add_map(util64.gameMap(k[1],k[3]),k[3])
                         print('new map')
-                    else:
-                        con.send(b'ok')
-                        break
                     self.mapName=k[3]
                     self.agent_no = 1
                     con.send(b'ok')
                     break
                 else:
                     print(self.mapName)
-                    X = self.units.msg2state(self.disGame, k[1])
+                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), k[1])
                     if (k[0] == 'terminal' and last_action is not None):
                         self.buflock.acquire()
                         self.buf.add(last_state, last_action, last_state, (k[2] - self.exploration_weight * unvisited + last_value),
@@ -113,7 +110,7 @@ class QLearning:
                         self.buflock.release()
                         break
                     if (visited.shape[0] == 1):
-                        visited = numpy.zeros(self.disGame.regions.shape)
+                        visited = numpy.zeros(self.mapSet.find_map(self.mapName).regions.shape)
                         unvisited = visited.shape[0] * visited.shape[1]
                         last_value = -self.exploration_weight * unvisited
                     # print(k)
@@ -121,7 +118,7 @@ class QLearning:
                     if (visited[k[1][0][0], k[1][0][1]] == 1):
                         unvisited -= 1
                     if (numpy.random.random() < self.epsilon):
-                        places = self.units.msg2mask(self.disGame, k[1])
+                        places = self.units.msg2mask(self.mapSet.find_map(self.mapName), k[1])
                         '''
                         probs = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE])
                         x = k[1][0][0]
@@ -149,7 +146,7 @@ class QLearning:
                             print('exploring', ans, places[tuple(ans)])
                         # print(ans)
                     else:
-                        mask = self.units.msg2mask(self.disGame, k[1])
+                        mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), k[1])
                         rl.acquire()
                         ans = self.units.predict_ans_masked(X, mask, is_first == 1)
                         rl.release()
