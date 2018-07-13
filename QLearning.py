@@ -87,14 +87,14 @@ class QLearning:
                 k = pickle.loads(data)
                 if (k[0] == 'reg'):
                     if(self.mapSet.is_empty()):
-                        self.mapSet.add_map(util64.gameMap(k[1],k[3]),k[3])
+                        self.mapSet.add_map(util64.gameMap(k[1],k[3]))
                         self.targetType = k[2]
                         self.units = getUnitClass(self.targetType, True)
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
                         self.tempd.set_weights(self.units.get_weights())
                     elif(self.mapSet.find_map(k[3])==-1):
-                        self.mapSet.add_map(util64.gameMap(k[1],k[3]),k[3])
+                        self.mapSet.add_map(util64.gameMap(k[1],k[3]))
                         print('new map')
                     self.mapName=k[3]
                     self.agent_no = 1

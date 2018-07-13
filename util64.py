@@ -79,8 +79,8 @@ class Maps:
         self.maps=[]
     def is_empty(self):
         return len(self.maps)==0
-    def add_map(self,map,name):
-        self.maps.append([map,name])
+    def add_map(self,map):
+        self.maps.append(map)
     def find_map(self,name):
         for i in self.maps:
             if(i.name==name):
