@@ -49,7 +49,7 @@ class DroneNet(UnitNet):
     @staticmethod
     def msg2state(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
-        y, x = msg[0]
+        x, y = msg[0]
         X, Y = disGame.regions.shape
         #print(disGame.name, disGame.regions.shape,x,y)
         ax=max(0,WINDOW_SIZE//2-x)

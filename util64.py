@@ -73,6 +73,7 @@ class gameMap:
         for i in range(reg.shape[0]):
             for j in range(reg.shape[1]):
                 self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
+        self.regions=numpy.transpose(self.regions)
 
 class Maps:
     def __init__(self):
