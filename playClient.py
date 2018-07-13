@@ -48,7 +48,6 @@ def unit_thread(ind):
 class PlayAI(BaseAI):
     def prepare(self):
         self.playerMe = game.self()
-        print(game.mapName(),game.mapHeight()*32,game.mapWidth()*32)
         send_reg()
 
     def frame(self):
@@ -59,7 +58,6 @@ class PlayAI(BaseAI):
             return
         for i in game.getAllUnits():
             if (curTask.can_control(i,self.playerMe)):
-                print(i.getPosition())
                 if (i.getID() in Socks):
                     continue
                 Socks[i.getID()] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
