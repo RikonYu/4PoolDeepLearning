@@ -4,6 +4,8 @@ import time
 import numpy
 import os
 import ReplayBuffer
+from keras import backend as KB
+import tensorflow as tf
 from ClassConstr import getUnitClass
 import threading
 from consts import WINDOW_SIZE
@@ -133,7 +135,7 @@ class QLearning:
                     self.mapName=k[3]
                     self.agent_no = 1
                     con.send(b'ok')
-                    self.epsilon*=0.95
+                    self.epsilon*=0.98
                     break
                 else:
                     #print(self.mapName)
