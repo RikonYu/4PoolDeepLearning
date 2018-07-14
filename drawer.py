@@ -28,13 +28,9 @@ plt.show()
 '''
 fin=open('rewards.txt','r')
 k=list(map(float,fin.read().splitlines()))
-kk=[]
-for i in range(len(k)//15):
-    ans=0
-    for j in range(15):
-        ans+=k[i*15+j]
-    kk.append(ans)
-plt.plot(kk,'r',label='R')
+k=numpy.array(k)
+k=k[1:]-k[:-1]
+plt.plot(k[::15],'r',label='R')
 plt.legend()
 plt.show()
 fin=open('Qvals.txt','r')

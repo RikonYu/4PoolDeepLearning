@@ -91,7 +91,6 @@ class QLearning:
                     self.mapName = k[3]
                     self.agent_no = 1
                     con.send(b'ok')
-                    #self.epsilon *= 0.99
                     break
                 else:
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), k[1])
@@ -135,7 +134,7 @@ class QLearning:
                     self.mapName=k[3]
                     self.agent_no = 1
                     con.send(b'ok')
-                    self.epsilon*=0.98
+                    #self.epsilon*=0.98
                     break
                 else:
                     #print(self.mapName)
