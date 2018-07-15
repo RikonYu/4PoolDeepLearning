@@ -41,7 +41,7 @@ class QLearning:
             self.buflock.acquire()
             samples, indx, bias = self.buf.sample(self.batch_size)
             self.buflock.release()
-            print('training')
+            print('training %d'%self.batch_size)
             self.tempd.set_weights(self.units.get_weights())
             X = numpy.array([self.units.msg2state(self.mapSet.find_map(map_name), i) for i, _act, _nextS, _reward, _is_terminal,map_name in samples])
             Y = self.units.predict_all(X)  # Q(s,a)
