@@ -120,7 +120,7 @@ class QLearning:
             try:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
-                if (k.msg_type == 'reg'):
+                if (k.type == 'reg'):
                     if(self.mapSet.is_empty()):
                         self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
                         self.targetType = k[2]
