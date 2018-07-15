@@ -33,7 +33,7 @@ class UnitNet:
         ans=numpy.argmax(self.predict_all([X]))
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
     def predict_max(self,X):
-        return numpy.amax(self.predict_all(X),axis=(1,2,3))
+        return numpy.amax(self.predict_all(X))
     def predict_all_masked(self,X,mask):
         Y=self.predict_all(X)
         return numpy.where(mask,Y,-numpy.inf)
