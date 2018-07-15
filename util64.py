@@ -69,10 +69,10 @@ class gameMap:
     def __init__(self, reg, name):
         # print(reg,reg.shape)
         self.name=name
-        self.regions = numpy.zeros([reg.shape[0] * 8, reg.shape[1] * 8])
-        for i in range(reg.shape[0]):
-            for j in range(reg.shape[1]):
-                self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg[i, j]
+        self.regions = numpy.zeros([reg.ans.shape[0] * 8, reg.ans.shape[1] * 8])
+        for i in range(reg.ans.shape[0]):
+            for j in range(reg.ans.shape[1]):
+                self.regions[i * 8:i * 8 + 8, j * 8:j * 8 + 8] = reg.ans[i, j]
         #self.regions=numpy.transpose(self.regions)
 
 class Maps:
