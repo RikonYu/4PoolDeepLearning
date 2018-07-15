@@ -156,7 +156,8 @@ class QLearning:
                         ind = numpy.random.choice(len(ini))
                         ans = [ini[ind], inj[ind], ink[ind]]
                         if (is_first == 1):
-                            print('exploring', ans)
+                            pass
+                            #print('exploring', ans)
                         # print(ans)
                     else:
                         mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
@@ -164,7 +165,7 @@ class QLearning:
                         ans = self.units.predict_ans_masked(X, mask, is_first == 1)
                         rl.release()
                         if (is_first == 1):
-                            print('exploiting', ans[0], ans[1])
+                            #print('exploiting', ans[0], ans[1])
                             fq.write(str(ans[1]) + '\n')
                             fq.flush()
                             os.fsync(fq.fileno())
