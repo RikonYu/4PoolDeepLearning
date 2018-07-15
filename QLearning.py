@@ -77,24 +77,25 @@ class QLearning:
             try:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
-                if (k[0] == 'reg'):
-                    if (self.mapSet.is_empty()):
-                        self.mapSet.add_map(util64.gameMap(k[1], k[3]))
-                        self.targetType = k[2]
+                if (k.type == 'reg'):
+                    if(self.mapSet.is_empty()):
+                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
+                        self.targetType = k.type
                         self.units = getUnitClass(self.targetType, True)
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
                         self.tempd.set_weights(self.units.get_weights())
-                    elif (self.mapSet.find_map(k[3]) is None):
-                        self.mapSet.add_map(util64.gameMap(k[1], k[3]))
-                        print('new map: ', k[3])
-                    self.mapName = k[3]
+                    elif(self.mapSet.find_map(k.mapName) is None):
+                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
+                        print('new map: ',k.mapName)
+                    self.mapName=k.mapName
                     self.agent_no = 1
                     con.send(b'ok')
                     break
                 else:
-                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), k[1])
-                    mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), k[1])
+                    msg=k.msg
+                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
+                    mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
                     rl.acquire()
                     ans = self.units.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
@@ -123,12 +124,12 @@ class QLearning:
                 if (k.type == 'reg'):
                     if(self.mapSet.is_empty()):
                         self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
-                        self.targetType = k[2]
+                        self.targetType = k.type
                         self.units = getUnitClass(self.targetType, True)
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
                         self.tempd.set_weights(self.units.get_weights())
-                    elif(self.mapSet.find_map(k[3]) is None):
+                    elif(self.mapSet.find_map(k.mapName) is None):
                         self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
                         print('new map: ',k.mapName)
                     self.mapName=k.mapName
@@ -139,7 +140,6 @@ class QLearning:
                 else:
                     #print(self.mapName)
                     msg=k.msg
-
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
                         self.buflock.acquire()
