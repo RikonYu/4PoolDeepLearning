@@ -141,6 +141,7 @@ class QLearning:
                 else:
                     #print(self.mapName)
                     msg=k.msg
+                    print(msg.myInfo.coord)
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
                         self.buflock.acquire()
