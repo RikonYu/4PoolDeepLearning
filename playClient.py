@@ -25,7 +25,7 @@ def send_msg(sock, msg):
 
 def send(u, tp, sock):
     msg=gameMessage(u)
-    send_msg(sock, pickle.dumps(gameState(tp, msg, curTask.valueFunc(u)))
+    send_msg(sock, pickle.dumps(gameState(tp, msg, curTask.valueFunc(u))))
 
 
 def send_reg():

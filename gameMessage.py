@@ -1,8 +1,7 @@
 import numpy
-from pybrood import game
-import pybrood
 class unitInfo:
     def __init__(self, unit):
+
         self.coord=unit.getPosition()
         self.bounds=[unit.getTop(),unit.getBottom(),unit.getLeft(),unit.getRight()]
         self.type=unit.getType().getName()
@@ -20,11 +19,13 @@ class unitInfo:
         self.isFlyer=unit.isFlyer()
         self.isBuilding=unit.isBuilding()
     def addDamage(self, unitMe, unit):
+        from pybrood import game
         self.damageTo= game.damagaTo(unitMe.getType(), unit.getType(), unitMe.getPlayer(), unit.getPlayer())
         self.damageFrom= game.damagaFrom(unitMe.getType(), unit.getType(), unitMe.getPlayer(), unit.getPlayer())
 
 class gameMessage:
     def __init__(self, unit):
+        from pybrood import game
         self.myInfo=unitInfo(unit)
         self.enemies=[]
         self.allies=[]
@@ -43,6 +44,7 @@ class gameMessage:
 
 class mapMessage:
     def __init__(self):
+        from pybrood import game
         self.ans = numpy.zeros([game.mapHeight() * 4, game.mapWidth() * 4])
         for i in range(game.mapHeight() * 4):
             for j in range(game.mapWidth() * 4):
