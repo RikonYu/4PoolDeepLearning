@@ -41,7 +41,7 @@ class QLearning:
             self.buflock.acquire()
             samples, indx, bias = self.buf.sample(self.batch_size)
             self.buflock.release()
-            print('training %d'%self.batch_size)
+            print('training')
             self.tempd.set_weights(self.units.get_weights())
             X = numpy.array([self.units.msg2state(self.mapSet.find_map(map_name), i) for i, _act, _nextS, _reward, _is_terminal,map_name in samples])
             Y = self.units.predict_all(X)  # Q(s,a)
@@ -56,6 +56,7 @@ class QLearning:
             self.buflock.release()
             for i in range(self.batch_size):
                 diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
+                raise Exception
                 print(Y_[i], samples[i][3], aprime[i])
             # not using bias for now
 
