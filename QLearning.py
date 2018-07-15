@@ -55,8 +55,9 @@ class QLearning:
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
             for i in range(self.batch_size):
-                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
                 print(Y_[i], samples[i][3], aprime[i])
+                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
+
             # not using bias for now
 
             self.tempd.train(X, diff)
