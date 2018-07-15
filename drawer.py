@@ -26,15 +26,13 @@ for i in range(6):
     plt.imshow(mask[:, :, i] * 255.0, cmap=plt.cm.gray)
 plt.show()
 '''
-fin=open('rewards_real.txt','r')
+fin=open('rewards.txt','r')
 k=list(map(float,fin.read().splitlines()))
 k=numpy.array(k)
-k=k[1:]-k[:-1]
-sb=[numpy.sum(k[:i*15+14]) for i in range(len(k)//15)]
-plt.plot(sb,'r',label='R')
+plt.plot(k,'r',label='R')
 plt.legend()
 plt.show()
-fin=open('Qvals_real.txt','r')
+fin=open('Qvals.txt','r')
 k=list(map(float,fin.read().splitlines()))
 plt.plot(k,'r',label='Q')
 plt.legend()

@@ -46,7 +46,7 @@ class QLearning:
             X = numpy.array([self.units.msg2state(self.mapSet.find_map(map_name), i) for i, _act, _nextS, _reward, _is_terminal,map_name in samples])
             Y = self.units.predict_all(X)  # Q(s,a)
             aprime = self.target.predict_max(
-                [self.units.msg2state(self.mapSet.find_map(map_name), i) for _state, _aact, i, _reward, _is_terminal,map_name in samples])  # max_aQ'(s',a')
+                [self.units.msg2state(self.mapSet.find_map(map_name), i) for _state, _act, i, _reward, _is_terminal,map_name in samples])  # max_aQ'(s',a')
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
             diff = numpy.copy(Y)

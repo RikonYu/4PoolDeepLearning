@@ -60,6 +60,7 @@ class PriortizedReplayBuffer:
         self.alpha=0.6
     def add(self,state,action,new_state,reward,is_terminal, mapName):
         max_prt=self.prts.getmax()
+        print('reward', reward)
         if(max_prt==0):
             max_prt=1
         if(len(self.buffers)>=self.maxlen):

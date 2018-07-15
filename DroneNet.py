@@ -36,7 +36,8 @@ class DroneNet(UnitNet):
                 self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='softmax', padding='same')(
                     self.deconv4)
                 self.model = Model(inputs=self.inp, outputs=self.out)
-                self.model.compile(optimizer='adam', loss='MSE')
+                optz=Adam(1,decay=0.0001)
+                self.model.compile(optimizer=optz, loss='MSE')
                 self.model._make_predict_function()
                 self.model._make_test_function()
                 self.model._make_train_function()
