@@ -3,6 +3,7 @@ import pickle
 import time
 import numpy
 import os
+from gameMessage import *
 import ReplayBuffer
 from keras import backend as KB
 import tensorflow as tf
@@ -120,28 +121,30 @@ class QLearning:
             try:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
-                if (k[0] == 'reg'):
+                if (k.msg_type == 'reg'):
                     if(self.mapSet.is_empty()):
-                        self.mapSet.add_map(util64.gameMap(k[1],k[3]))
+                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
                         self.targetType = k[2]
                         self.units = getUnitClass(self.targetType, True)
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
                         self.tempd.set_weights(self.units.get_weights())
                     elif(self.mapSet.find_map(k[3]) is None):
-                        self.mapSet.add_map(util64.gameMap(k[1],k[3]))
-                        print('new map: ',k[3])
-                    self.mapName=k[3]
+                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
+                        print('new map: ',k.mapName)
+                    self.mapName=k.mapName
                     self.agent_no = 1
                     con.send(b'ok')
                     #self.epsilon*=0.98
                     break
                 else:
                     #print(self.mapName)
-                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), k[1])
-                    if (k[0] == 'terminal' and last_action is not None):
+                    msg=k.msg
+
+                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
+                    if (k.type == 'terminal' and last_action is not None):
                         self.buflock.acquire()
-                        self.buf.add(last_state, last_action, last_state, (k[2] - self.exploration_weight * unvisited + last_value),
+                        self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited + last_value),
                                 1, self.mapName)
                         self.buflock.release()
                         break
@@ -150,39 +153,19 @@ class QLearning:
                         unvisited = visited.shape[0] * visited.shape[1]
                         last_value = -self.exploration_weight * unvisited
                     # print(k)
-                    visited[k[1][0][0], k[1][0][1]] += 1
-                    if (visited[k[1][0][0], k[1][0][1]] == 1):
+                    visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] += 1
+                    if (visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] == 1):
                         unvisited -= 1
                     if (numpy.random.random() < self.epsilon):
-                        places = self.units.msg2mask(self.mapSet.find_map(self.mapName), k[1])
-                        '''
-                        probs = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE])
-                        x = k[1][0][0]
-                        y = k[1][0][1]
-                        ax = max(0, WINDOW_SIZE // 2 - x)
-                        ay = max(0, WINDOW_SIZE // 2 - y)
-                        probs[ax:min(WINDOW_SIZE, visited.shape[0] - x + WINDOW_SIZE // 2),
-                        ay:min(WINDOW_SIZE, visited.shape[1] - y + WINDOW_SIZE // 2)] = numpy.exp(-visited[
-                                                                                                   max(0,
-                                                                                                       x - WINDOW_SIZE // 2):min(
-                                                                                                       x + WINDOW_SIZE // 2,
-                                                                                                       visited.shape[0]),
-                                                                                                   max(0,
-                                                                                                       y - WINDOW_SIZE // 2):min(
-                                                                                                       y + WINDOW_SIZE // 2,
-                                                                                                       visited.shape[1])])
-    
-                        probsum = numpy.sum(probs[ini, inj])
-                        '''
+                        places = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
                         ini, inj, ink = numpy.nonzero(places)
-                        # ind = numpy.random.choice(len(ini), p=probs[ini, inj] / probsum)
                         ind = numpy.random.choice(len(ini))
                         ans = [ini[ind], inj[ind], ink[ind]]
                         if (is_first == 1):
                             print('exploring', ans, places[tuple(ans)])
                         # print(ans)
                     else:
-                        mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), k[1])
+                        mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
                         rl.acquire()
                         ans = self.units.predict_ans_masked(X, mask, is_first == 1)
                         rl.release()
@@ -195,12 +178,12 @@ class QLearning:
                     util64.send_msg(con, pickle.dumps(ans))
                     if (last_action is not None):
                         self.buflock.acquire()
-                        self.buf.add(last_state, last_action, k[1],
-                                (k[2] - self.exploration_weight * unvisited - last_value), 0, self.mapName)
+                        self.buf.add(last_state, last_action, msg,
+                                (k.value - self.exploration_weight * unvisited - last_value), 0, self.mapName)
                         self.buflock.release()
-                    last_state = k[1]
+                    last_state = msg
                     last_action = ans
-                    last_value = k[2] - self.exploration_weight * unvisited
+                    last_value = k.value - self.exploration_weight * unvisited
                     if (is_first == 1):
                         feval.write(str(last_value) + '\n')
                         feval.flush()

@@ -1,7 +1,8 @@
 import numpy
 import pickle
 import util32
-import socket, os
+import socket
+from gameMessage import *
 import struct
 import threading
 import time
@@ -16,21 +17,22 @@ address = 'linux.cs.uwaterloo.ca'
 unitThreads = {}
 first_time=0
 curTask=taskDebug
+
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
 
 
 def send(u, tp, sock):
-    msg = util32.game2msg(u)
-    send_msg(sock, pickle.dumps([tp, msg, curTask.valueFunc(u)]))
+    msg=gameMessage(u)
+    send_msg(sock, pickle.dumps(gameState(tp, msg, curTask.valueFunc(u)))
 
 
 def send_reg():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect((address, 12346))
-    send_msg(soc, pickle.dumps(['reg', util32.reg2msg(), curTask.unitTypes[0].getName(), game.mapName()]))
-    k = soc.recv(16)
+    send_msg(soc, pickle.dumps(mapState(mapMessage(), curTask.unitTypes[0].getName(), game.mapName())))
+    _ = soc.recv(16)
     soc.close()
 
 

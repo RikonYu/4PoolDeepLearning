@@ -57,7 +57,7 @@ class DragoonNet(UnitNet):
                 self.model.save('DragoonNet.h5')
     @staticmethod
     def msg2state(disGame, msg):
-        x,y=msg[0]
+        x,y=msg.myInfo.coord
         X,Y=disGame.regions.shape
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
@@ -65,29 +65,29 @@ class DragoonNet(UnitNet):
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
-        for u in msg[2]:#enemy
-            nx = u[0][0] - x + WINDOW_SIZE // 2
-            ny = u[0][1] - y + WINDOW_SIZE // 2
+        for u in msg.enemies:#enemy
+            nx = u.coord[0] - x + WINDOW_SIZE // 2
+            ny = u.coord[1] - y + WINDOW_SIZE // 2
             ans[nx, ny, 2] = 1
-            ans[nx, ny, 5] = u[1]
-            ans[nx, ny, 6] = u[4]
-            ans[nx, ny, 7] = u[5]
-        for u in msg[3]:#ally
-            nx = u[0][0] - x + WINDOW_SIZE // 2
-            ny = u[0][1] - y + WINDOW_SIZE // 2
+            ans[nx, ny, 5] = u.HP+u.shield
+            ans[nx, ny, 6] = u.damageTo
+            ans[nx, ny, 7] = u.damagaFrom
+        for u in msg.allies:#ally
+            nx = u.coord[0] - x + WINDOW_SIZE // 2
+            ny = u.coord[1] - y + WINDOW_SIZE // 2
             ans[nx, ny, 1] = 1
-            ans[nx, ny, 4] = u[1]
-        ans[:,:,3]=msg[1][0]
+            ans[nx, ny, 4] = u.HP+u.shield
+        ans[:,:,3]=msg.myInfo.HP+msg.myInfo.shield
         for i in range(WINDOW_SIZE*32//X):
             for j in range(WINDOW_SIZE * 32 // X):
                 #print(ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8].shape,msg[6].shape)
-                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8]=msg[6]
+                ans[i::WINDOW_SIZE*32//X,j::WINDOW_SIZE*32//X,8]=msg.explored
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,9]=1
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DragoonNet._out_channel])
-        x,y=msg[0]
+        x,y=msg.myInfo.coord
         X, Y = disGame.regions.shape
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
@@ -95,15 +95,15 @@ class DragoonNet(UnitNet):
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
-        for u in msg[2]:
-            nx = u[0][0] - x + WINDOW_SIZE // 2
-            ny = u[0][1] - y + WINDOW_SIZE // 2
+        for u in msg.enemies:
+            nx = u.coord[0] - x + WINDOW_SIZE // 2
+            ny = u.coord[1] - y + WINDOW_SIZE // 2
             ans[nx, ny, 4] = 1
-            top,bot,left,right=u[6]
+            top,bot,left,right=u.bounds
             #ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
             #    shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
-        for u in msg[3]:
-            top,bot,left,right=u[4]
+        for u in msg.allies:
+            top,bot,left,right=u.bounds
             #ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
             #    shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         return ans

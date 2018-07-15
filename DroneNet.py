@@ -49,7 +49,7 @@ class DroneNet(UnitNet):
     @staticmethod
     def msg2state(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
-        x, y = msg[0]
+        x, y = msg.myInfo.coord
         X, Y = disGame.regions.shape
         #print(disGame.name, disGame.regions.shape,x,y)
         ax=max(0,WINDOW_SIZE//2-x)
@@ -58,16 +58,16 @@ class DroneNet(UnitNet):
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
 
-        miniX=len(msg[6])
-        miniY=len(msg[6][0])
+        miniX=len(msg.explored)
+        miniY=len(msg.explored[0])
         for i in range(WINDOW_SIZE//miniX):
             for j in range(WINDOW_SIZE //miniY):
-                ans[i:i+(WINDOW_SIZE//miniX)*miniX:WINDOW_SIZE//miniX,j:j+(WINDOW_SIZE//miniY)*miniY:WINDOW_SIZE//miniY,2]=msg[6]
+                ans[i:i+(WINDOW_SIZE//miniX)*miniX:WINDOW_SIZE//miniX,j:j+(WINDOW_SIZE//miniY)*miniY:WINDOW_SIZE//miniY,2]=msg.explored[:]
         #print(x,X,y,Y)
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
-        for u in msg[3]:
-            ans[u[0][0]*WINDOW_SIZE//X,u[0][1]*WINDOW_SIZE//Y,3]=1
-        for u in msg[4]:
+        for u in msg.allies:
+            ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
+        for u in msg.resources:
             #print(u)
             if(u[0]==False):
                 #print(shrinkScr(u[1][0]-x+WINDOW_SIZE//2),shrinkScr(u[1][1]-y+WINDOW_SIZE//2))
@@ -75,7 +75,7 @@ class DroneNet(UnitNet):
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
-        x,y=msg[0]
+        x,y=msg.myInfo.coord
         X, Y = disGame.regions.shape
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
@@ -84,12 +84,12 @@ class DroneNet(UnitNet):
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
-        for u in msg[3]:
-            top,bot,left,right=u[4]
+        for u in msg.allies:
+            top,bot,left,right=u.bounds
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
-        for u in msg[4]:
-            top,bot,left,right=u[2]
+        for u in msg.resources:
+            top,bot,left,right=u.bounds
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         return ans

@@ -89,63 +89,6 @@ def reg2msg():
 # 4resource[isMineral,coord,(top,bot,left,right)],
 # 5my_extractor[coord]
 # 6 minimap explored
-def game2msg(me):
-    ans = []
-    typeMe = me.getType()
-    enemyCount=0
-    for u in game.getAllUnits():
-        if(u.getType()==pybrood.UnitTypes.Terran_Vulture_Spider_Mine):
-            enemyCount+=1
-    ans.append(me.getPosition())
-    ans.append((me.getHitPoints() + me.getShields(),
-                me.getKillCount(),
-                me.isCarryingGas(),
-                (typeMe.groundWeapon() != pybrood.WeaponTypes.None_, me.getGroundWeaponCooldown(),
-                 typeMe.groundWeapon().maxRange()),
-                (typeMe.airWeapon() != pybrood.WeaponTypes.None_, me.getAirWeaponCooldown(),
-                 typeMe.airWeapon().maxRange()),
-                enemyCount
-                ))
-    enemy = []
-    ally = []
-    resource = []
-    extra = []
-    for u in game.getAllUnits():
-        if (inReach(u, me) and u.getID()!=me.getID()):
-            coor = u.getPosition()
-            tu = u.getType()
-            # print(tu.getName())
-            if (u.getType().getName() in ['Resource_Mineral_Field', 'Resource_Vespene_Geyser']):
-                # print('mineral %s'%str(coor))
-                if(u.isVisible(me.getPlayer())):
-                    resource.append((u.getType().getName() == 'Resource_Mineral_Field', coor,
-                                     (u.getTop(), u.getBottom(), u.getLeft(), u.getRight())
-                                     ))
-            elif (u.getType().getName() == 'Zerg_Extractor' and u.getPlayer() == me.getPlayer()):
-                extra.append(coor)
-            elif (u.getPlayer() == me.getPlayer()):
-                ally.append((coor, u.getHitPoints() + u.getShields(), tu.isFlyer(), tu.isBuilding(),
-                             (u.getTop(), u.getBottom(), u.getLeft(), u.getRight()),
-                             ))
-            else:
-                enemy.append((coor, u.getHitPoints() + u.getShields(), tu.isFlyer(), tu.isBuilding(),
-                              game.getDamageTo(me.getType(), u.getType(), me.getPlayer(), u.getPlayer()),
-                              game.getDamageFrom(me.getType(), u.getType(), me.getPlayer(), u.getPlayer()),
-                              (u.getTop(), u.getBottom(), u.getLeft(), u.getRight()),
-                              (u.getType().groundWeapon().minRange(), u.getType().groundWeapon().maxRange()),
-                              (u.getType().airWeapon().minRange(), u.getType().airWeapon().maxRange()),
-                              ))
-    ans.append(enemy)
-    ans.append(ally)
-    ans.append(resource)
-    ans.append(extra)
-    explored=numpy.zeros([game.mapHeight(),game.mapWidth()])
-    for i in range(game.mapHeight()):
-        for j in range(game.mapWidth()):
-            explored[i,j]=game.isExplored(i,j)
-    ans.append(explored)
-    return ans
-
 
 def get_all_mineral():
     ans = []
