@@ -6,8 +6,8 @@ class unitInfo:
         self.bounds=[unit.getTop(),unit.getBottom(),unit.getLeft(),unit.getRight()]
         self.type=unit.getType().getName()
         self.ID=unit.getID()
-        self.HP=unit.getHP()
-        self.shield=unit.getShield()
+        self.HP=unit.getHitPoints()
+        self.shield=unit.getShields()
         self.playerID=unit.getPlayer().getID()
         self.killCount=unit.getKillCount()
         self.rangeGround=(unit.getType().groundWeapon().minRange(),unit.getType().groundWeapon().maxRange())
@@ -15,9 +15,9 @@ class unitInfo:
         self.canFireGround=unit.getGroundWeaponCooldown()
         self.canFireAir=unit.getAirWeaponCooldown()
         self.hasGas=unit.isCarryingGas()
-        self.hasMineral=unit.isCarryingMineral()
-        self.isFlyer=unit.isFlyer()
-        self.isBuilding=unit.isBuilding()
+        self.hasMineral=unit.isCarryingMinerals()
+        self.isFlyer=unit.getType().isFlyer()
+        self.isBuilding=unit.getType().isBuilding()
     def addDamage(self, unitMe, unit):
         from pybrood import game
         self.damageTo= game.damagaTo(unitMe.getType(), unit.getType(), unitMe.getPlayer(), unit.getPlayer())
