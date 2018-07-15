@@ -3,7 +3,6 @@ import pickle
 import time
 import numpy
 import os
-from gameMessage import *
 import ReplayBuffer
 from keras import backend as KB
 import tensorflow as tf
