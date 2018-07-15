@@ -50,14 +50,15 @@ class QLearning:
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
             diff = numpy.copy(Y)
-            for i in range(self.batch_size):
-                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
-
-            # not using bias for now
             self.buflock.acquire()
             self.buf.update(indx,
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
+            for i in range(self.batch_size):
+                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
+                print(Y_[i], samples[i][3], aprime[i])
+            # not using bias for now
+
             self.tempd.train(X, diff)
             self.tempd.save()
             if (self.learn_epoch % replace_every == 0):
@@ -154,7 +155,7 @@ class QLearning:
                         ind = numpy.random.choice(len(ini))
                         ans = [ini[ind], inj[ind], ink[ind]]
                         if (is_first == 1):
-                            print('exploring', ans, places[tuple(ans)])
+                            print('exploring', ans)
                         # print(ans)
                     else:
                         mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
