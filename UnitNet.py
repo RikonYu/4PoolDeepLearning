@@ -42,6 +42,7 @@ class UnitNet:
         ans=numpy.argmax(allval)
         if(want_val):
             ans=numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
+            print(allval[0])
             return (ans, allval[0][tuple(ans)])
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
     def sample_ans_masked(self, X, mask):
