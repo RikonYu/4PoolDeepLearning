@@ -121,11 +121,11 @@ class QLearning:
             try:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
-                print(k.type)
+                #print(k.type)
                 if (k.type == 'reg'):
                     if(self.mapSet.is_empty()):
                         self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
-                        self.targetType = k.type
+                        self.targetType = k.unitType
                         self.units = getUnitClass(self.targetType, True)
                         self.target = getUnitClass(self.targetType, True)
                         self.tempd = getUnitClass(self.targetType, True)
