@@ -141,13 +141,18 @@ class QLearning:
                 else:
                     #print(self.mapName)
                     msg=k.msg
-                    print(msg.myInfo.coord)
+                    #print(msg.myInfo.coord)
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
                         self.buflock.acquire()
                         self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited + last_value),
                                 1, self.mapName)
                         self.buflock.release()
+                        if (is_first == 1):
+                            feval.write(str(last_value) + '\n')
+                            feval.flush()
+                            os.fsync(feval.fileno())
+
                         break
                     if (visited.shape[0] == 1):
                         visited = numpy.zeros(self.mapSet.find_map(self.mapName).regions.shape)
@@ -185,10 +190,7 @@ class QLearning:
                     last_state = msg
                     last_action = ans
                     last_value = k.value - self.exploration_weight * unvisited
-                    if (is_first == 1):
-                        feval.write(str(last_value) + '\n')
-                        feval.flush()
-                        os.fsync(feval.fileno())
+
             except EOFError:
                 print('exception found')
                 break
