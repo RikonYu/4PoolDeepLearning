@@ -38,12 +38,12 @@ class UnitNet:
         Y=self.predict_all(X)
         return numpy.where(mask,Y,-numpy.inf)
     def predict_ans_masked(self,X,mask, want_val=False):
-        allval=self.predict_all_masked(X,mask)
-        ans=numpy.argmax(allval)
+        allval=self.predict_all(X)[0]
+        ini,inj,ink=numpy.nonzero(mask)
+        ans=numpy.argmax(allval[ini,inj,ink])
         if(want_val):
             ans=numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
-            print(allval[0])
-            return (ans, allval[0][tuple(ans)])
+            return (ans, allval[tuple(ans)])
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
     def sample_ans_masked(self, X, mask):
         allval=self.predict_all(X)

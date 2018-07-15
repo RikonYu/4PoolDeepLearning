@@ -70,7 +70,19 @@ class QLearning:
             self.buflock.release()
             self.learn_epoch += 1
 
-
+    def init_game(self, k):
+        if (self.mapSet.is_empty()):
+            self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
+            self.targetType = k.unitType
+            self.units = getUnitClass(self.targetType, True)
+            self.target = getUnitClass(self.targetType, True)
+            self.tempd = getUnitClass(self.targetType, True)
+            self.tempd.set_weights(self.units.get_weights())
+        elif (self.mapSet.find_map(k.mapName) is None):
+            self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
+            print('new map: ', k.mapName)
+        self.mapName = k.mapName
+        self.agent_no = 1
     def exploiter(self, con, is_first):
         rl=self.lock.genRlock()
         while (True):
@@ -78,18 +90,7 @@ class QLearning:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
                 if (k.type == 'reg'):
-                    if(self.mapSet.is_empty()):
-                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
-                        self.targetType = k.unitType
-                        self.units = getUnitClass(self.targetType, True)
-                        self.target = getUnitClass(self.targetType, True)
-                        self.tempd = getUnitClass(self.targetType, True)
-                        self.tempd.set_weights(self.units.get_weights())
-                    elif(self.mapSet.find_map(k.mapName) is None):
-                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
-                        print('new map: ',k.mapName)
-                    self.mapName=k.mapName
-                    self.agent_no = 1
+                    self.init_game(k)
                     con.send(b'ok')
                     break
                 else:
@@ -121,27 +122,12 @@ class QLearning:
             try:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
-                #print(k.type)
                 if (k.type == 'reg'):
-                    if(self.mapSet.is_empty()):
-                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
-                        self.targetType = k.unitType
-                        self.units = getUnitClass(self.targetType, True)
-                        self.target = getUnitClass(self.targetType, True)
-                        self.tempd = getUnitClass(self.targetType, True)
-                        self.tempd.set_weights(self.units.get_weights())
-                    elif(self.mapSet.find_map(k.mapName) is None):
-                        self.mapSet.add_map(util64.gameMap(k.msg,k.mapName))
-                        print('new map: ',k.mapName)
-                    self.mapName=k.mapName
-                    self.agent_no = 1
+                    self.init_game(k)
                     con.send(b'ok')
-                    #self.epsilon*=0.98
                     break
                 else:
-                    #print(self.mapName)
                     msg=k.msg
-                    #print(msg.myInfo.coord)
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
                         self.buflock.acquire()
