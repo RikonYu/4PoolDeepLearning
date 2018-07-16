@@ -43,7 +43,7 @@ class DragoonNet(UnitNet):
                 self.deconv3=deconv_block(Concatenate(axis=3)([self.up2,self.conv2]),1)
                 self.up3=UpSampling2D((2,2))(self.deconv3)
                 self.deconv4=Conv2DTranspose(64,(3,3),activation='relu',padding='same')(self.up3)
-                self.out=Conv2DTranspose(self._out_channel,(3,3),activation='softmax',padding='same')(self.deconv4)
+                self.out=Conv2DTranspose(self._out_channel,(3,3),activation='linear',padding='same')(self.deconv4)
                 self.model=Model(inputs=self.inp,outputs=self.out)
                 self.model.compile(optimizer='adam',loss='MSE')
                 self.model._make_predict_function()
