@@ -54,7 +54,7 @@ class QLearning:
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
             for i in range(self.batch_size):
-                print(Y_[i], samples[i][3], aprime[i])
+                print(Y_[i], diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
                 diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
 
             # not using bias for now
@@ -139,7 +139,6 @@ class QLearning:
                             feval.write(str(last_value) + '\n')
                             feval.flush()
                             os.fsync(feval.fileno())
-
                         break
                     if (visited.shape[0] == 1):
                         visited = numpy.zeros(self.mapSet.find_map(self.mapName).regions.shape)
@@ -185,3 +184,6 @@ class QLearning:
         if (is_first == 1):
             feval.close()
             fq.close()
+
+    def asyncController(self, con, is_first):
+        pass

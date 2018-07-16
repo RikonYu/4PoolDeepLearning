@@ -3,7 +3,7 @@ import tensorflow as tf
 from keras.models import Sequential, Model, load_model
 from keras.layers import Input, Concatenate, BatchNormalization, UpSampling2D, Layer, Add
 from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv2D, MaxPooling2D, Conv2DTranspose
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 from keras import backend as KTF
 import numpy
 from util64 import conv_block, deconv_block, shrinkScr
@@ -36,7 +36,8 @@ class DroneNet(UnitNet):
                 self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='softmax', padding='same')(
                     self.deconv4)
                 self.model = Model(inputs=self.inp, outputs=self.out)
-                optz=Adam(0.001)
+                #optz=Adam(0.001)
+                optz=SGD(lr=0.01,momentum=0.9,decay=1e-6)
                 self.model.compile(optimizer=optz, loss='MSE')
                 self.model._make_predict_function()
                 self.model._make_test_function()
