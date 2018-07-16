@@ -38,7 +38,7 @@ class DroneNet(UnitNet):
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 #optz=Adam(0.001)
                 optz=SGD(lr=0.01,momentum=0.9,decay=1e-6)
-                self.model.compile(optimizer=optz, loss='MSE')
+                self.model.compile(optimizer='adam', loss='MSE')
                 self.model._make_predict_function()
                 self.model._make_test_function()
                 self.model._make_train_function()
