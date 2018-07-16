@@ -45,7 +45,6 @@ class QLearning:
             self.tempd.set_weights(self.units.get_weights())
             X = numpy.array([self.units.msg2state(self.mapSet.find_map(map_name), i) for i, _act, _nextS, _reward, _is_terminal,map_name in samples])
             Y = self.units.predict_all(X)  # Q(s,a)
-            print(Y)
             aprime = [self.target.predict_max(self.units.msg2state(self.mapSet.find_map(map_name), i)) for _state, _act, i, _reward, _is_terminal,map_name in samples]  # max_aQ'(s',a')
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
@@ -55,7 +54,7 @@ class QLearning:
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
             for i in range(self.batch_size):
-                print(Y_[i], diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
+                #print(Y_[i], diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
                 diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
 
             # not using bias for now
@@ -103,7 +102,7 @@ class QLearning:
                     ans = self.units.predict_ans_masked(X, mask, is_first == 1)
                     rl.release()
                     if (is_first == 1):
-                        print('exploiting', ans[0], mask[tuple(ans[0])])
+                        print('exploiting', ans[0], ans[1])
                         ans=ans[0]
                     util64.send_msg(con, pickle.dumps(ans))
             except EOFError:
