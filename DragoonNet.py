@@ -98,7 +98,7 @@ class DragoonNet(UnitNet):
         for u in msg.enemies:
             nx = u.coord[0] - x + WINDOW_SIZE // 2
             ny = u.coord[1] - y + WINDOW_SIZE // 2
-            ans[nx, ny, 4] = 1
+            ans[nx, ny, 2] = 1
             top,bot,left,right=u.bounds
             #ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
             #    shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0

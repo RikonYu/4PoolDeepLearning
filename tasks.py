@@ -6,12 +6,13 @@ def dist(p1,p2):
     return numpy.linalg.norm(numpy.array(p1)-p2)
 
 class gameTask:
-    def __init__(self, name, valueFunc, units, maxFrame, finalValue):
+    def __init__(self, name, valueFunc, units, maxFrame, finalValue, frameSkip):
         self.name = name
         self.valueFunc = valueFunc
         self.unitTypes = units
         self.finalValueFunc=finalValue
         self.maxFrame = maxFrame
+        self.frameSkip=frameSkip
     def can_control(self, unit, playerMe):
         if(unit.getType() in self.unitTypes and unit.getPlayer()==playerMe and unit.getPosition()[0]<=game.mapHeight()*32 and unit.getPosition()[1]<=game.mapWidth()*32):
             return True
@@ -50,7 +51,7 @@ def findEnemyBaseValue(unit):
     for u in game.getAllUnits():
         if(u.getType().getName() in ['Protoss_Nexus']):
             if(u.getPlayer()!=unit.getPlayer()):
-                return 'found'
+                return 0
     loc=game.getStartLocations()
     myLoc=unit.getPlayer().getStartLocation()
     ans=numpy.inf
@@ -75,6 +76,16 @@ def findGasFinalValue(player):
             ans+=findGasValue(u)
     return ans
 
-taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue)
-taskBaseScout=gameTask( 'findEnemyBase', findEnemyBaseValue, [pybrood.UnitTypes.Zerg_Drone], 2500,findEnemyBaseFinalValue)
-taskDebug=gameTask('findGas',findGasValue,[pybrood.UnitTypes.Zerg_Drone],150,findGasFinalValue)
+def VultureKiteValue(unit):
+    return unit.getKillCount()
+
+def VultureKiteFinalValue(player):
+    for u in player.getUnits():
+        if(u.getType()==pybrood.UnitTypes.Terran_Vulture):
+            return u.getKillCount()
+
+
+taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue, 10)
+taskBaseScout=gameTask( 'findEnemyBase', findEnemyBaseValue, [pybrood.UnitTypes.Zerg_Drone], 2500,findEnemyBaseFinalValue, 10)
+taskDebug=gameTask('findGas',findGasValue,[pybrood.UnitTypes.Zerg_Drone],150,findGasFinalValue, 10)
+taskVultureKite=gameTask('VultureKite', VultureKiteValue, [pybrood.UnitTypes.Terran_Vulture], numpy.inf, VultureKiteFinalValue, 3)

@@ -16,7 +16,7 @@ address = 'linux.cs.uwaterloo.ca'
 # address='127.0.0.1'
 unitThreads = {}
 first_time=0
-curTask=taskDebug
+curTask=taskBaseScout
 
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
@@ -53,7 +53,7 @@ class PlayAI(BaseAI):
         send_reg()
 
     def frame(self):
-        if (game.getFrameCount() % 10 != 1):
+        if (game.getFrameCount() % curTask.frameSkip != 0):
             for i in game.getAllUnits():
                 if(i.getLastCommand().getType().getName()=='Move'):
                     game.drawLineMap(i.getPosition(),i.getLastCommand().getTargetPosition(),pybrood.Colors.Red)

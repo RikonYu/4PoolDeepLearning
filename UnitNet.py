@@ -70,3 +70,16 @@ class UnitNet:
     @staticmethod
     def y2state(ind):
         pass
+
+class NeuralMap:
+    def __init__(self, _in_channel, mapHeight, mapWidth):
+        self.board=numpy.zeros([mapHeight,mapWidth,_in_channel])
+        self.build_global_read()
+        self._in_channel=_in_channel
+        self.build_write()
+    def build_global_read(self):
+        self.read_inp=Input(self.board.shape,dtype='float32')
+        self.read_conv1=Conv2D(32, (3,3), padding='same', activation='relu')(self.read_inp)
+        self.read_conv1=MaxPooling2D((2,2))(self.read_conv1)
+        self.read_conv2=Conv2D(32,(3,3), padding='same', activation='relu')(self.read_conv1)
+        self.read_conv2 = MaxPooling2D((2, 2))(self.read_conv2)

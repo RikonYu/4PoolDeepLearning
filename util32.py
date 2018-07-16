@@ -132,7 +132,7 @@ def command(unit, order):
         if (showCommands):
             print('moving to', coord)
         unit.move(coord)
-    elif (order[2] == 2):
+    elif (order[2] == 4):
         if (showCommands):
             print('building')
         unit.build(pybrood.UnitTypes.Zerg_Spawning_Pool, coord)
@@ -140,9 +140,9 @@ def command(unit, order):
         if (showCommands):
             print('gathering ', coord, get_all_mineral())
         unit.gather(game.getClosestUnit(coord))
-    elif (order[2] == 4):
+    elif (order[2] == 2):
         if (showCommands):
-            print('attacking ', coord, get_all_drones())
+            print('attacking ', coord)
         unit.attack(game.getClosestUnit(coord, radius=1))
     elif (order[2] == 5):
         unit.returnCargo()

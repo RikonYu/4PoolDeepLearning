@@ -24,11 +24,12 @@ class DroneNet(UnitNet):
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
                 self.conv1 = Conv2D(32, (1, 1), activation='relu', padding='same')(self.inp)
+                self.conv1= conv_block(self.conv1,1)
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
                 self.conv2 = conv_block(self.pool1, 1)
                 self.pool2 = MaxPooling2D((2, 2))(self.conv2)
 
-                self.deconv1 = deconv_block(self.pool2, 2)
+                self.deconv1 = deconv_block(self.pool2, 1)
                 self.up1 = UpSampling2D((2, 2))(self.deconv1)
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv2)
@@ -69,10 +70,12 @@ class DroneNet(UnitNet):
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
         for u in msg.allies:
             ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
+        '''
         for u in msg.resources:
             #print(u)
             if(u.type=='Resource_Vespene_Geyser'):
                 ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
+        '''
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
