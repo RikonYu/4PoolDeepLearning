@@ -10,7 +10,7 @@ from consts import WINDOW_SIZE
 
 
 
-QL=QLearning(0.3,0.9,0,64)
+QL=QLearning(0.3,0.9,0,32)
 if (__name__ == '__main__'):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = 'linux.cs.uwaterloo.ca'
