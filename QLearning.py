@@ -31,7 +31,7 @@ class QLearning:
 
     def learner(self):
         replace_every = 50
-        train_every = 64
+        train_every = 32
         wl = self.lock.genWlock()
         while (True):
             if (self.buf.count < train_every):
@@ -54,7 +54,7 @@ class QLearning:
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
             for i in range(self.batch_size):
-                print(Y_[i], diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
+                print(Y_[i], aprime[i], samples[i][3])
                 diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
 
             # not using bias for now
