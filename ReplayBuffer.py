@@ -61,11 +61,11 @@ class PriortizedReplayBuffer:
     def add(self,state,action,new_state,reward,is_terminal, mapName):
         if(len(self.buffers)>=self.maxlen):
             self.psum-=numpy.power(self.buffers[self._ind][1],self.alpha)
-            self.buffers[self._ind]=[[state,action,new_state,reward,is_terminal, mapName],reward]
+            self.buffers[self._ind]=[[state,action,new_state,reward,is_terminal, mapName],reward+0.0001]
         else:
-            self.buffers.append([[state,action,new_state,reward,is_terminal, mapName],reward])
-        self.psum+=numpy.power(reward,self.alpha)
-        self.prts.set(self._ind,reward,1)
+            self.buffers.append([[state,action,new_state,reward,is_terminal, mapName],reward+0.0001])
+        self.psum+=numpy.power(reward+0.0001,self.alpha)
+        self.prts.set(self._ind,reward+0.0001,1)
         self._ind=(self._ind+1)%self.maxlen
         self.count+=1
 
