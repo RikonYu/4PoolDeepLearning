@@ -54,7 +54,8 @@ class QLearning:
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
             for i in range(self.batch_size):
-                print(Y_[i], aprime[i], samples[i][3])
+                if(samples[i][3]!=0):
+                    print(Y_[i], aprime[i], samples[i][3])
                 diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
 
             # not using bias for now
@@ -131,7 +132,7 @@ class QLearning:
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
                         self.buflock.acquire()
-                        self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited + last_value),
+                        self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited - last_value),
                                 1, self.mapName)
                         self.buflock.release()
                         if (is_first == 1):
