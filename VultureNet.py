@@ -53,6 +53,7 @@ class VultureNet(UnitNet):
                 ans[shrinkScr(u.bounds[0]-myPos[0]+WINDOW_SIZE//2):shrinkScr(u.bounds[1]-myPos[0]+WINDOW_SIZE//2),
                     shrinkScr(u.bounds[2]-myPos[1]+WINDOW_SIZE//2):shrinkScr(u.bounds[3]-myPos[1]+WINDOW_SIZE//2),0]=1
         return ans
+    @staticmethod
     def msg2mask(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,VultureNet._out_channel])
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
