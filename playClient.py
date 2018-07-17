@@ -53,7 +53,7 @@ class PlayAI(BaseAI):
         send_reg()
 
     def frame(self):
-        if (game.getFrameCount() % curTask.frameSkip != 0):
+        if (game.getFrameCount() % curTask.frameSkip != 2):
             for i in game.getAllUnits():
                 if(i.getLastCommand().getType().getName()=='Move'):
                     game.drawLineMap(i.getPosition(),i.getLastCommand().getTargetPosition(),pybrood.Colors.Red)
@@ -80,7 +80,7 @@ class PlayAI(BaseAI):
                 Socks[i].close()
                 Socks.pop(i, None)
                 unitThreads.pop(i, None)
-        if(game.getFrameCount()>=curTask.maxFrame):
+        if(game.getFrameCount()>=curTask.maxFrame or len(Socks)==0):
             ans=curTask.finalValueFunc(self.playerMe)
             print('final Value', ans)
             game.leaveGame()

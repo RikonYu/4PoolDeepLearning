@@ -80,9 +80,7 @@ def VultureKiteValue(unit):
     return unit.getKillCount()
 
 def VultureKiteFinalValue(player):
-    for u in player.getUnits():
-        if(u.getType()==pybrood.UnitTypes.Terran_Vulture):
-            return u.getKillCount()
+    return game.getFrameCount()
 
 
 taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue, 10)
