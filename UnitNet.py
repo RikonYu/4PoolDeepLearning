@@ -7,6 +7,7 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam
 from keras import backend as KTF
 from consts import WINDOW_SIZE
+from util64 import conv_block
 import numpy
 class UnitNet:
     _in_channel=1
@@ -71,15 +72,35 @@ class UnitNet:
     def y2state(ind):
         pass
 
-class NeuralMap:
-    def __init__(self, _in_channel, mapHeight, mapWidth):
-        self.board=numpy.zeros([mapHeight,mapWidth,_in_channel])
-        self.build_global_read()
-        self._in_channel=_in_channel
-        self.build_write()
-    def build_global_read(self):
-        self.read_inp=Input(self.board.shape,dtype='float32')
-        self.read_conv1=Conv2D(32, (3,3), padding='same', activation='relu')(self.read_inp)
-        self.read_conv1=MaxPooling2D((2,2))(self.read_conv1)
-        self.read_conv2=Conv2D(32,(3,3), padding='same', activation='relu')(self.read_conv1)
-        self.read_conv2 = MaxPooling2D((2, 2))(self.read_conv2)
+class ValueNetwork:
+    def __init__(self, in_channel):
+        self.session = KTF.get_session()
+        self.graph = tf.get_default_graph()
+        self.in_channel=in_channel
+        self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,in_channel),dtype='float32')
+        self.conv1=conv_block(self.inp,1)
+        self.pool1=MaxPooling2D((2,2))(self.conv1)
+        self.conv2=conv_block(self.inp,1)
+        self.pool2=MaxPooling2D((2,2))(self.conv2)
+        self.conv3=conv_block(self.inp,1)
+        self.pool3=MaxPooling2D((2,2))(self.conv3)
+        self.dense1=Dense(256,activation='relu')(Flatten()(self.pool3))
+        self.output=Dense(1,activation='linear')(self.dense1)
+        self.model=Model(inputs=self.inp,outputs=self.output)
+        self.model.compile(optimizer='adam',loss='mse')
+    def train(self, X, Y):
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model.fit(X,Y)
+    def predict(self,X):
+        with self.session.as_default():
+            with self.graph.as_default():
+                return self.model.predict(X)
+    def save(self):
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model.save('ValueNet%d.h5'%self.in_channel)
+    def load(self):
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model.load('ValueNet%d.h5'%self.in_channel)

@@ -37,8 +37,8 @@ class VultureNet(UnitNet):
                 self.out = Conv2DTranspose(VultureNet._out_channel, (3, 3), activation='linear', padding='same')(
                     self.deconv4)
                 self.model = Model(inputs=self.inp, outputs=self.out)
-                optz = SGD(lr=0.01, momentum=0.9, decay=1e-6)
-                self.model.compile(optimizer='adam', loss='MSE')
+                optz = Adam(lr=0.002, momentum=0.9, decay=1e-8)
+                self.model.compile(optimizer=optz, loss='MSE')
                 self.model._make_predict_function()
                 self.model._make_test_function()
                 self.model._make_train_function()

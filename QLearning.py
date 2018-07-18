@@ -23,7 +23,7 @@ class QLearning:
         self.mapName=''
         self.learn_epoch=0
         self.buflock=threading.Semaphore(1)
-        self.buf = ReplayBuffer.PriortizedReplayBuffer(50000)
+        self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
         self.epsilon=epsilon
         self.discount=discount
         self.targetType=''
@@ -79,7 +79,6 @@ class QLearning:
             self.units = getUnitClass(self.targetType, True)
             self.target = getUnitClass(self.targetType, True)
             self.tempd = getUnitClass(self.targetType, True)
-            self.tempd.set_weights(self.units.get_weights())
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
         self.mapName = k.mapName

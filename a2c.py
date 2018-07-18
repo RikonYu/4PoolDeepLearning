@@ -10,8 +10,9 @@ from ClassConstr import getUnitClass
 import threading
 from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
+from UnitNet import ValueNetwork
 
-class A3C:
+class A2C:
     def __init__(self, epsilon, discount, exploration_weight, batch_size):
         self.epsilon=epsilon
         self.discount=discount
@@ -19,24 +20,33 @@ class A3C:
         self.exploration_weight=exploration_weight
         self.Q=None
         self.policy=None
+        self.V=None
+        self.tempd=None
         self.mapSet=util64.Maps()
         self.lock=RWLock.RWLockWrite()
         self.learn_epoch=0
         self.target_type=''
         self.agent=0
+        self.memory=[]
 
     def init_episode(self, k):
         if (self.mapSet.is_empty()):
-            self.mapSet.add_map(util64.gameMap(k[1], k[3]))
-            self.targetType = k[2]
-            self.Q = getUnitClass(self.targetType, True)
-            self.policy = getUnitClass(self.targetType, True)
-            self.tempd.set_weights(self.units.get_weights())
-        elif (self.mapSet.find_map(k[3]) is None):
-            self.mapSet.add_map(util64.gameMap(k[1], k[3]))
-            print('new map: ', k[3])
-        self.mapName = k[3]
+            self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
+            self.targetType = k.unitType
+            self.units = getUnitClass(self.targetType, True)
+            self.target = getUnitClass(self.targetType, True)
+            self.tempd = getUnitClass(self.targetType, True)
+            self.V=ValueNetwork(self.units._in_channel)
+        elif (self.mapSet.find_map(k.mapName) is None):
+            self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
+        self.mapName = k.mapName
         self.agent_no = 1
+    def learner(self):
+        while(True):
+            if(len(self.memory)==0):
+                time.sleep(5)
+                continue
+
 
     def controller(self, con, is_first):
         rl=self.lock.genRlock()
@@ -66,10 +76,5 @@ class A3C:
                         else:
                             memory.append([last_state,last_act,data[1], 1, data[2]])
             except EOFError:
-                #update gradient
-                R=0
-                for i in memory:
-                    R=i[4]+self.discount*R
-                    gradient=KB.gradients(self.policy.out,self.policy.model.trainable_weights)
-                    gradients=0
+                self.memory=memory
                 break
