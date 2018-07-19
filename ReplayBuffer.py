@@ -61,18 +61,17 @@ class PriortizedReplayBuffer:
     def add(self,state,action,new_state,reward,is_terminal, mapName):
         if(len(self.buffers)>=self.maxlen):
             self.psum-=numpy.power(self.buffers[self._ind][1],self.alpha)
-            self.buffers[self._ind]=[[state,action,new_state,reward,is_terminal, mapName],reward+0.0001]
+            self.buffers[self._ind]=[[state,action,new_state,reward,is_terminal, mapName],abs(reward)+0.0001]
         else:
-            self.buffers.append([[state,action,new_state,reward,is_terminal, mapName],reward+0.0001])
-        self.psum+=numpy.power(reward+0.0001,self.alpha)
-        self.prts.set(self._ind,reward+0.0001,1)
+            self.buffers.append([[state,action,new_state,reward,is_terminal, mapName],abs(reward)+0.0001])
+        self.psum+=numpy.power(abs(reward)+0.0001,self.alpha)
+        self.prts.set(self._ind,abs(reward)+0.0001,1)
         self._ind=(self._ind+1)%self.maxlen
         self.count+=1
 
     def sample(self,batch_size):
         if(len(self.buffers)<batch_size):
             return []
-        probs=0
         probs=numpy.power([i[1] for i in self.buffers],self.alpha)/self.psum
         inds=numpy.random.choice(len(self.buffers),batch_size,replace=False,p=probs)
         bias=numpy.power((self.count*probs[inds]),self.beta)
