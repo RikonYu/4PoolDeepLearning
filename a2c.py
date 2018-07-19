@@ -61,7 +61,7 @@ class A2C:
         memory=[]
         while(True):
             try:
-                data=pickle.load(util64.recv_msg(con))
+                data=pickle.loads(util64.recv_msg(con))
                 if(data[0] ==  'reg'):
                     self.init_episode(data)
                     con.send(b'ok')
