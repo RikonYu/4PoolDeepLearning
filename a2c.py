@@ -71,6 +71,12 @@ class A2C:
         last_state=None
         last_act=None
         memory=[]
+        fval=None
+        frwd=None
+        last_val=None
+        if(is_first==1):
+            fval=open('cVal.txt','a')
+            frwd=open('reward.txt','a')
         while(True):
             try:
                 data=pickle.loads(util64.recv_msg(con))
@@ -83,8 +89,10 @@ class A2C:
                     mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data.msg)
                     rl.acquire()
                     act=self.actor.sample_ans_masked(X,mask)
-                    if(is_first==1):
+                    if(is_first==1 and last_val is not None):
                         print(self.critic.predict([X]), data.value)
+                        fval.write(str(self.critic.predict([X])[0,0])+'\n')
+                        frwd.write(str(data.value-last_val)+'\n')
                     rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
@@ -92,6 +100,9 @@ class A2C:
                             memory.append([last_state,last_act,last_state, 0, data.value])
                         else:
                             memory.append([last_state,last_act,data.msg, 1, data.value])
+                    last_val=data.value
+                    last_state=data.msg
+                    last_act=act
             except:
                 self.memory.append(memory)
                 self.memory_map.append(self.mapName)
