@@ -33,6 +33,6 @@ if (__name__ == '__main__'):
         # print(addr)
         k = threading.Thread(target=agent.controller, args=[con, agent.agent_no])
         #print(agent_no)
-        QL.agent_no += 1
+        agent.agent_no += 1
         time.sleep(1)
         k.start()
