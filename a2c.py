@@ -70,8 +70,8 @@ class A2C:
                     con.send(b'ok')
                     break
                 else:
-                    X=self.actor.msg2state(self.mapSet.find_map(self.mapName),data[1])
-                    mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data[1])
+                    X=self.actor.msg2state(self.mapSet.find_map(self.mapName),data.msg)
+                    mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data.msg)
                     rl.acquire()
                     act=self.actor.sample_ans(X,mask)
                     if(is_first==1):
@@ -79,10 +79,10 @@ class A2C:
                     rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
-                        if(data[0]=='terminal'):
-                            memory.append([last_state,last_act,last_state, 0, data[2]])
+                        if(data.type=='terminal'):
+                            memory.append([last_state,last_act,last_state, 0, data.value])
                         else:
-                            memory.append([last_state,last_act,data[1], 1, data[2]])
+                            memory.append([last_state,last_act,data.msg, 1, data.value])
             except EOFError:
                 self.memory.append(memory)
                 self.memory_map.append(self.mapName)
