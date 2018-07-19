@@ -40,6 +40,7 @@ class UnitNet:
         return numpy.where(mask,Y,-numpy.inf)
     def predict_ans_masked(self,X,mask, want_val=False):
         allval=self.predict_all(X)[0]
+        print(allval)
         ini,inj,ink=numpy.nonzero(mask)
         pos=numpy.argmax(allval[ini,inj,ink])
         ans=[ini[pos],inj[pos],ink[pos]]
