@@ -15,7 +15,7 @@ import os, sys
 class DroneNet(UnitNet):
     _in_channel=5
     _out_channel=2
-    def __init__(self,loading=False):
+    def __init__(self,loading=False, output_type='linear'):
         self._in_channel=DroneNet._in_channel
         self._out_channel=DroneNet._out_channel
         self.session = KTF.get_session()
@@ -34,7 +34,7 @@ class DroneNet(UnitNet):
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv2)
                 self.deconv4 = Conv2DTranspose(64, (3, 3), activation='relu', padding='same')(self.up3)
-                self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='linear', padding='same')(
+                self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), activation=output_type, padding='same')(
                     self.deconv4)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 #optz=Adam(0.001)

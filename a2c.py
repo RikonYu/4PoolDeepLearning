@@ -2,12 +2,7 @@ import util64
 import pickle
 import time
 import numpy
-import os
-import ReplayBuffer
-from keras import backend as KB
-import tensorflow as tf
 from ClassConstr import getUnitClass
-import threading
 from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 from UnitNet import ValueNetwork
@@ -18,10 +13,10 @@ class A2C:
         self.discount=discount
         self.batch_size=batch_size
         self.exploration_weight=exploration_weight
-        self.Q=None
-        self.policy=None
-        self.V=None
+        self.actor=None
+        self.critic=None
         self.tempd=None
+        self.units=None
         self.mapSet=util64.Maps()
         self.lock=RWLock.RWLockWrite()
         self.learn_epoch=0
@@ -33,26 +28,37 @@ class A2C:
         if (self.mapSet.is_empty()):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
             self.targetType = k.unitType
-            self.units = getUnitClass(self.targetType, True)
-            self.target = getUnitClass(self.targetType, True)
-            self.tempd = getUnitClass(self.targetType, True)
-            self.V=ValueNetwork(self.units._in_channel)
+            self.actor = getUnitClass(self.targetType, True,'softmax')
+            self.tempd = getUnitClass(self.targetType, True,'softmax')
+            self.critic=ValueNetwork(self.actor._in_channel)
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
         self.mapName = k.mapName
         self.agent_no = 1
     def learner(self):
+        wl=self.lock.genWlock()
         while(True):
             if(len(self.memory)==0):
                 time.sleep(5)
                 continue
-
-
+            values=[]
+            targets=[]
+            for i in self.memory:
+                values.append(self.critic.predict(self.actor.msg2state(i[0])))
+            values.append(0)
+            for i in range(len(self.memory)):
+                advantages=numpy.zeros([1,WINDOW_SIZE,WINDOW_SIZE,self.actor._in_channel])
+                advantages[0][tuple(self.memory[i][1])]=self.memory[i][3]+self.discount*values[i+1]-values[i]
+                targets=numpy.zeros([1,1])
+                targets[0][0]=self.memory[i][3]+self.discount*values[i+1]
+                wl.acquire()
+                self.actor.train([self.actor.msg2state(self.memory[i][1])],advantages)
+                self.critic.train_batch([self.actor.msg2state(self.memory[i][1])], targets)
+                wl.release()
+            self.actor.save()
+            self.critic.save()
     def controller(self, con, is_first):
         rl=self.lock.genRlock()
-        wl=self.lock.genWlock()
-        gradients=0
-        step=0
         last_state=None
         last_act=None
         memory=[]
@@ -64,10 +70,10 @@ class A2C:
                     con.send(b'ok')
                     break
                 else:
-                    X=self.policy.msg2state(self.mapSet.find_map(self.mapName),data[1])
-                    mask=self.policy.msg2mask(self.mapSet.find_map(self.mapName),data[1])
+                    X=self.actor.msg2state(self.mapSet.find_map(self.mapName),data[1])
+                    mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data[1])
                     rl.acquire()
-                    act=self.policy.sample_ans(X,mask)
+                    act=self.actor.sample_ans(X,mask)
                     rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):

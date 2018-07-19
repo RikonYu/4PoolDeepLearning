@@ -12,7 +12,7 @@ import numpy
 class UnitNet:
     _in_channel=1
     _out_channel=1
-    def __init__(self,loading=False):
+    def __init__(self,loading=False, output_type='linear'):
         self.model=None
     def set_weights(self,weights):
         with self.session.as_default():
@@ -88,14 +88,14 @@ class ValueNetwork:
         self.output=Dense(1,activation='linear')(self.dense1)
         self.model=Model(inputs=self.inp,outputs=self.output)
         self.model.compile(optimizer='adam',loss='mse')
-    def train(self, X, Y):
+    def train_batch(self, X, Y):
         with self.session.as_default():
             with self.graph.as_default():
                 self.model.fit(X,Y)
     def predict(self,X):
         with self.session.as_default():
             with self.graph.as_default():
-                return self.model.predict(X)
+                return self.model.predict([X])
     def save(self):
         with self.session.as_default():
             with self.graph.as_default():
@@ -103,4 +103,4 @@ class ValueNetwork:
     def load(self):
         with self.session.as_default():
             with self.graph.as_default():
-                self.model.load('ValueNet%d.h5'%self.in_channel)
+                self.model=load_model('ValueNet%d.h5'%self.in_channel)
