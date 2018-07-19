@@ -35,15 +35,16 @@ class A2C:
         self.mapName = k.mapName
         self.agent_no = 1
     def learner(self):
-        tactor=getUnitClass(self.target_type, False, 'softmax')
-        tactor.set_weights(self.actor.get_weights())
-        tcritic=ValueNetwork(self.tactor._in_channel)
-        tcritic.set_weights(self.critic.get_weights())
+
         wl=self.lock.genWlock()
         while(True):
             if(len(self.memory)==0):
                 time.sleep(5)
                 continue
+            tactor = getUnitClass(self.target_type, False, 'softmax')
+            tactor.set_weights(self.actor.get_weights())
+            tcritic = ValueNetwork(self.tactor._in_channel)
+            tcritic.set_weights(self.critic.get_weights())
             values=[]
             cmem=self.memory[0]
             for i in cmem:
