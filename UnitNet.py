@@ -104,3 +104,12 @@ class ValueNetwork:
         with self.session.as_default():
             with self.graph.as_default():
                 self.model=load_model('ValueNet%d.h5'%self.in_channel)
+    def get_weights(self):
+        with self.session.as_default():
+            with self.graph.as_default():
+                return self.model.get_weights()
+
+    def set_weights(self,weights):
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model.set_weights(weights)

@@ -28,13 +28,17 @@ class A2C:
         if (self.mapSet.is_empty()):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
             self.targetType = k.unitType
-            self.actor = getUnitClass(self.targetType, True,'softmax')
+            self.actor = getUnitClass(self.targetType, False,'softmax')
             self.critic=ValueNetwork(self.actor._in_channel)
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
         self.mapName = k.mapName
         self.agent_no = 1
     def learner(self):
+        tactor=getUnitClass(self.targetType, False, 'softmax')
+        tactor.set_weights(self.actor.get_weights())
+        tcritic=ValueNetwork(self.tactor._in_channel)
+        tcritic.set_weights(self.critic.get_weights())
         wl=self.lock.genWlock()
         while(True):
             if(len(self.memory)==0):
@@ -50,12 +54,16 @@ class A2C:
                 advantages[0][tuple(cmem[i][1])]=cmem[i][3]+self.discount*values[i+1]-values[i]
                 targets=numpy.zeros([1,1])
                 targets[0][0]=cmem[i][3]+self.discount*values[i+1]
-                wl.acquire()
-                self.actor.train([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])],advantages)
-                self.critic.train_batch([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])], targets)
-                wl.release()
-            self.actor.save()
-            self.critic.save()
+
+                tactor.train([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])],advantages)
+                tcritic.train_batch([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])], targets)
+
+            tactor.save()
+            tcritic.save()
+            wl.acquire()
+            self.actor.set_weights(tactor.get_weights())
+            self.critic.set_weights(tcritic.get_weights())
+            wl.release()
             self.memory.pop(0)
     def controller(self, con, is_first):
         rl=self.lock.genRlock()
