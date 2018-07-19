@@ -70,12 +70,10 @@ class DroneNet(UnitNet):
         ans[x*WINDOW_SIZE//X,y*WINDOW_SIZE//Y,1]=1
         for u in msg.allies:
             ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
-        '''
         for u in msg.resources:
             #print(u)
             if(u.type=='Resource_Vespene_Geyser'):
                 ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
-        '''
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
