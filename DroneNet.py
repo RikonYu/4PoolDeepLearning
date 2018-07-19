@@ -1,7 +1,7 @@
 import keras
 import tensorflow as tf
 from keras.models import Sequential, Model, load_model
-from keras.layers import Input, Concatenate, BatchNormalization, UpSampling2D, Layer, Add
+from keras.layers import Input, Concatenate, BatchNormalization, UpSampling2D, Layer, Add, Activation
 from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv2D, MaxPooling2D, Conv2DTranspose
 from keras.optimizers import Adam, SGD
 from keras import backend as KTF
@@ -34,8 +34,16 @@ class DroneNet(UnitNet):
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv2)
                 self.deconv4 = Conv2DTranspose(64, (3, 3), activation='relu', padding='same')(self.up3)
-                self.out = Conv2DTranspose(DroneNet._out_channel, (1,1), activation=output_type, padding='same')(
+                if(output_type=='softmax'):
+                    self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='linear', padding='same')(
                     self.deconv4)
+                    self.out=Flatten()(self.out)
+                    self.out=Activation('softmax')(self.out)
+                    self.out=Reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self._out_channel])(self.out)
+                else:
+                    self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='relu', padding='same')(
+                        self.deconv4)
+                    self.out=Activation(output_type)(self.out)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 #optz=Adam(0.001)
                 #optz=SGD(lr=0.01,momentum=0.9)
