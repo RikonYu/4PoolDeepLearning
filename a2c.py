@@ -22,6 +22,7 @@ class A2C:
         self.target_type=''
         self.agent_no=0
         self.memory=[]
+        self.memory_map=''
 
     def init_episode(self, k):
         if (self.mapSet.is_empty()):
@@ -40,20 +41,22 @@ class A2C:
                 time.sleep(5)
                 continue
             values=[]
-            for i in self.memory:
+            cmem=self.memory[0]
+            for i in cmem:
                 values.append(self.critic.predict(self.actor.msg2state(i[0])))
             values.append(0)
-            for i in range(len(self.memory)):
+            for i in range(len(cmem)):
                 advantages=numpy.zeros([1,WINDOW_SIZE,WINDOW_SIZE,self.actor._in_channel])
-                advantages[0][tuple(self.memory[i][1])]=self.memory[i][3]+self.discount*values[i+1]-values[i]
+                advantages[0][tuple(cmem[i][1])]=cmem[i][3]+self.discount*values[i+1]-values[i]
                 targets=numpy.zeros([1,1])
-                targets[0][0]=self.memory[i][3]+self.discount*values[i+1]
+                targets[0][0]=cmem[i][3]+self.discount*values[i+1]
                 wl.acquire()
-                self.actor.train([self.actor.msg2state(self.memory[i][1])],advantages)
-                self.critic.train_batch([self.actor.msg2state(self.memory[i][1])], targets)
+                self.actor.train([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])],advantages)
+                self.critic.train_batch([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])], targets)
                 wl.release()
             self.actor.save()
             self.critic.save()
+            self.memory.pop(0)
     def controller(self, con, is_first):
         rl=self.lock.genRlock()
         last_state=None
@@ -71,6 +74,8 @@ class A2C:
                     mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data[1])
                     rl.acquire()
                     act=self.actor.sample_ans(X,mask)
+                    if(is_first==1):
+                        print(self.critic.predict([X]))
                     rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
@@ -79,5 +84,6 @@ class A2C:
                         else:
                             memory.append([last_state,last_act,data[1], 1, data[2]])
             except EOFError:
-                self.memory=memory
+                self.memory.append(memory)
+                self.memory_map.append(self.mapName)
                 break
