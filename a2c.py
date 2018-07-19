@@ -73,7 +73,7 @@ class A2C:
                     X=self.actor.msg2state(self.mapSet.find_map(self.mapName),data.msg)
                     mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data.msg)
                     rl.acquire()
-                    act=self.actor.sample_ans(X,mask)
+                    act=self.actor.sample_ans_masked(X,mask)
                     if(is_first==1):
                         print(self.critic.predict([X]))
                     rl.release()
