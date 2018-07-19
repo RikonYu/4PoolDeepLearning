@@ -20,7 +20,7 @@ class A2C:
         self.lock=RWLock.RWLockWrite()
         self.learn_epoch=0
         self.target_type=''
-        self.agent=0
+        self.agent_no=0
         self.memory=[]
 
     def init_episode(self, k):
