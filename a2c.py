@@ -27,15 +27,15 @@ class A2C:
     def init_episode(self, k):
         if (self.mapSet.is_empty()):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
-            self.targetType = k.unitType
-            self.actor = getUnitClass(self.targetType, False,'softmax')
+            self.target_type = k.unitType
+            self.actor = getUnitClass(self.target_type, False,'softmax')
             self.critic=ValueNetwork(self.actor._in_channel)
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
         self.mapName = k.mapName
         self.agent_no = 1
     def learner(self):
-        tactor=getUnitClass(self.targetType, False, 'softmax')
+        tactor=getUnitClass(self.target_type, False, 'softmax')
         tactor.set_weights(self.actor.get_weights())
         tcritic=ValueNetwork(self.tactor._in_channel)
         tcritic.set_weights(self.critic.get_weights())
