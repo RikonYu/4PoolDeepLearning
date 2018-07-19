@@ -3,7 +3,7 @@ import pickle
 import socket
 import time
 import numpy
-import os
+import os, sys
 from a2c import A2C
 import threading
 from QLearning import QLearning
@@ -31,7 +31,10 @@ if (__name__ == '__main__'):
     while (True):
         con, addr = soc.accept()
         # print(addr)
-        k = threading.Thread(target=agent.controller, args=[con, agent.agent_no])
+        if(sys.argv[1]=='train'):
+            k = threading.Thread(target=agent.controller, args=[con, agent.agent_no])
+        elif(sys.argv[1]=='test'):
+            k=threading.Thread(target=agent.exploiter, args=[con,agent.agent_no])
         #print(agent_no)
         agent.agent_no += 1
         time.sleep(1)
