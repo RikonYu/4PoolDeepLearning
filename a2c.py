@@ -75,7 +75,7 @@ class A2C:
                     rl.acquire()
                     act=self.actor.sample_ans_masked(X,mask)
                     if(is_first==1):
-                        print(self.critic.predict([X]))
+                        print(self.critic.predict([X]), data.value)
                     rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
@@ -83,7 +83,7 @@ class A2C:
                             memory.append([last_state,last_act,last_state, 0, data.value])
                         else:
                             memory.append([last_state,last_act,data.msg, 1, data.value])
-            except EOFError:
+            except:
                 self.memory.append(memory)
                 self.memory_map.append(self.mapName)
                 break
