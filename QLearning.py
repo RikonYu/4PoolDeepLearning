@@ -73,15 +73,14 @@ class QLearning:
         if (self.mapSet.is_empty()):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
             self.targetType = k.unitType
-            self.units = getUnitClass(self.targetType, True)
-            self.target = getUnitClass(self.targetType, True)
-            self.tempd = getUnitClass(self.targetType, True)
+            self.units = getUnitClass(self.targetType, False)
+            self.target = getUnitClass(self.targetType, False)
+            self.tempd = getUnitClass(self.targetType, False)
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
         self.mapName = k.mapName
         self.agent_no = 1
     def exploiter(self, con, is_first):
-        rl=self.lock.genRlock()
         while (True):
             try:
                 data = util64.recv_msg(con)
@@ -94,9 +93,7 @@ class QLearning:
                     msg=k.msg
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
-                    rl.acquire()
                     ans = self.units.predict_ans_masked(X, mask, is_first == 1)
-                    rl.release()
                     if (is_first == 1):
                         print('exploiting', ans[0], ans[1])
                         ans=ans[0]
