@@ -22,7 +22,7 @@ class A2C:
         self.target_type=''
         self.agent_no=0
         self.memory=[]
-        self.memory_map=''
+        self.memory_map=[]
 
     def init_episode(self, k):
         if (self.mapSet.is_empty()):
