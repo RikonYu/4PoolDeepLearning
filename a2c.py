@@ -15,7 +15,6 @@ class A2C:
         self.exploration_weight=exploration_weight
         self.actor=None
         self.critic=None
-        self.tempd=None
         self.units=None
         self.mapSet=util64.Maps()
         self.lock=RWLock.RWLockWrite()
@@ -29,7 +28,6 @@ class A2C:
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
             self.targetType = k.unitType
             self.actor = getUnitClass(self.targetType, True,'softmax')
-            self.tempd = getUnitClass(self.targetType, True,'softmax')
             self.critic=ValueNetwork(self.actor._in_channel)
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
@@ -42,7 +40,6 @@ class A2C:
                 time.sleep(5)
                 continue
             values=[]
-            targets=[]
             for i in self.memory:
                 values.append(self.critic.predict(self.actor.msg2state(i[0])))
             values.append(0)
