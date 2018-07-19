@@ -55,10 +55,8 @@ class A2C:
                 advantages[0][tuple(cmem[i][1])]=cmem[i][3]+self.discount*values[i+1]-values[i]
                 targets=numpy.zeros([1,1])
                 targets[0][0]=cmem[i][3]+self.discount*values[i+1]
-
                 tactor.train([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])],advantages)
                 tcritic.train_batch([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])], targets)
-
             tactor.save()
             tcritic.save()
             wl.acquire()

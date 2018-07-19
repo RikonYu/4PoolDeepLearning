@@ -135,7 +135,7 @@ class QLearning:
                                 1, self.mapName)
                         self.buflock.release()
                         if (is_first == 1):
-                            feval.write(str(last_value) + '\n')
+                            feval.write(str(k.value-last_value) + '\n')
                             feval.flush()
                             os.fsync(feval.fileno())
                         break

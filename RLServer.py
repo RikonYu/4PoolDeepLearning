@@ -11,8 +11,8 @@ from consts import WINDOW_SIZE
 
 
 
-#agent=QLearning(0.3,0.9,0,32)
-agent=A2C(0.3,0.95,0,0)
+agent=QLearning(0.3,0.9,0,32)
+#agent=A2C(0.3,0.95,0,0)
 if (__name__ == '__main__'):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = 'linux.cs.uwaterloo.ca'
