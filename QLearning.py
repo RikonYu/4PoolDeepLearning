@@ -31,7 +31,7 @@ class QLearning:
 
     def learner(self):
         replace_every = 50
-        train_every = 32
+        train_every = 64
         wl = self.lock.genWlock()
         while (True):
             if (self.buf.count < train_every):
@@ -67,9 +67,6 @@ class QLearning:
             wl.acquire()
             self.units.set_weights(self.tempd.get_weights())
             wl.release()
-            self.buflock.acquire()
-            self.buf.count -= train_every
-            self.buflock.release()
             self.learn_epoch += 1
 
     def init_game(self, k):
