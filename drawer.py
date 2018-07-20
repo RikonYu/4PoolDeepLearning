@@ -39,8 +39,8 @@ plt.plot(k,'r',label='Q')
 plt.legend()
 plt.show()
 fval=open('allval.txt','rb')
-sb=pickle.load(fval)
-mask=pickle.load(fval)
+sb,mask=pickle.load(fval)
+
 ssb=numpy.sum(sb,axis=2)
 fig = plt.figure(figsize=(2, 3))
 for i in range(2):
