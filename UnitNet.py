@@ -36,6 +36,10 @@ class UnitNet:
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
     def predict_max(self,X):
         return numpy.amax(self.predict_all(X))
+    def predict_max_masked(self,X,mask):
+        k=self.predict_all(X)
+        ini,inj,ink=numpy.nonzero(mask)
+        return numpy.amax(k[ini,inj,ink])
     def predict_all_masked(self,X,mask):
         Y=self.predict_all(X)
     def predict_ans_masked(self,X,mask, want_val=False):
