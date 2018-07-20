@@ -67,7 +67,7 @@ def findGasValue(unit):
         if(u.getType()==pybrood.UnitTypes.Resource_Vespene_Geyser):
             if(dist(u.getPosition(),unit.getPosition())<ans):
                 ans=dist(u.getPosition(),unit.getPosition())
-    return -ans
+    return -ans/(pybrood.UnitTypes.Zerg_Drone.topSpeed()*10)
 
 def findGasFinalValue(player):
     ans=0
