@@ -49,7 +49,7 @@ class UnitNet:
         pos=numpy.argmax(allval[ini,inj,ink])
         ans=[ini[pos],inj[pos],ink[pos]]
         if(want_val):
-            f=open('allval.txt','w')
+            f=open('allval.txt','wb')
             pickle.dump(allval, f)
             pickle.dump(mask,f)
             f.close()
