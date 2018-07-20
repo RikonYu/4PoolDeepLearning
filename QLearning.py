@@ -40,7 +40,9 @@ class QLearning:
                 time.sleep(10)
                 continue
             self.buflock.acquire()
-            samples, indx, bias = self.buf.sample(self.batch_size)
+            #samples, indx, bias = self.buf.sample(self.batch_size)
+            samples = self.buf.sample(self.batch_size)
+
             self.buflock.release()
             print('training')
             self.tempd.set_weights(self.units.get_weights())
@@ -50,10 +52,12 @@ class QLearning:
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
             diff = numpy.copy(Y)
+            '''
             self.buflock.acquire()
             self.buf.update(indx,
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
+            '''
             for i in range(self.batch_size):
                 if(samples[i][3]!=0):
                     print(Y_[i], aprime[i], samples[i][3])
