@@ -23,7 +23,8 @@ class QLearning:
         self.mapName=''
         self.learn_epoch=0
         self.buflock=threading.Semaphore(1)
-        self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
+        #self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
+        self.buf=ReplayBuffer.ReplayBuffer(10000)
         self.epsilon=epsilon
         self.discount=discount
         self.targetType=''

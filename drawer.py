@@ -37,7 +37,7 @@ fin=open('Qvals.txt','r')
 k=list(map(float,fin.read().splitlines()))
 plt.plot(k,'r',label='Q')
 plt.legend()
-
+plt.show()
 fval=open('allval.txt','rb')
 sb=pickle.load(fval)
 fig = plt.figure(figsize=(1, 2))
