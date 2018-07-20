@@ -41,9 +41,8 @@ class DroneNet(UnitNet):
                     self.out=Activation('softmax')(self.out)
                     self.out=Reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self._out_channel])(self.out)
                 else:
-                    self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), padding='same')(
+                    self.out = Conv2DTranspose(DroneNet._out_channel, (1, 1),activation=output_type, padding='same')(
                         self.deconv4)
-                    self.out=Activation(output_type)(self.out)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 #optz=Adam(0.001)
                 #optz=SGD(lr=0.01,momentum=0.9)

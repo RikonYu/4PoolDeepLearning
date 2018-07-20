@@ -30,7 +30,7 @@ fin=open('rewards.txt','r')
 k=list(map(float,fin.read().splitlines()))
 k=numpy.array(k)
 sb=[sum(k[x:x+15]) for x in range(len(k)//15)]
-plt.plot(sb,'r',label='R')
+plt.plot(k,'r',label='R')
 plt.legend()
 plt.show()
 fin=open('Qvals.txt','r')
