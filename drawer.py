@@ -41,13 +41,15 @@ plt.show()
 fval=open('allval.txt','rb')
 sb=pickle.load(fval)
 mask=pickle.load(fval)
-print(sb.shape)
 ssb=numpy.sum(sb,axis=2)
 fig = plt.figure(figsize=(2, 3))
+poss=numpy.nonzero(mask)
+pos=numpy.argmax(mask[poss[0],poss[1],poss[2]])
 for i in range(2):
     fig.add_subplot(2, 3, i + 1)
-    fig.add_subplot(2, 3, i + 1)
     plt.imshow(sb[:, :, i].transpose(), cmap=plt.cm.gray)
+    if(poss[2][pos]==i):
+        plt.scatter(poss[0][pos],poss[1][pos], s=15, c='red', marker='o')
 for i in range(2):
     fig.add_subplot(2, 3, i + 4)
     plt.imshow(mask[:, :, i].transpose(), cmap=plt.cm.gray)
