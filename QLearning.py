@@ -23,8 +23,8 @@ class QLearning:
         self.mapName=''
         self.learn_epoch=0
         self.buflock=threading.Semaphore(1)
-        #self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
-        self.buf=ReplayBuffer.ReplayBuffer(10000)
+        self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
+        #self.buf=ReplayBuffer.ReplayBuffer(10000)
         self.epsilon=epsilon
         self.discount=discount
         self.targetType=''
@@ -40,8 +40,8 @@ class QLearning:
                 time.sleep(10)
                 continue
             self.buflock.acquire()
-            #samples, indx, bias = self.buf.sample(self.batch_size)
-            samples = self.buf.sample(self.batch_size)
+            samples, indx, bias = self.buf.sample(self.batch_size)
+            #samples = self.buf.sample(self.batch_size)
 
             self.buflock.release()
             print('training')
@@ -53,16 +53,16 @@ class QLearning:
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
             diff = numpy.copy(Y)
-            '''
             self.buflock.acquire()
             self.buf.update(indx,
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
             self.buflock.release()
-            '''
+
+
             for i in range(self.batch_size):
                 if(samples[i][3]!=0):
                     print(Y_[i], aprime[i], samples[i][3])
-                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
+                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]*bias[i]
 
             # not using bias for now
 
@@ -130,10 +130,12 @@ class QLearning:
                     msg=k.msg
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
+                        '''
                         self.buflock.acquire()
                         self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited - last_value),
                                 1, self.mapName)
                         self.buflock.release()
+                        '''
                         if (is_first == 1):
                             feval.write(str(k.value-last_value) + '\n')
                             feval.flush()
