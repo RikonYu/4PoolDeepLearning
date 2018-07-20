@@ -91,3 +91,7 @@ def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
     sock.sendall(msg)
 
+def inReach(up, mp):
+    if (abs(up[0] - mp[0]) < WINDOW_SIZE // 2 and abs(up[1] - mp[1]) < WINDOW_SIZE // 2):
+        return True
+    return False

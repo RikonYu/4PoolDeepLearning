@@ -37,7 +37,7 @@ class UnitNet:
     def predict_max(self,X):
         return numpy.amax(self.predict_all(X))
     def predict_max_masked(self,X,mask):
-        k=self.predict_all(X)
+        k=self.predict_all(X)[0]
         ini,inj,ink=numpy.nonzero(mask)
         return numpy.amax(k[ini,inj,ink])
     def predict_all_masked(self,X,mask):

@@ -6,7 +6,7 @@ from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv
 from keras.optimizers import Adam, SGD
 from keras import backend as KTF
 import numpy
-from util64 import conv_block, deconv_block, shrinkScr
+from util64 import conv_block, deconv_block, shrinkScr, inReach
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
 import os, sys
@@ -105,7 +105,8 @@ class DroneNet(UnitNet):
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         '''
         for u in msg.resources:
-            top,bot,left,right=u.bounds
-            ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
-                shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
+            if(inReach(u.coord, msg.myInfo.coord)):
+                top,bot,left,right=u.bounds
+                ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
+                    shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         return ans
