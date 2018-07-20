@@ -30,7 +30,7 @@ class QLearning:
         self.exploration_weight=exploration_weight
 
     def learner(self):
-        replace_every = 50
+        replace_every = 10
         train_every = 64
         wl = self.lock.genWlock()
         while (True):
