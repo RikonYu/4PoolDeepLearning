@@ -81,7 +81,7 @@ class DroneNet(UnitNet):
             ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
         '''
         for u in msg.resources:
-            print(u.type)
+            #print(u.type)
             if(u.type=='Resource_Vespene_Geyser'):
                 ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
         return ans
