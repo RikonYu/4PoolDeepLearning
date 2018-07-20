@@ -40,6 +40,9 @@ plt.legend()
 plt.show()
 fval=open('allval.txt','rb')
 sb=pickle.load(fval)
+for i in range(512):
+    for j in range(512):
+        print(sum(sb[i,j]))
 fig = plt.figure(figsize=(1, 2))
 for i in range(2):
     fig.add_subplot(1, 2, i + 1)

@@ -41,7 +41,7 @@ class DroneNet(UnitNet):
                     self.out=Activation('softmax')(self.out)
                     self.out=Reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self._out_channel])(self.out)
                 else:
-                    self.out = Conv2DTranspose(DroneNet._out_channel, (1, 1),activation=output_type, padding='same')(
+                    self.out = Conv2D(DroneNet._out_channel, (1, 1),activation=output_type, padding='same')(
                         self.deconv4)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 #optz=Adam(0.001)
@@ -81,7 +81,7 @@ class DroneNet(UnitNet):
             ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
         '''
         for u in msg.resources:
-            #print(u)
+            print(u.type)
             if(u.type=='Resource_Vespene_Geyser'):
                 ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
         return ans
