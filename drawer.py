@@ -37,4 +37,11 @@ fin=open('Qvals.txt','r')
 k=list(map(float,fin.read().splitlines()))
 plt.plot(k,'r',label='Q')
 plt.legend()
+
+fval=open('allval.txt','rb')
+sb=pickle.load(fval)
+fig = plt.figure(figsize=(1, 2))
+for i in range(2):
+    fig.add_subplot(1, 2, i + 1)
+    plt.imshow(sb[:, :, i], cmap=plt.cm.gray)
 plt.show()

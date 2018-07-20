@@ -7,6 +7,7 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam
 from keras import backend as KTF
 from consts import WINDOW_SIZE
+import pickle
 from util64 import conv_block
 import numpy
 class UnitNet:
@@ -37,7 +38,6 @@ class UnitNet:
         return numpy.amax(self.predict_all(X))
     def predict_all_masked(self,X,mask):
         Y=self.predict_all(X)
-        return numpy.where(mask,Y,-numpy.inf)
     def predict_ans_masked(self,X,mask, want_val=False):
         allval=self.predict_all(X)[0]
         #print(allval)
@@ -45,6 +45,9 @@ class UnitNet:
         pos=numpy.argmax(allval[ini,inj,ink])
         ans=[ini[pos],inj[pos],ink[pos]]
         if(want_val):
+            f=open('allval.txt','wb')
+            pickle.dump(allval,f)
+            f.close()
             #ans=numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
             return (ans, allval[tuple(ans)])
         #return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
