@@ -34,13 +34,12 @@ class DebugLearner(Learner):
                 if(data.type=='terminal'):
                     self.units.predict_ans_masked(X,mask,True)
                 for i in msg.resources:
-                    print(i.type)
                     if(i.type=='Resource_Vespene_Geyser'):
                         pos=i.coord
                 places=numpy.nonzero(mask)
                 ans=numpy.random.choice(len(places))
                 util64.send_msg(con, pickle.dumps([places[0][ans], places[1][ans], places[2][ans]]))
-                if(is_first==1):
+                if(is_first==1 and pos!=0):
                     Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
                     for ind in numpy.ndenumerate(Y):
                         Y[ind]=numpy.linalg.norm(numpy.array(ind)-pos)
