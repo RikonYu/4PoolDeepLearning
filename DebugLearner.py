@@ -13,7 +13,7 @@ from readerwriterlock import RWLock
 from Learners import Learner
 class DebugLearner(Learner):
     def __init__(self, *args):
-        super(self, DebugLearner).__init__(*args)
+        super(DebugLearner, self).__init__(*args)
         self.train_err=[]
     def exploiter(self):
         return

@@ -14,7 +14,7 @@ from readerwriterlock import RWLock
 from Learners import Learner
 class QLearning(Learner):
     def __init__(self, *args):
-        super(self, QLearning).__init__(*args)
+        super(QLearning, self).__init__(*args)
         self.units=None
         self.tempd=None
         self.target=None
