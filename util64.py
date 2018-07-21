@@ -21,7 +21,7 @@ def conv_block(inp, times, has_input=False):
     # if(has_input):
     #    return x
     # return x
-    short = Conv2D(32, (1, 1), padding='same')(inp)
+    short = Conv2D(32, (1, 1), activation='linear', padding='same')(inp)
     return Add()([x, short])
 
 
@@ -33,7 +33,7 @@ def deconv_block(inp, times):
         conv3 = Conv2DTranspose(8, (7, 7), activation='relu', padding='same')(x)
         conv4 = Conv2DTranspose(8, (9, 9), activation='relu', padding='same')(x)
         x = Concatenate(axis=3)([conv1, conv2, conv3, conv4])
-    short = Conv2DTranspose(32, (1, 1), padding='same')(inp)
+    short = Conv2DTranspose(32, (1, 1), activation='linear', padding='same')(inp)
     return Add()([x, short])
 
 
