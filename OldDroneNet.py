@@ -55,7 +55,7 @@ class OldDroneNet(UnitNet):
 
     @staticmethod
     def msg2mask(disGame, msg):
-        ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DroneNet._out_channel])
+        ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, OldDroneNet._out_channel])
         ans[WINDOW_SIZE // 2, WINDOW_SIZE // 2, 0] = 1
         ans[:, :, 5] = (msg[1][1] or msg[1][2])
         x = msg[0][0]
@@ -85,7 +85,7 @@ class OldDroneNet(UnitNet):
 
     @staticmethod
     def y2state(ind):
-        ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DroneNet._out_channel])
+        ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, OldDroneNet._out_channel])
         if (ind[2] in [0, 5]):
             ans[WINDOW_SIZE // 2, WINDOW_SIZE // 2, ind[2]] = 1
         else:
@@ -94,7 +94,7 @@ class OldDroneNet(UnitNet):
 
     @staticmethod
     def msg2state(disGame, msg):
-        ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, DroneNet._in_channel])
+        ans = numpy.zeros([WINDOW_SIZE, WINDOW_SIZE, OldDroneNet._in_channel])
         x, y = msg[0]
         ans[:, :, 11] = msg[1][0]
         ans[:, :, 16] = msg[1][1]

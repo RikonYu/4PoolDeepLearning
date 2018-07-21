@@ -33,7 +33,7 @@ class Learner:
             self.units = getUnitClass(self.targetType, False)
             self.target = getUnitClass(self.targetType, False)
             self.tempd = getUnitClass(self.targetType, False)
-        elif (self.mapSet.find_map(k.mapName) is None):
+        elif (self.mapSet.find_map(data.mapName) is None):
             self.mapSet.add_map(util64.gameMap(data.msg, data.mapName))
-        self.mapName = k.mapName
+        self.mapName = data.mapName
         self.agent_no = 1

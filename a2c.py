@@ -43,7 +43,7 @@ class A2C:
                 continue
             tactor = getUnitClass(self.target_type, False, 'softmax')
             tactor.set_weights(self.actor.get_weights())
-            tcritic = ValueNetwork(self.tactor._in_channel)
+            tcritic = ValueNetwork(tactor._in_channel)
             tcritic.set_weights(self.critic.get_weights())
             values=[]
             cmem=self.memory[0]

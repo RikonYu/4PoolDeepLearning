@@ -8,8 +8,6 @@ import os
 import copy
 from scipy.spatial import distance
 import matplotlib.pyplot as plt
-from models import MiningNet
-import DQN
 import pickle
 import numpy
 import numpy.random

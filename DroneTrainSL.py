@@ -63,7 +63,7 @@ if(__name__=='__main__'):
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
-            ngs.append(util64.gameInstance(reg))
+            ngs.append(util64.gameMap(reg, ''))
             ngsl.append(len(X))
             while(True):
                 x=pickle.load(f)
@@ -71,17 +71,16 @@ if(__name__=='__main__'):
                 if(y[2]!=0): 
                     X.append(x)
                     Y.append(y)
+        except EOFError:
             f.close()
             ngsl.append(len(X))
-        except EOFError:
-            continue
     #for i in range(len(allrep)*9//10,len(allrep)):
     for i in range(1,2):
         
         try:
             f=open(reppath+allrep[i],'rb')
             reg=pickle.load(f)
-            ngt.append(util64.gameInstance(reg))
+            ngt.append(util64.gameMap(reg, ''))
             ngtl.append(len(Xt))
             while(True):
                 x=pickle.load(f)
@@ -89,9 +88,10 @@ if(__name__=='__main__'):
                 if(y[2]!=0): 
                     Xt.append(x)
                     Yt.append(y)
+        except EOFError:
+
             ngtl.append(len(Xt))
             f.close()
-        except EOFError:
             continue
     for i in range(len(Y)):
         if(Y[i][2] in freq):
