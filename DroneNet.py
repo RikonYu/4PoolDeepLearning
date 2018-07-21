@@ -46,7 +46,7 @@ class DroneNet(UnitNet):
                         self.deconv4)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 #optz=Adam(0.001)
-                optz=SGD(lr=0.01,momentum=0.9)
+                optz=SGD(lr=0.001,momentum=0.9)
                 self.model.compile(optimizer=optz, loss='MSE')
                 self.model._make_predict_function()
                 self.model._make_test_function()
