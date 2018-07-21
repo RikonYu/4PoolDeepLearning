@@ -23,7 +23,7 @@ class DebugLearner(Learner):
         while(True):
             data = pickle.loads(util64.recv_msg(con))
             if (data.type == 'reg'):
-                self.init_episode(k)
+                self.init_episode(data)
                 con.send(b'ok')
                 break
             else:
