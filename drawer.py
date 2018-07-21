@@ -47,7 +47,7 @@ poss=numpy.nonzero(mask)
 pos=numpy.argmax(sb[poss[0],poss[1],poss[2]])
 for i in range(2):
     fig.add_subplot(2, 3, i + 1)
-    plt.imshow(sb[:, :, i].transpose(), cmap=plt.cm.gray)
+    plt.imshow(numpy.rot90(sb[:, :, i], axes=(1,0)), cmap=plt.cm.gray)
     if(poss[2][pos]==i):
         plt.scatter(poss[0][pos]+15,poss[1][pos]+15, s=15, c='red', marker='o')
 for i in range(2):

@@ -11,24 +11,15 @@ import threading
 from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 # Deep Q Learning
-class QLearning:
+from Learners import Learner
+class QLearning(Learner):
     def __init__(self, epsilon,discount, exploration_weight,batch_size):
-        self.lock=RWLock.RWLockWrite()
-        self.agent_no=0
+        super(self, QLearning).__init__(epsilon,discount,exploration_weight,batch_size)
         self.units=None
         self.tempd=None
         self.target=None
-        self.batch_size=batch_size
-        self.mapSet=util64.Maps()
-        self.mapName=''
-        self.learn_epoch=0
         self.buflock=threading.Semaphore(1)
         self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
-        #self.buf=ReplayBuffer.ReplayBuffer(10000)
-        self.epsilon=epsilon
-        self.discount=discount
-        self.targetType=''
-        self.exploration_weight=exploration_weight
 
     def learner(self):
         replace_every = 10
@@ -75,17 +66,6 @@ class QLearning:
             wl.release()
             self.learn_epoch += 1
 
-    def init_game(self, k):
-        if (self.mapSet.is_empty()):
-            self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
-            self.targetType = k.unitType
-            self.units = getUnitClass(self.targetType, False)
-            self.target = getUnitClass(self.targetType, False)
-            self.tempd = getUnitClass(self.targetType, False)
-        elif (self.mapSet.find_map(k.mapName) is None):
-            self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
-        self.mapName = k.mapName
-        self.agent_no = 1
     def exploiter(self, con, is_first):
         while (True):
             try:
@@ -123,7 +103,7 @@ class QLearning:
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
                 if (k.type == 'reg'):
-                    self.init_game(k)
+                    self.init_episode(k)
                     con.send(b'ok')
                     break
                 else:
@@ -186,4 +166,29 @@ class QLearning:
             fq.close()
 
     def asyncController(self, con, is_first):
-        pass
+        last_state=None
+        last_action=None
+        last_value=0
+        lastY=None
+        epsilon=self.epsilon*numpy.random.uniform(0.8,1.2)
+        while(True):
+            data=pickle.loads(util64.recv_msg(con))
+            if(data.type=='reg'):
+                self.init_game(data)
+                con.send(b'ok')
+                break
+            else:
+                msg=data.msg
+                if(data.type=='terminal'):
+                    #apply gradients
+                    pass
+                X=self.units.msg2state(self.mapSet.find_map(self.mapName))
+                places = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
+                ans = self.units.predict_ans_masked(X, places, True)
+                if(numpy.random.random()<epsilon):
+                    ini, inj, ink = numpy.nonzero(places)
+                    ind = numpy.random.choice(len(ini))
+                    ans[0] = [ini[ind], inj[ind], ink[ind]]
+                util64.send_msg(con,pickle.dumps(ans[0]))
+
+

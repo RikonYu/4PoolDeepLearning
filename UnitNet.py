@@ -40,8 +40,6 @@ class UnitNet:
         k=self.predict_all(X)[0]
         ini,inj,ink=numpy.nonzero(mask)
         return numpy.amax(k[ini,inj,ink])
-    def predict_all_masked(self,X,mask):
-        Y=self.predict_all(X)
     def predict_ans_masked(self,X,mask, want_val=False):
         allval=self.predict_all(X)[0]
         #print(allval)
