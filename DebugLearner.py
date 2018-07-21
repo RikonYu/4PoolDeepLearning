@@ -36,7 +36,6 @@ class DebugLearner(Learner):
                 for i in msg.resources:
                     if(i.type=='Resource_Vespene_Geyser'):
                         pos=i.coord
-                print(pos)
                 places=numpy.nonzero(mask)
                 ans=numpy.random.choice(len(places))
                 util64.send_msg(con, pickle.dumps([places[0][ans], places[1][ans], places[2][ans]]))
@@ -44,5 +43,5 @@ class DebugLearner(Learner):
                     Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
                     for ind,_ in numpy.ndenumerate(Y[:,:,1]):
                         Y[ind[0],ind[0],1]=numpy.linalg.norm([ind[0]-pos[0], ind[1]-pos[1]])
-                    self.units.train([X], [Y])
+                    self.units.train(X.reshape([-1, WINDOW_SIZE, WINDOW_SIZE,self.units._in_channel]), Y.reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel]))
 
