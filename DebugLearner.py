@@ -43,6 +43,6 @@ class DebugLearner(Learner):
                 if(is_first==1 and pos!=0):
                     Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
                     for ind in numpy.ndenumerate(Y):
-                        Y[ind]=numpy.linalg.norm(numpy.array(ind)-numpy.array(pos))
+                        Y[ind]=numpy.linalg.norm([ind[0]-pos[0], ind[1]-pos[1]])
                     self.units.train([X], [Y])
 
