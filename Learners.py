@@ -11,7 +11,7 @@ import threading
 from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 class Learner:
-    def __init(self, epsilon,discount, exploration_weight,batch_size):
+    def __init__(self, epsilon,discount, exploration_weight,batch_size):
         self.lock=RWLock.RWLockWrite()
         self.agent_no=0
         self.batch_size=batch_size

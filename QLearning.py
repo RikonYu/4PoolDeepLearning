@@ -13,8 +13,8 @@ from readerwriterlock import RWLock
 # Deep Q Learning
 from Learners import Learner
 class QLearning(Learner):
-    def __init__(self, epsilon,discount, exploration_weight,batch_size):
-        super(self, QLearning).__init__(epsilon,discount,exploration_weight,batch_size)
+    def __init__(self, *args):
+        super(self, QLearning).__init__(*args)
         self.units=None
         self.tempd=None
         self.target=None

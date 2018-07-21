@@ -12,10 +12,8 @@ from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 from Learners import Learner
 class DebugLearner(Learner):
-    def __init__(self):
-        self.mapSet=util64.Maps()
-        self.mapName=''
-        self.agent_no=0
+    def __init__(self, *args):
+        super(self, DebugLearner).__init__(*args)
         self.train_err=[]
     def exploiter(self):
         return
