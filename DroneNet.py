@@ -28,14 +28,17 @@ class DroneNet(UnitNet):
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
                 self.conv2 = conv_block(self.pool1, 1)
                 self.pool2 = MaxPooling2D((2, 2))(self.conv2)
-                self.pool3=conv_block(self.pool2, 1)
-                self.pool3=MaxPooling2D((2,2))(self.conv2)
+                self.conv3=conv_block(self.pool2, 1)
 
-                self.deconv1 = deconv_block(self.pool2, 1)
-                self.up1 = UpSampling2D((2, 2))(self.deconv1)
-                self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
-                self.up3 = UpSampling2D((2, 2))(self.deconv2)
-                self.deconv4 = Conv2DTranspose(64, (3, 3), activation='relu', padding='same')(self.up3)
+                self.pool3=MaxPooling2D((2,2))(self.conv3)
+                self.deconv1 = deconv_block(self.pool3, 1)
+                self.up1 = UpSampling2D((2, 2))(self.deconv1
+                                                )
+                self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv3]), 1)
+                self.up2=UpSampling2D((2,2))(self.deconv2)
+                self.deconv3 = deconv_block(Concatenate(axis=3)[self.up2, self.conv2], 1)
+                self.up3 = UpSampling2D((2, 2))(self.deconv3)
+                self.deconv4 = Conv2DTranspose(64, (3, 3), activation='relu', padding='same')(Concatenate(axis=3)([self.up3, self.conv1]))
 
                 if(output_type=='softmax'):
                     self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='linear', padding='same')(
