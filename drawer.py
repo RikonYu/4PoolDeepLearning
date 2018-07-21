@@ -25,7 +25,10 @@ for i in range(6):
     fig.add_subplot(2, 3, i + 1)
     plt.imshow(mask[:, :, i] * 255.0, cmap=plt.cm.gray)
 plt.show()
-'''
+
+
+
+
 fin=open('rewards.txt','r')
 k=list(map(float,fin.read().splitlines()))
 k=numpy.array(k)
@@ -38,6 +41,8 @@ k=list(map(float,fin.read().splitlines()))
 plt.plot(k,'r',label='Q')
 plt.legend()
 plt.show()
+'''
+
 fval=open('allval.txt','rb')
 sb=pickle.load(fval)
 mask=pickle.load(fval)
