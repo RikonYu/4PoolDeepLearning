@@ -34,6 +34,7 @@ class DebugLearner(Learner):
                 if(data.type=='terminal'):
                     self.units.predict_ans_masked(X,mask,True)
                 for i in msg.resources:
+                    print(i.type)
                     if(i.type=='Resource_Vespene_Geyser'):
                         pos=i.coord
                 places=numpy.nonzero(mask)
