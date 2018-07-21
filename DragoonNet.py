@@ -29,7 +29,7 @@ class DragoonNet(UnitNet):
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
-                self.conv1=Conv2D(32,(1,1),activation='relu',padding='same')(self.inp)
+                self.conv1=Conv2D(32,(1,1),activation='linear',padding='same')(self.inp)
                 self.pool1=MaxPooling2D((2,2))(self.conv1)
                 self.conv2=conv_block(self.pool1,1)
                 self.pool2=MaxPooling2D((2,2))(self.conv2)

@@ -44,10 +44,8 @@ class DebugLearner(Learner):
                     util64.send_msg(con, pickle.dumps(ans))
                     if(is_first==1 and pos!=0):
                         Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
-                        '''
                         for ind,_ in numpy.ndenumerate(Y[:,:,1]):
                             Y[ind[0],ind[0],1]=-numpy.linalg.norm([ind[0]-pos[0], ind[1]-pos[1]])/256
-                        '''
                         self.units.train(X.reshape([-1, WINDOW_SIZE, WINDOW_SIZE,self.units._in_channel]), Y.reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel]))
             except:
                 break

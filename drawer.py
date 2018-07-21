@@ -50,6 +50,7 @@ ssb=numpy.sum(sb,axis=2)
 fig = plt.figure(figsize=(2, 3))
 poss=numpy.nonzero(mask)
 pos=numpy.argmax(sb[poss[0],poss[1],poss[2]])
+print(numpy.amax(sb), numpy.amin(sb))
 for i in range(2):
     fig.add_subplot(2, 3, i + 1)
     plt.imshow(numpy.rot90(sb[:, :, i], axes=(1,0)), cmap=plt.cm.gray)
