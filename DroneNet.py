@@ -24,14 +24,14 @@ class DroneNet(UnitNet):
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
                 self.conv1 = Conv2D(32, (1, 1), activation='relu', padding='same')(self.inp)
-                self.conv1= conv_block(self.conv1,1)
+                self.conv1= conv_block(self.conv1,2)
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
-                self.conv2 = conv_block(self.pool1, 1)
+                self.conv2 = conv_block(self.pool1, 2)
                 self.pool2 = MaxPooling2D((2, 2))(self.conv2)
 
-                self.deconv1 = deconv_block(self.pool2, 1)
+                self.deconv1 = deconv_block(self.pool2, 2)
                 self.up1 = UpSampling2D((2, 2))(self.deconv1)
-                self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
+                self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 2)
                 self.up3 = UpSampling2D((2, 2))(self.deconv2)
                 self.deconv4 = Conv2DTranspose(64, (3, 3), activation='relu', padding='same')(self.up3)
 
