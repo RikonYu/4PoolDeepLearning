@@ -36,6 +36,7 @@ class DebugLearner(Learner):
                 for i in msg.resources:
                     if(i.type=='Resource_Vespene_Geyser'):
                         pos=i.coord
+                print(pos)
                 places=numpy.nonzero(mask)
                 ans=numpy.random.choice(len(places))
                 util64.send_msg(con, pickle.dumps([places[0][ans], places[1][ans], places[2][ans]]))
