@@ -15,6 +15,7 @@ class DebugLearner(Learner):
     def __init__(self):
         self.mapSet=util64.Maps()
         self.mapName=''
+        self.agent_no=0
         self.train_err=[]
     def exploiter(self):
         return
