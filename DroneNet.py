@@ -25,6 +25,7 @@ class DroneNet(UnitNet):
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
                 self.conv1 = Conv2D(32, (1, 1), activation='relu', padding='same')(self.inp)
                 self.conv1= conv_block(self.conv1,1)
+                '''
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
                 self.conv2 = conv_block(self.pool1, 1)
                 self.pool2 = MaxPooling2D((2, 2))(self.conv2)
@@ -34,6 +35,8 @@ class DroneNet(UnitNet):
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv2)
                 self.deconv4 = Conv2DTranspose(64, (3, 3), activation='relu', padding='same')(self.up3)
+                '''
+                self.deconv4=deconv_block(self.conv1, 1)
                 if(output_type=='softmax'):
                     self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='linear', padding='same')(
                     self.deconv4)
