@@ -42,6 +42,12 @@ plt.plot(k,'r',label='Q')
 plt.legend()
 plt.show()
 '''
+def plots(arr, rows=1):
+    fig=plt.figure(figsize=(rows, arr.shape[2]//rows))
+    for i in range(arr.shape[2]):
+        fig.add_subplot(rows, arr.shape[2]//rows, i+1)
+        plt.imshow(arr[:,:,i])
+    plt.show()
 
 ferr=open('trainerr.txt','r')
 k=[float(i[:-1]) for i in ferr.readlines()]
@@ -49,6 +55,10 @@ plt.plot(k[:150], label='training MSE')
 plt.legend()
 plt.show()
 
+
+ft=open('target.txt','rb')
+sb=pickle.load(ft)
+plots(sb, 1)
 
 fval=open('allval.txt','rb')
 sb=pickle.load(fval)
