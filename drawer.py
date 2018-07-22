@@ -43,6 +43,9 @@ plt.legend()
 plt.show()
 '''
 
+ferr=open('trainerr.txt','r')
+
+
 fval=open('allval.txt','rb')
 sb=pickle.load(fval)
 mask=pickle.load(fval)
