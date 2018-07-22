@@ -36,6 +36,7 @@ class DebugLearner(Learner):
                     mask=self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
                     if(data.type=='terminal'):
                         self.units.predict_ans_masked(X,mask,True)
+                        break
                     for i in msg.resources:
                         if(i.type=='Resource_Vespene_Geyser'):
                             pos=i.coord
