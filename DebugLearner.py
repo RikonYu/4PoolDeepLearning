@@ -42,7 +42,8 @@ class DebugLearner(Learner):
                     #util64.send_msg(con, pickle.dumps([places[0][ans], places[1][ans], places[2][ans]]))
                     ans=[256,256,0]
                     util64.send_msg(con, pickle.dumps(ans))
-                    if(is_first==1 and pos!=0):
+                    print('?????')
+                    if(is_first==1):
                         Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
                         '''
                         for ind,_ in numpy.ndenumerate(Y[:,:,1]):
