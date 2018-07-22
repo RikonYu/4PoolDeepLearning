@@ -95,6 +95,7 @@ class ValueNetwork:
         self.output=Dense(1,activation='linear')(self.dense1)
         self.model=Model(inputs=self.inp,outputs=self.output)
         self.model.compile(optimizer='adam',loss='mse')
+
     def train_batch(self, X, Y):
         with self.session.as_default():
             with self.graph.as_default():
@@ -120,3 +121,7 @@ class ValueNetwork:
         with self.session.as_default():
             with self.graph.as_default():
                 self.model.set_weights(weights)
+    @staticmethod
+    def init_weight(shape, name):
+        k=numpy.zeros(shape=shape)
+        
