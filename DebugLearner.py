@@ -51,7 +51,7 @@ class DebugLearner(Learner):
                         Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
                         for ind,_ in numpy.ndenumerate(Y[:,:,1]):
 
-                            Y[ind[0],ind[1],1]=-numpy.linalg.norm(numpy.array(ind) - pos)/32.0
+                            Y[ind[0],ind[1],1]=-numpy.linalg.norm(numpy.array(ind) - pos)/256.0
                         ftarget=open('target.txt','wb')
                         pickle.dump(Y, ftarget)
                         ftarget.close()
