@@ -50,7 +50,7 @@ class DroneNet(UnitNet):
                     self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3),activation='linear', padding='same')(
                         self.deconv4)
                 '''
-                self.deconv1=deconv_block(self.inp, 2)
+                self.deconv1=deconv_block(self.inp, 3)
                 self.out=Conv2DTranspose(self._out_channel, (1,1), padding='same')(self.deconv1)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 optz=Adam(0.001)
