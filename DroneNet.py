@@ -75,13 +75,14 @@ class DroneNet(UnitNet):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
         x, y = msg.myInfo.coord
         X, Y = disGame.regions.shape
+        '''
         #print(disGame.name, disGame.regions.shape,x,y)
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
-        '''
+
 
         miniX=len(msg.explored)
         miniY=len(msg.explored[0])
@@ -89,11 +90,11 @@ class DroneNet(UnitNet):
             for j in range(WINDOW_SIZE //miniY):
                 ans[i:i+(WINDOW_SIZE//miniX)*miniX:WINDOW_SIZE//miniX,j:j+(WINDOW_SIZE//miniY)*miniY:WINDOW_SIZE//miniY,2]=msg.explored[:]
         #print(x,X,y,Y)
-        '''
+
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,1]=1
         for u in msg.allies:
             ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
-
+        '''
         for u in msg.resources:
             #print(u.type)
             if(u.type=='Resource_Vespene_Geyser'):
