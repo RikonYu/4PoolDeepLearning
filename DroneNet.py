@@ -58,7 +58,7 @@ class DroneNet(UnitNet):
 
                 self.out=Conv2DTranspose(self._out_channel, (1,1), padding='same')(self.deconv1)
                 self.model = Model(inputs=self.inp, outputs=self.out)
-                optz=Adam(0.001)
+                optz=Adam(0.0002)
                 #optz=SGD(lr=0.001,momentum=0.9)
                 self.model.compile(optimizer=optz, loss='MSE')
                 self.model._make_predict_function()
