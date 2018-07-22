@@ -54,5 +54,5 @@ class DebugLearner(Learner):
                         self.ferr.write(history['loss'][0]+'\n')
                         self.ferr.flush()
                         os.fsync(self.ferr.fileno())
-            except:
+            except ConnectionError:
                 break
