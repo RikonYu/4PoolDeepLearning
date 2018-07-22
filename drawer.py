@@ -44,6 +44,10 @@ plt.show()
 '''
 
 ferr=open('trainerr.txt','r')
+k=[float(i[:-1]) for i in ferr.readlines()]
+plt.plot(k[:150], label='training MSE')
+plt.legend()
+plt.show()
 
 
 fval=open('allval.txt','rb')
