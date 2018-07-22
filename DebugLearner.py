@@ -51,7 +51,7 @@ class DebugLearner(Learner):
                             Y[ind[0],ind[0],1]=-numpy.linalg.norm([ind[0]-pos[0], ind[1]-pos[1]])/256
                         '''
                         history=self.units.train(X.reshape([-1, WINDOW_SIZE, WINDOW_SIZE,self.units._in_channel]), Y.reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel]))
-                        self.ferr.write(history.history['loss']+'\n')
+                        self.ferr.write(str(history.history['loss'][0])+'\n')
                         self.ferr.flush()
                         os.fsync(self.ferr.fileno())
             except ConnectionError:
