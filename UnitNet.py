@@ -98,7 +98,7 @@ class ValueNetwork:
     def train_batch(self, X, Y):
         with self.session.as_default():
             with self.graph.as_default():
-                self.model.fit(X,Y)
+                return self.model.fit(X,Y)
     def predict(self,X):
         with self.session.as_default():
             with self.graph.as_default():

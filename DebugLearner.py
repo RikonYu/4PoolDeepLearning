@@ -15,6 +15,8 @@ class DebugLearner(Learner):
     def __init__(self, *args):
         super(DebugLearner, self).__init__(*args)
         self.train_err=[]
+
+        self.ferr=open('trainerr.txt','w')
     def exploiter(self):
         return
     def controller(self, con, is_first):
@@ -42,13 +44,15 @@ class DebugLearner(Learner):
                     #util64.send_msg(con, pickle.dumps([places[0][ans], places[1][ans], places[2][ans]]))
                     ans=[256,256,0]
                     util64.send_msg(con, pickle.dumps(ans))
-                    print('?????')
                     if(is_first==1):
                         Y=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel])
                         '''
                         for ind,_ in numpy.ndenumerate(Y[:,:,1]):
                             Y[ind[0],ind[0],1]=-numpy.linalg.norm([ind[0]-pos[0], ind[1]-pos[1]])/256
                         '''
-                        self.units.train(X.reshape([-1, WINDOW_SIZE, WINDOW_SIZE,self.units._in_channel]), Y.reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel]))
+                        history=self.units.train(X.reshape([-1, WINDOW_SIZE, WINDOW_SIZE,self.units._in_channel]), Y.reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel]))
+                        self.ferr.write(history['loss'][0])
+                        self.ferr.flush()
+                        os.fsync(self.ferr.fileno())
             except:
                 break
