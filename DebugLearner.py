@@ -39,6 +39,8 @@ class DebugLearner(Learner):
                     for i in msg.resources:
                         if(i.type=='Resource_Vespene_Geyser'):
                             pos=i.coord
+                    pos[0]=pos[0]-msg.myInfo.coord[0]+WINDOW_SIZE//2
+                    pos[1] = pos[1] - msg.myInfo.coord[1] + WINDOW_SIZE // 2
                     places=numpy.nonzero(mask)
                     #ans=numpy.random.choice(len(places))
                     #util64.send_msg(con, pickle.dumps([places[0][ans], places[1][ans], places[2][ans]]))
