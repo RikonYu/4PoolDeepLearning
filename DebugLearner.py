@@ -52,9 +52,11 @@ class DebugLearner(Learner):
                         for ind,_ in numpy.ndenumerate(Y[:,:,1]):
 
                             Y[ind[0],ind[1],1]=-numpy.linalg.norm(numpy.array(ind) - pos)/256.0
+                        '''
                         ftarget=open('target.txt','wb')
                         pickle.dump(Y, ftarget)
                         ftarget.close()
+                        '''
                         history=self.units.train(X.reshape([-1, WINDOW_SIZE, WINDOW_SIZE,self.units._in_channel]), Y.reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self.units._out_channel]))
                         self.ferr.write(str(history.history['loss'][0])+'\n')
                         self.ferr.flush()
