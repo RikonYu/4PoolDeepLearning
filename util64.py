@@ -4,7 +4,7 @@ import struct
 # import matplotlib.pyplot as plt
 from keras.models import Sequential, Model, load_model
 from keras.layers import Input, Concatenate, BatchNormalization, UpSampling2D, Layer, Add
-from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv2D, MaxPooling2D, Conv2DTranspose
+from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv2D, MaxPooling2D, Conv2DTranspose, Activation
 from keras.optimizers import Adam
 from keras import backend as KTF
 import keras
@@ -15,11 +15,12 @@ def get_trainable_params(agent):
 
 
 def conv_block(inp, times, has_input=False):
+    x=inp+0
     for i in range(times):
-        conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(inp)
-        conv2 = Conv2D(32, (5, 5), activation='relu', padding='same')(inp)
-        conv3 = Conv2D(32, (7, 7), activation='relu', padding='same')(inp)
-        conv4 = Conv2D(32, (9, 9), activation='relu', padding='same')(inp)
+        conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        conv2 = Conv2D(32, (5, 5), activation='relu', padding='same')(x)
+        conv3 = Conv2D(32, (7, 7), activation='relu', padding='same')(x)
+        conv4 = Conv2D(32, (9, 9), activation='relu', padding='same')(x)
 
         x = Concatenate(axis=3)([conv1, conv2, conv3, conv4])
     # if(has_input):
@@ -31,7 +32,7 @@ def conv_block(inp, times, has_input=False):
 
 
 def deconv_block(inp, times):
-    x = inp
+    x = inp + 0
     for i in range(times):
         conv1 = Conv2DTranspose(32, (3, 3), activation='relu', padding='same')(x)
         conv2 = Conv2DTranspose(32, (5, 5), activation='relu', padding='same')(x)
