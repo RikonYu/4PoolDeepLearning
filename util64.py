@@ -16,12 +16,13 @@ def conv_block(inp, times, has_input=False):
         conv2 = Conv2D(8, (5, 5), activation='relu', padding='same')(inp)
         conv3 = Conv2D(8, (7, 7), activation='relu', padding='same')(inp)
         conv4 = Conv2D(8, (9, 9), activation='relu', padding='same')(inp)
+
         x = Concatenate(axis=3)([conv1, conv2, conv3, conv4])
     # if(has_input):
     #    return x
     # return x
-    #short = Conv2D(32, (1, 1), activation='linear', padding='same')(inp)
-    short= inp
+    short = Conv2D(32, (1, 1),  padding='same')(inp)
+    #short= inp
     return Add()([x, short])
 
 
