@@ -36,7 +36,7 @@ class DroneNet(UnitNet):
                                                 )
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv3]), 1)
                 self.up2=UpSampling2D((2,2))(self.deconv2)
-                self.deconv3 = deconv_block(Concatenate(axis=3)([self.up2, self.conv2], 1))
+                self.deconv3 = deconv_block(Concatenate(axis=3)([self.up2, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv3)
                 self.deconv4 = Conv2DTranspose(128, (3, 3), activation='relu', padding='same')(Concatenate(axis=3)([self.up3, self.conv1]))
                 if(output_type=='softmax'):
