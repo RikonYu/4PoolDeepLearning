@@ -9,3 +9,5 @@ def getUnitClass(name,loading=False, output_func='linear'):
         return DroneNet(loading, output_func)
     if(name=='Terran_Vulture'):
         return VultureNet(loading, output_func)
+
+
