@@ -50,8 +50,10 @@ class DroneNet(UnitNet):
                     self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3),activation='linear', padding='same')(
                         self.deconv4)
                 '''
-                self.deconv1=Conv2DTranspose(32,(127,127), activation='relu' ,padding='same')(self.inp)
-                self.deconv1 = Conv2DTranspose(32, (127, 127), activation='relu',padding='same')(self.deconv1)
+                self.deconv1=Conv2DTranspose(32,(31,31), activation='relu' ,padding='same')(self.inp)
+                self.deconv1 = Conv2DTranspose(32, (31, 31), activation='relu',padding='same')(self.deconv1)
+                self.deconv1 = Conv2DTranspose(32, (31, 31), activation='relu',padding='same')(self.deconv1)
+                self.deconv1 = Conv2DTranspose(32, (31, 31), activation='relu',padding='same')(self.deconv1)
 
                 self.out=Conv2DTranspose(self._out_channel, (1,1), padding='same')(self.deconv1)
                 self.model = Model(inputs=self.inp, outputs=self.out)
