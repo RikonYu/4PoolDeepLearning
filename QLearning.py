@@ -182,7 +182,7 @@ class QLearning(Learner):
                 if(data.type=='terminal'):
                     #apply gradients
                     pass
-                X=self.units.msg2state(self.mapSet.find_map(self.mapName))
+                X=self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                 places = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
                 ans = self.units.predict_ans_masked(X, places, True)
                 if(numpy.random.random()<epsilon):
@@ -190,5 +190,10 @@ class QLearning(Learner):
                     ind = numpy.random.choice(len(ini))
                     ans[0] = [ini[ind], inj[ind], ink[ind]]
                 util64.send_msg(con,pickle.dumps(ans[0]))
+                Y=self.units.predict_all(self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))[0]
+                Y_=Y[:]
+                Y_[last_action[0][0],last_action[0][1], last_action[0][2]]=data.value-last_value+self.discount*ans[1]
+                gradient=KB.gradients(tf.square(Y-Y_), util64.get_trainable_params(self.units))
+                print(gradient)
 
 

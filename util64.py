@@ -7,7 +7,11 @@ from keras.layers import Input, Concatenate, BatchNormalization, UpSampling2D, L
 from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv2D, MaxPooling2D, Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as KTF
+import keras
 from consts import WINDOW_SIZE
+
+def get_trainable_params(agent):
+    return agent.model.trainable_weights
 
 
 def conv_block(inp, times, has_input=False):
