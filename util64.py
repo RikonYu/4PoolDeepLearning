@@ -15,7 +15,7 @@ def get_trainable_params(agent):
 
 
 def conv_block(inp, times, has_input=False):
-    x=inp+0
+    x=inp
     for i in range(times):
         conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
         conv2 = Conv2D(32, (5, 5), activation='relu', padding='same')(x)
@@ -32,7 +32,7 @@ def conv_block(inp, times, has_input=False):
 
 
 def deconv_block(inp, times):
-    x = inp + 0
+    x = inp
     for i in range(times):
         conv1 = Conv2DTranspose(32, (3, 3), activation='relu', padding='same')(x)
         conv2 = Conv2DTranspose(32, (5, 5), activation='relu', padding='same')(x)
