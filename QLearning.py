@@ -18,6 +18,7 @@ class QLearning(Learner):
         self.units=None
         self.tempd=None
         self.target=None
+        self.async=0
         self.buflock=threading.Semaphore(1)
         self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
 
@@ -26,6 +27,8 @@ class QLearning(Learner):
         train_every = 64
         wl = self.lock.genWlock()
         while (True):
+            if(self.async==1):
+                return
             if (self.buf.count < train_every):
                 # print('not enough samples')
                 time.sleep(10)
@@ -166,6 +169,7 @@ class QLearning(Learner):
             fq.close()
 
     def asyncController(self, con, is_first):
+        self.async=1
         last_state=None
         last_action=None
         last_value=0
