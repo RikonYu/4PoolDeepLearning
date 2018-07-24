@@ -57,9 +57,9 @@ if(__name__=='__main__'):
     plt.show()
 
 
-    ft=open('target.txt','rb')
+    ft=open('state.txt','rb')
     sb=pickle.load(ft)
-    plots(sb, 1)
+    plots(sb[:,:,4:], 1)
 
     fval=open('allval.txt','rb')
     sb=pickle.load(fval)

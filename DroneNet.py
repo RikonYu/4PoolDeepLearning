@@ -91,6 +91,9 @@ class DroneNet(UnitNet):
             #print(u.type)
             if(u.type=='Resource_Vespene_Geyser'):
                 #ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
+                print(shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2),shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
+                shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2) , shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2))
+
                 ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
                 shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2) : shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 4] = 1
         fstate=open('state.txt','wb')
