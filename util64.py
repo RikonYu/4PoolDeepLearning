@@ -16,7 +16,7 @@ def get_trainable_params(agent):
 
 
 def conv_block(inp, times, has_input=False):
-    x=Activation('linear')(inp)
+    x=inp
     for i in range(times):
         conv1 = Conv2D(32, (3, 3), activation=LeakyReLU(), padding='same')(x)
         conv2 = Conv2D(32, (5, 5), activation=LeakyReLU(), padding='same')(x)
@@ -33,7 +33,7 @@ def conv_block(inp, times, has_input=False):
 
 
 def deconv_block(inp, times):
-    x = Activation('linear')(inp)
+    x = inp
     for i in range(times):
         conv1 = Conv2DTranspose(32, (3, 3), activation=LeakyReLU(), padding='same')(x)
         conv2 = Conv2DTranspose(32, (5, 5), activation=LeakyReLU(), padding='same')(x)
