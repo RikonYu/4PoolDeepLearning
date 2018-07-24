@@ -36,10 +36,10 @@ def conv_block(inp, times, has_input=False):
 def deconv_block(inp, times):
     x = Lambda(lambda i:i+0)(inp)
     for i in range(times):
-        conv1 = LeakyReLU()(Conv2DTranspose(32, (3, 3), activation=LeakyReLU(), padding='same')(x))
-        conv2 = LeakyReLU()(Conv2DTranspose(32, (5, 5), activation=LeakyReLU(), padding='same')(x))
-        conv3 = LeakyReLU()(Conv2DTranspose(32, (7, 7), activation=LeakyReLU(), padding='same')(x))
-        conv4 = LeakyReLU()(Conv2DTranspose(32, (9, 9), activation=LeakyReLU(), padding='same')(x))
+        conv1 = LeakyReLU()(Conv2DTranspose(32, (3, 3), padding='same')(x))
+        conv2 = LeakyReLU()(Conv2DTranspose(32, (5, 5), padding='same')(x))
+        conv3 = LeakyReLU()(Conv2DTranspose(32, (7, 7), padding='same')(x))
+        conv4 = LeakyReLU()(Conv2DTranspose(32, (9, 9), padding='same')(x))
         x = Concatenate(axis=3)([conv1, conv2, conv3, conv4])
     short = Conv2DTranspose(128, (1, 1), padding='same')(inp)
     return Add()([x, short])
