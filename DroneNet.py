@@ -57,8 +57,7 @@ class DroneNet(UnitNet):
                 optz=Adam(0.0002)
                 #optz=SGD(lr=0.001,momentum=0.9)
 
-                self.model.compile(optimizer='rmsprop', loss='MSE')
-                print(self.model.summary())
+                self.model.compile(optimizer='adam', loss='MSE')
 
                 self.model._make_predict_function()
                 self.model._make_test_function()
