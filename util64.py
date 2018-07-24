@@ -11,9 +11,6 @@ from keras.layers.advanced_activations import LeakyReLU
 import keras
 from consts import WINDOW_SIZE
 
-def get_trainable_params(agent):
-    return agent.model.trainable_weights
-
 
 def conv_block(inp, times, has_input=False):
     x= Lambda(lambda i:i+0)(inp)

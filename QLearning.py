@@ -201,7 +201,7 @@ class QLearning(Learner):
                     Y=self.units.predict_all(self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))[0]
                     Y_=numpy.copy(Y)
                     Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*ans[1]
-                    gradient=KB.gradients(tf.square(Y-Y_), util64.get_trainable_params(self.units))
+                    gradient=self.units.gradient(tf.square(Y_-Y))
                     print(gradient)
                 last_state=msg
                 last_action=ans[0]

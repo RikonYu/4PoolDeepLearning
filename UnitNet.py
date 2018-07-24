@@ -9,6 +9,7 @@ from keras import backend as KTF
 from consts import WINDOW_SIZE
 import pickle
 from util64 import conv_block
+import util64
 import numpy
 class UnitNet:
     _in_channel=1
@@ -69,6 +70,10 @@ class UnitNet:
         with self.session.as_default():
             with self.graph.as_default():
                 return self.model.evaluate(X,Y,verbose=0)
+    def gradient(self, loss):
+        with self.session.as_default():
+            with self.graph.as_default():
+                return KTF.gradients((loss, self.model.trainable_weights))
     @staticmethod
     def msg2mask(disGame, msg):
         pass
