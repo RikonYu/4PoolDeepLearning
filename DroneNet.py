@@ -66,6 +66,7 @@ class DroneNet(UnitNet):
                 self.model.save('DroneNet.h5')
     def gradient(self, loss):
         with self.session.as_default():
+            print(self.model.trainable_weights)
             #with self.graph.as_default():
             return KTF.gradients(loss, self.model.trainable_weights)
     @staticmethod
