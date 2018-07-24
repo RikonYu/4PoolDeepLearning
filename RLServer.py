@@ -34,7 +34,7 @@ if (__name__ == '__main__'):
         con, addr = soc.accept()
         # print(addr)
         if(sys.argv[1]=='train'):
-            k = threading.Thread(target=agent.asyncController, args=[con, agent.agent_no])
+            k = threading.Thread(target=agent.controller, args=[con, agent.agent_no])
         elif(sys.argv[1]=='test'):
             k=threading.Thread(target=agent.exploiter, args=[con,agent.agent_no])
         #print(agent_no)
