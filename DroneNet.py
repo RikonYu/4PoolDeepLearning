@@ -24,7 +24,7 @@ class DroneNet(UnitNet):
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
-                self.conv1 = LeakyReLU()(Conv2D(128, (3, 3), activation=, padding='same')(self.inp))
+                self.conv1 = LeakyReLU()(Conv2D(128, (3, 3),  padding='same')(self.inp))
                 self.conv1= conv_block(self.conv1,2)
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
                 self.conv2 = conv_block(self.pool1, 2)
