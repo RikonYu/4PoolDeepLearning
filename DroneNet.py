@@ -53,11 +53,11 @@ class DroneNet(UnitNet):
                 self.conv1=Conv2D(128,(1,1),padding='same')(self.inp)
                 self.out=conv_block(self.conv1, 1)
                 self.out=Conv2D(self._out_channel, (1,1), padding='same')(self.out)
-                self.model = Model(inputs=self.inp, outputs=self.out)
-                optz=Adam(0.0002)
+
                 '''
                 #optz=SGD(lr=0.001,momentum=0.9)
-
+                self.model = Model(inputs=self.inp, outputs=self.out)
+                optz=Adam(0.0002)
                 self.model.compile(optimizer='adam', loss='MSE')
 
                 self.model._make_predict_function()
