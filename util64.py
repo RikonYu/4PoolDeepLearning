@@ -29,7 +29,8 @@ def conv_block(inp, times, has_input=False):
     # return x
     short = Conv2D(128, (1, 1),  padding='same')(inp)
     #short= inp
-    return Add()([x, short])
+    return short
+    #return Add()([x, short])
 
 
 def deconv_block(inp, times):
