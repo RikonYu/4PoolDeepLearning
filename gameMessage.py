@@ -3,7 +3,7 @@ class unitInfo:
     def __init__(self, unit):
 
         self.coord=unit.getPosition()
-        self.bounds=[unit.getTop(),unit.getBottom(),unit.getLeft(),unit.getRight()]
+        self.bounds=[unit.getLeft(),unit.getRight(), unit.getTop(),unit.getBottom()]
         self.type=unit.getType().getName()
         self.ID=unit.getID()
         self.HP=unit.getHitPoints()
