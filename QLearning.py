@@ -193,7 +193,7 @@ class QLearning(Learner):
                     ind = numpy.random.choice(len(ini))
                     ans=[0,0]
                     ans[0] = [ini[ind], inj[ind], ink[ind]]
-                    ans[1] = self.units.predict_all(X, places)[0][tuple(ans[0])]
+                    ans[1] = self.units.predict_all(X)[0][tuple(ans[0])]
                 else:
                     ans = self.units.predict_ans_masked(X, places, True)
                 util64.send_msg(con,pickle.dumps(ans[0]))
