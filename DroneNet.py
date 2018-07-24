@@ -32,8 +32,8 @@ class DroneNet(UnitNet):
 
                 self.pool3=MaxPooling2D((2,2))(self.conv3)
                 self.deconv1 = deconv_block(self.pool3, 1)
-                self.up1 = UpSampling2D((2, 2))(self.deconv1
-                                                )
+                self.up1 = UpSampling2D((2, 2))(self.deconv1)
+
                 self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv3]), 1)
                 self.up2=UpSampling2D((2,2))(self.deconv2)
                 self.deconv3 = deconv_block(Concatenate(axis=3)([self.up2, self.conv2]), 1)
@@ -52,6 +52,8 @@ class DroneNet(UnitNet):
                 optz=Adam(0.0002)
                 #optz=SGD(lr=0.001,momentum=0.9)
                 self.model.compile(optimizer='rmsprop', loss='MSE')
+                print(self.model.summary())
+
                 self.model._make_predict_function()
                 self.model._make_test_function()
                 self.model._make_train_function()
