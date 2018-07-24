@@ -28,6 +28,7 @@ def conv_block(inp, times, has_input=False):
     # return x
     short = Conv2D(128, (1, 1),  padding='same')(inp)
     #short= inp
+    return Conv2D(128,(3,3), activation='relu')(inp)
     return Add()([x, short])
 
 
