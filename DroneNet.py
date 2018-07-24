@@ -74,7 +74,6 @@ class DroneNet(UnitNet):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
         x, y = msg.myInfo.coord
         X, Y = disGame.regions.shape
-        '''
         #print(disGame.name, disGame.regions.shape,x,y)
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
@@ -108,10 +107,10 @@ class DroneNet(UnitNet):
             top,bot,left,right=u.bounds
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
-        '''
         for u in msg.resources:
             if(inReach(u.coord, msg.myInfo.coord)):
                 top,bot,left,right=u.bounds
                 ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                     shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
+        '''
         return ans
