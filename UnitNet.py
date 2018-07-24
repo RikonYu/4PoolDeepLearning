@@ -73,7 +73,7 @@ class UnitNet:
     def gradient(self, loss):
         with self.session.as_default():
             with self.graph.as_default():
-                return KTF.gradients((loss, self.model.trainable_weights))
+                return KTF.gradients(loss, self.model.trainable_weights)
     @staticmethod
     def msg2mask(disGame, msg):
         pass
