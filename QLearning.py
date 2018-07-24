@@ -120,7 +120,7 @@ class QLearning(Learner):
                         self.buflock.release()
                         '''
                         if (is_first == 1):
-                            feval.write(str(k.value-last_value) + '\n')
+                            feval.write(str(k.value) + '\n')
                             feval.flush()
                             os.fsync(feval.fileno())
                         break

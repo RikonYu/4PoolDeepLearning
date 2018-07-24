@@ -29,18 +29,7 @@ plt.show()
 
 
 
-fin=open('rewards.txt','r')
-k=list(map(float,fin.read().splitlines()))
-k=numpy.array(k)
-sb=[sum(k[x:x+15]) for x in range(len(k)//15)]
-plt.plot(k,'r',label='R')
-plt.legend()
-plt.show()
-fin=open('Qvals.txt','r')
-k=list(map(float,fin.read().splitlines()))
-plt.plot(k,'r',label='Q')
-plt.legend()
-plt.show()
+
 '''
 def plots(arr, rows=1):
     fig=plt.figure(figsize=(rows, arr.shape[2]//rows))
@@ -50,7 +39,21 @@ def plots(arr, rows=1):
     plt.show()
 
 if(__name__=='__main__'):
+    fin = open('rewards.txt', 'r')
+    k = list(map(float, fin.read().splitlines()))
+    k = numpy.array(k)
+    sb = [sum(k[x:x + 15]) for x in range(len(k) // 15)]
+    plt.plot(k, 'r', label='R')
+    plt.legend()
+    plt.show()
+    fin = open('Qvals.txt', 'r')
+    k = list(map(float, fin.read().splitlines()))
+    plt.plot(k, 'r', label='Q')
+    plt.legend()
+    plt.show()
+
     ferr=open('trainerr.txt','r')
+
     k=[float(i[:-1]) for i in ferr.readlines()]
     plt.plot(k[:150], label='training MSE')
     plt.legend()
