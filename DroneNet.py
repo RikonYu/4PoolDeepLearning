@@ -23,6 +23,7 @@ class DroneNet(UnitNet):
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
+                '''
                 self.conv1 = Conv2D(128, (3, 3), activation='relu', padding='same')(self.inp)
                 self.conv1= conv_block(self.conv1,2)
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
@@ -48,9 +49,14 @@ class DroneNet(UnitNet):
                 else:
                     self.out = Conv2DTranspose(DroneNet._out_channel, (1, 1),activation='linear', padding='same')(
                         self.deconv4)
+                '''
+                self.conv1=Conv2D(128,(1,1),padding='same')(self.inp)
+                self.out=conv_block(self.conv1, 1)
+                self.out=Conv2D(self._out_channel, (1,1), padding='same')(self.out)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 optz=Adam(0.0002)
                 #optz=SGD(lr=0.001,momentum=0.9)
+
                 self.model.compile(optimizer='rmsprop', loss='MSE')
                 print(self.model.summary())
 
