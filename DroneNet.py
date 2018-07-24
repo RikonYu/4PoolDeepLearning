@@ -9,6 +9,7 @@ import numpy
 from util64 import conv_block, deconv_block, shrinkScr, inReach
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
+from keras.layers.advanced_activations import LeakyReLU
 import os, sys
 
 
@@ -23,8 +24,7 @@ class DroneNet(UnitNet):
         with self.session.as_default():
             with self.graph.as_default():
                 self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
-                '''
-                self.conv1 = Conv2D(128, (3, 3), activation='relu', padding='same')(self.inp)
+                self.conv1 = Conv2D(128, (3, 3), activation=LeakyReLU(), padding='same')(self.inp)
                 self.conv1= conv_block(self.conv1,2)
                 self.pool1 = MaxPooling2D((2, 2))(self.conv1)
                 self.conv2 = conv_block(self.pool1, 2)
@@ -39,15 +39,15 @@ class DroneNet(UnitNet):
                 self.up2=UpSampling2D((2,2))(self.deconv2)
                 self.deconv3 = deconv_block(Concatenate(axis=3)([self.up2, self.conv2]), 1)
                 self.up3 = UpSampling2D((2, 2))(self.deconv3)
-                self.deconv4 = Conv2DTranspose(128, (3, 3), activation='relu', padding='same')(Concatenate(axis=3)([self.up3, self.conv1]))
+                self.deconv4 = Conv2DTranspose(128, (3, 3), activation=LeakyReLU(), padding='same')(Concatenate(axis=3)([self.up3, self.conv1]))
                 if(output_type=='softmax'):
-                    self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), activation='linear', padding='same')(
+                    self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), padding='same')(
                     self.deconv4)
                     self.out=Flatten()(self.out)
                     self.out=Activation('softmax')(self.out)
                     self.out=Reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self._out_channel])(self.out)
                 else:
-                    self.out = Conv2DTranspose(DroneNet._out_channel, (1, 1),activation='linear', padding='same')(
+                    self.out = Conv2DTranspose(DroneNet._out_channel, (1, 1), padding='same')(
                         self.deconv4)
                 '''
                 self.conv1=Conv2D(128,(1,1),padding='same')(self.inp)
@@ -55,6 +55,7 @@ class DroneNet(UnitNet):
                 self.out=Conv2D(self._out_channel, (1,1), padding='same')(self.out)
                 self.model = Model(inputs=self.inp, outputs=self.out)
                 optz=Adam(0.0002)
+                '''
                 #optz=SGD(lr=0.001,momentum=0.9)
 
                 self.model.compile(optimizer='adam', loss='MSE')
