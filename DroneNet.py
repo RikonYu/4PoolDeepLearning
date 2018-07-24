@@ -6,9 +6,10 @@ from keras.layers import Reshape, Dense, Dropout, Embedding, LSTM, Flatten, Conv
 from keras.optimizers import Adam, SGD
 from keras import backend as KTF
 import numpy
-from util64 import conv_block, deconv_block, shrinkScr, inReach
+from util64 import conv_block, deconv_block, shrinkScr
 from consts import WINDOW_SIZE
 from UnitNet import UnitNet
+import pickle
 from keras.layers.advanced_activations import LeakyReLU
 import os, sys
 
@@ -92,6 +93,9 @@ class DroneNet(UnitNet):
                 #ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
                 ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
                 shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2) : shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 4] = 1
+        fstate=open('state.txt','wb')
+        pickle.dump(ans, fstate)
+        fstate.close()
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
