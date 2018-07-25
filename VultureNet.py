@@ -13,7 +13,7 @@ from keras.layers.advanced_activations import LeakyReLU
 import os,sys
 
 class VultureNet(UnitNet):
-    _in_channel=2
+    _in_channel=5
     _out_channel=3
     def __init__(self, loading=False, output_type='linear'):
         self._in_channel = VultureNet._in_channel
@@ -72,9 +72,15 @@ class VultureNet(UnitNet):
                     shrinkScr(u.bounds[2]-y+WINDOW_SIZE//2):shrinkScr(u.bounds[3]-y+WINDOW_SIZE//2),0]=1
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
-        ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
+        ans[WINDOW_SIZE//2,WINDOW_SIZE//2,1]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
-            ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=1
+            ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),2]=1
+        ans[:,:,3]=msg.myInfo.canFireGround
+        rng=msg.myInfo.rangeGround[1]
+        for i in range(-rng,rng+1):
+            for j in range(-(-numpy.sqrt(rng*rng-i*i)//1),1+numpy.sqrt(rng*rng-i*i)//1):
+                ans[WINDOW_SIZE//2+i,WINDOW_SIZE//2+j,4]=1
+
         return ans
     @staticmethod
     def msg2mask(disGame, msg):
