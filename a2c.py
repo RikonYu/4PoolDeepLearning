@@ -53,8 +53,8 @@ class A2C(Learner):
             self.tactor.save()
             self.tcritic.save()
             wl.acquire()
-            self.actor.set_weights(tactor.get_weights())
-            self.critic.set_weights(tcritic.get_weights())
+            self.actor.set_weights(self.tactor.get_weights())
+            self.critic.set_weights(self.tcritic.get_weights())
             wl.release()
             self.memory.pop(0)
     def controller(self, con, is_first):
