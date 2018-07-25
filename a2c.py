@@ -6,21 +6,14 @@ from ClassConstr import getUnitClass
 from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 from UnitNet import ValueNetwork
+from Learners import Learner
 
-class A2C:
-    def __init__(self, epsilon, discount, exploration_weight, batch_size):
-        self.epsilon=epsilon
-        self.discount=discount
-        self.batch_size=batch_size
-        self.exploration_weight=exploration_weight
+class A2C(Learner):
+    def __init__(self, *args):
+        super(A2C, self).__init__(*args)
         self.actor=None
         self.critic=None
         self.units=None
-        self.mapSet=util64.Maps()
-        self.lock=RWLock.RWLockWrite()
-        self.learn_epoch=0
-        self.target_type=''
-        self.agent_no=0
         self.memory=[]
         self.memory_map=[]
 
@@ -29,6 +22,8 @@ class A2C:
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
             self.target_type = k.unitType
             self.actor = getUnitClass(self.target_type, False,'softmax')
+            self.tactor=getUnitClass(self.target_type, False, 'softmax')
+            self.tcritic=ValueNetwork(self.actor._in_channel)
             self.critic=ValueNetwork(self.actor._in_channel)
         elif (self.mapSet.find_map(k.mapName) is None):
             self.mapSet.add_map(util64.gameMap(k.msg, k.mapName))
@@ -41,10 +36,8 @@ class A2C:
             if(len(self.memory)==0):
                 time.sleep(5)
                 continue
-            tactor = getUnitClass(self.target_type, False, 'softmax')
-            tactor.set_weights(self.actor.get_weights())
-            tcritic = ValueNetwork(tactor._in_channel)
-            tcritic.set_weights(self.critic.get_weights())
+            self.tactor.set_weights(self.actor.get_weights())
+            self.tcritic.set_weights(self.critic.get_weights())
             values=[]
             cmem=self.memory[0]
             for i in cmem:
@@ -55,10 +48,10 @@ class A2C:
                 advantages[0][tuple(cmem[i][1])]=cmem[i][3]+self.discount*values[i+1]-values[i]
                 targets=numpy.zeros([1,1])
                 targets[0][0]=cmem[i][3]+self.discount*values[i+1]
-                tactor.train([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])],advantages)
-                tcritic.train_batch([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])], targets)
-            tactor.save()
-            tcritic.save()
+                self.tactor.train([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])],advantages)
+                self.tcritic.train_batch([self.actor.msg2state(self.mapSet.find_map(self.memory_map[0]),cmem[i][0])], targets)
+            self.tactor.save()
+            self.tcritic.save()
             wl.acquire()
             self.actor.set_weights(tactor.get_weights())
             self.critic.set_weights(tcritic.get_weights())
