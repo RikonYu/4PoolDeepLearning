@@ -16,6 +16,11 @@ class UnitNet:
     _out_channel=1
     def __init__(self,loading=False, output_type='linear'):
         self.model=None
+    def apply_gradient(self, gradient):
+        with self.session.as_default():
+            with self.graph.as_default():
+                opt=tf.train.AdamOptimizer()
+                opt.apply_gradients(gradient)
     def set_weights(self,weights):
         with self.session.as_default():
             with self.graph.as_default():

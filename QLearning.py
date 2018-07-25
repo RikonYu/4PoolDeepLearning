@@ -177,7 +177,7 @@ class QLearning(Learner):
         last_state=None
         last_action=None
         last_value=0
-        gradients=None
+        gradients=0
         epsilon=self.epsilon*numpy.random.uniform(0.8,1.2)
         while(True):
             data=pickle.loads(util64.recv_msg(con))
@@ -206,6 +206,7 @@ class QLearning(Learner):
                     Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*maxNext
                     gradient=self.units.gradient(Y_, Y)
                     print(gradient)
+                    gradients+=gradient
                 last_state=msg
                 last_action=ans[0]
                 last_value=data.value
@@ -214,6 +215,8 @@ class QLearning(Learner):
                 if(self.learn_epoch % ETARGET == 0):
                     self.target.set_weights(self.units.get_weights())
                 if(epoch % EUPDATE == 0):
+                    self.units.apply_gradient(gradients)
+                    gradients=0
 
 
 
