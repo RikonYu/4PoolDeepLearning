@@ -23,52 +23,52 @@ class DroneNet(UnitNet):
         self.session = KTF.get_session()
         self.graph = tf.get_default_graph()
         with self.session.as_default():
-            #with self.graph.as_default():
-            self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
-            self.conv1 = LeakyReLU()(Conv2D(128, (3, 3),  padding='same')(self.inp))
-            self.conv1= conv_block(self.conv1,2)
-            self.pool1 = MaxPooling2D((2, 2))(self.conv1)
-            self.conv2 = conv_block(self.pool1, 2)
-            self.pool2 = MaxPooling2D((2, 2))(self.conv2)
-            self.conv3=conv_block(self.pool2, 2)
+            with self.graph.as_default():
+                self.inp=Input((WINDOW_SIZE,WINDOW_SIZE,self._in_channel),dtype='float32')
+                self.conv1 = LeakyReLU()(Conv2D(128, (3, 3),  padding='same')(self.inp))
+                self.conv1= conv_block(self.conv1,2)
+                self.pool1 = MaxPooling2D((2, 2))(self.conv1)
+                self.conv2 = conv_block(self.pool1, 2)
+                self.pool2 = MaxPooling2D((2, 2))(self.conv2)
+                self.conv3=conv_block(self.pool2, 2)
 
-            self.pool3=MaxPooling2D((2,2))(self.conv3)
-            self.deconv1 = deconv_block(self.pool3, 1)
-            self.up1 = UpSampling2D((2, 2))(self.deconv1)
+                self.pool3=MaxPooling2D((2,2))(self.conv3)
+                self.deconv1 = deconv_block(self.pool3, 1)
+                self.up1 = UpSampling2D((2, 2))(self.deconv1)
 
-            self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv3]), 1)
-            self.up2=UpSampling2D((2,2))(self.deconv2)
-            self.deconv3 = deconv_block(Concatenate(axis=3)([self.up2, self.conv2]), 1)
-            self.up3 = UpSampling2D((2, 2))(self.deconv3)
-            self.deconv4 = LeakyReLU()(Conv2DTranspose(128, (3, 3), padding='same')(Concatenate(axis=3)([self.up3, self.conv1])))
-            if(output_type=='softmax'):
-                self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), padding='same')(
-                self.deconv4)
-                self.out=Flatten()(self.out)
-                self.out=Activation('softmax')(self.out)
-                self.out=Reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self._out_channel])(self.out)
-            else:
-                self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), padding='same')(
+                self.deconv2 = deconv_block(Concatenate(axis=3)([self.up1, self.conv3]), 1)
+                self.up2=UpSampling2D((2,2))(self.deconv2)
+                self.deconv3 = deconv_block(Concatenate(axis=3)([self.up2, self.conv2]), 1)
+                self.up3 = UpSampling2D((2, 2))(self.deconv3)
+                self.deconv4 = LeakyReLU()(Conv2DTranspose(128, (3, 3), padding='same')(Concatenate(axis=3)([self.up3, self.conv1])))
+                if(output_type=='softmax'):
+                    self.out=Conv2DTranspose(DroneNet._out_channel, (3, 3), padding='same')(
                     self.deconv4)
-            #optz=SGD(lr=0.001,momentum=0.9)
-            self.model = Model(inputs=self.inp, outputs=self.out)
-            self.optz=Adam()
-            self.model.compile(optimizer=self.optz, loss='MSE')
+                    self.out=Flatten()(self.out)
+                    self.out=Activation('softmax')(self.out)
+                    self.out=Reshape([-1,WINDOW_SIZE,WINDOW_SIZE,self._out_channel])(self.out)
+                else:
+                    self.out = Conv2DTranspose(DroneNet._out_channel, (3, 3), padding='same')(
+                        self.deconv4)
+                #optz=SGD(lr=0.001,momentum=0.9)
+                self.model = Model(inputs=self.inp, outputs=self.out)
+                self.optz=Adam()
+                self.model.compile(optimizer=self.optz, loss='MSE')
 
-            self.model._make_predict_function()
-            self.model._make_test_function()
-            self.model._make_train_function()
-            if (os.path.isfile('DroneNet.h5') and loading):
-                self.model = load_model("DroneNet.h5")
+                self.model._make_predict_function()
+                self.model._make_test_function()
+                self.model._make_train_function()
+                if (os.path.isfile('DroneNet.h5') and loading):
+                    self.model = load_model("DroneNet.h5")
     def save(self):
         with self.session.as_default():
             with self.graph.as_default():
                 self.model.save('DroneNet.h5')
     def gradient(self, target, logit):
         with self.session.as_default():
-            #with self.graph.as_default():
-            print([n.name for n in tf.get_default_graph().as_graph_def().node])
-            return KTF.gradients(keras.losses.mean_squared_error(target, logit), self.model.trainable_weights)
+            with self.graph.as_default():
+                print([n.name for n in self.graph.as_graph_def().node])
+                return KTF.gradients(keras.losses.mean_squared_error(target, logit), self.model.trainable_weights)
     @staticmethod
     def msg2state(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])

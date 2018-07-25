@@ -18,20 +18,20 @@ class UnitNet:
         self.model=None
     def set_weights(self,weights):
         with self.session.as_default():
-            #with self.graph.as_default():
-            self.model.set_weights(weights)
+            with self.graph.as_default():
+                self.model.set_weights(weights)
     def get_weights(self):
         with self.session.as_default():
-            #with self.graph.as_default():
-            return self.model.get_weights()
+            with self.graph.as_default():
+                return self.model.get_weights()
     def save(self):
         with self.session.as_default():
-            #with self.graph.as_default():
-            self.model.save('DroneNet.h5')
+            with self.graph.as_default():
+                self.model.save('DroneNet.h5')
     def predict_all(self,X):
         with self.session.as_default():
-            #with self.graph.as_default():
-            return self.model.predict(numpy.reshape(X,[-1,WINDOW_SIZE,WINDOW_SIZE,self._in_channel]))
+            with self.graph.as_default():
+                return self.model.predict(numpy.reshape(X,[-1,WINDOW_SIZE,WINDOW_SIZE,self._in_channel]))
     def predict_ans(self,X):
         ans=numpy.argmax(self.predict_all([X]))
         return numpy.unravel_index(ans,(WINDOW_SIZE,WINDOW_SIZE,self._out_channel))
@@ -68,8 +68,8 @@ class UnitNet:
             return self.model.fit(X,Y)
     def evaluate(self,X,Y):
         with self.session.as_default():
-            #with self.graph.as_default():
-            return self.model.evaluate(X,Y,verbose=0)
+            with self.graph.as_default():
+                return self.model.evaluate(X,Y,verbose=0)
     @staticmethod
     def msg2mask(disGame, msg):
         pass
