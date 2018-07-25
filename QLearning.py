@@ -202,7 +202,7 @@ class QLearning(Learner):
                     Y_=numpy.copy(Y)
                     Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*ans[1]
 
-                    gradient=self.units.gradient(tf.square(Y_-Y))
+                    gradient=self.units.gradient(Y_, Y)
                     print(gradient)
                 last_state=msg
                 last_action=ans[0]

@@ -64,11 +64,11 @@ class DroneNet(UnitNet):
         with self.session.as_default():
             with self.graph.as_default():
                 self.model.save('DroneNet.h5')
-    def gradient(self, loss):
+    def gradient(self, target, logit):
         with self.session.as_default():
             print(self.model.trainable_weights)
             #with self.graph.as_default():
-            return KTF.gradients(loss, self.model.trainable_weights)
+            return KTF.gradients(tf.square(target-logit)/2, self.model.trainable_weights)
     @staticmethod
     def msg2state(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
