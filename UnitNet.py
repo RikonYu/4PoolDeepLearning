@@ -124,5 +124,5 @@ class ValueNetwork:
                 self.model.set_weights(weights)
     @staticmethod
     def init_weight(shape, name):
-        k=numpy.zeros(shape=shape)
+        k=numpy.zeros(shape=shape, name=name)
         

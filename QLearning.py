@@ -21,6 +21,7 @@ class QLearning(Learner):
         self.async=0
         self.buflock=threading.Semaphore(1)
         self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
+        self.learn_epoch=0
 
     def learner(self):
         replace_every = 10
@@ -169,11 +170,14 @@ class QLearning(Learner):
             fq.close()
 
     def asyncController(self, con, is_first):
+        ETARGET=150
+        EUPDATE=50
+        epoch=0
         self.async=1
         last_state=None
         last_action=None
         last_value=0
-        lastY=None
+        gradients=None
         epsilon=self.epsilon*numpy.random.uniform(0.8,1.2)
         while(True):
             data=pickle.loads(util64.recv_msg(con))
@@ -191,22 +195,26 @@ class QLearning(Learner):
                 if(numpy.random.random()<epsilon):
                     ini, inj, ink = numpy.nonzero(places)
                     ind = numpy.random.choice(len(ini))
-                    ans=[0,0]
-                    ans[0] = [ini[ind], inj[ind], ink[ind]]
-                    ans[1] = self.units.predict_all(X)[0][tuple(ans[0])]
+                    ans = [ini[ind], inj[ind], ink[ind]]
                 else:
-                    ans = self.units.predict_ans_masked(X, places, True)
-                util64.send_msg(con,pickle.dumps(ans[0]))
+                    ans = self.units.predict_ans_masked(X, places)
+                util64.send_msg(con,pickle.dumps(ans))
+                maxNext=self.target.predict_max_masked(X, places)
                 if(last_state is not None):
                     Y=self.units.predict_all(self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))[0]
                     Y_=numpy.copy(Y)
-                    Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*ans[1]
-
+                    Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*maxNext
                     gradient=self.units.gradient(Y_, Y)
                     print(gradient)
                 last_state=msg
                 last_action=ans[0]
                 last_value=data.value
+                self.learn_epoch+=1
+                epoch+=1
+                if(self.learn_epoch % ETARGET == 0):
+                    self.target.set_weights(self.units.get_weights())
+                if(epoch % EUPDATE == 0):
+
 
 
 
