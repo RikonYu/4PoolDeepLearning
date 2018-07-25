@@ -205,7 +205,7 @@ class QLearning(Learner):
                     Y_=numpy.copy(Y)
                     Y_[0,last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*maxNext
                     gradient=self.units.gradient(Y_, self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))
-                    print(gradient.eval())
+                    print([i.eval() for i in gradient])
                     gradients+=[gradient]
                 last_state=msg
                 last_action=ans
