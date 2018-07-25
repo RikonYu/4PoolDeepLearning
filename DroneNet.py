@@ -60,6 +60,7 @@ class DroneNet(UnitNet):
                 self.model._make_train_function()
                 if (os.path.isfile('DroneNet.h5') and loading):
                     self.model = load_model("DroneNet.h5")
+                self.mse=keras.losses.mean_squared_error
     def save(self):
         with self.session.as_default():
             with self.graph.as_default():
@@ -67,7 +68,7 @@ class DroneNet(UnitNet):
     def gradient(self, target, logit):
         with self.session.as_default():
             with self.graph.as_default():
-                return KTF.gradients(keras.losses.mean_squared_error(target, logit), self.model.trainable_weights)
+                return KTF.gradients(self.mse(target, logit), self.model.trainable_weights)
     @staticmethod
     def msg2state(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
