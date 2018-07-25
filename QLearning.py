@@ -177,7 +177,7 @@ class QLearning(Learner):
         last_state=None
         last_action=None
         last_value=0
-        gradients=0
+        gradients=[]
         epsilon=self.epsilon*numpy.random.uniform(0.8,1.2)
         while(True):
             data=pickle.loads(util64.recv_msg(con))
@@ -206,7 +206,7 @@ class QLearning(Learner):
                     Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*maxNext
                     gradient=self.units.gradient(Y_, Y)
                     print(gradient)
-                    gradients+=gradient
+                    gradients+=[gradient]
                 last_state=msg
                 last_action=ans
                 last_value=data.value

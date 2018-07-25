@@ -20,7 +20,8 @@ class UnitNet:
         with self.session.as_default():
             with self.graph.as_default():
                 opt=tf.train.AdamOptimizer()
-                opt.apply_gradients(gradient)
+                for i in gradient:
+                    opt.apply_gradients(i)
     def set_weights(self,weights):
         with self.session.as_default():
             with self.graph.as_default():
