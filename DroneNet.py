@@ -67,6 +67,7 @@ class DroneNet(UnitNet):
     def gradient(self, target, logit):
         with self.session.as_default():
             #with self.graph.as_default():
+            print([n.name for n in tf.get_default_graph().as_graph_def().node])
             return KTF.gradients(keras.losses.mean_squared_error(target, logit), self.model.trainable_weights)
     @staticmethod
     def msg2state(disGame, msg):
