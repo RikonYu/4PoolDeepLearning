@@ -201,10 +201,10 @@ class QLearning(Learner):
                 util64.send_msg(con,pickle.dumps(ans))
                 maxNext=self.target.predict_max_masked(X, places)
                 if(last_state is not None):
-                    Y=self.units.predict_all(self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))[0]
+                    Y=self.units.predict_all(self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))
                     Y_=numpy.copy(Y)
-                    Y_[last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*maxNext
-                    gradient=self.units.gradient(Y_, Y)
+                    Y_[0,last_action[0],last_action[1], last_action[2]]=data.value-last_value+self.discount*maxNext
+                    gradient=self.units.gradient(Y_, self.units.msg2state(self.mapSet.find_map(self.mapName), last_state))
                     print(gradient)
                     gradients+=[gradient]
                 last_state=msg
