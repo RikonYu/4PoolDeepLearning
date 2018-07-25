@@ -208,7 +208,7 @@ class QLearning(Learner):
                     print(gradient)
                     gradients+=gradient
                 last_state=msg
-                last_action=ans[0]
+                last_action=ans
                 last_value=data.value
                 self.learn_epoch+=1
                 epoch+=1
