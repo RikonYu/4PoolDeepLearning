@@ -68,7 +68,9 @@ class DroneNet(UnitNet):
     def gradient(self, target, X):
         with self.session.as_default():
             with self.graph.as_default():
-                return KTF.gradients(self.mse(target, self.model.predict(X.reshape([-1, WINDOW_SIZE,WINDOW_SIZE,self._in_channel]))), self.model.trainable_weights)
+                return tf.gradients(self.mse(target, self.model.predict(X.reshape([-1, WINDOW_SIZE,WINDOW_SIZE,self._in_channel]))), self.model.trainable_weights)
+
+                #return KTF.gradients(self.mse(target, self.model.predict(X.reshape([-1, WINDOW_SIZE,WINDOW_SIZE,self._in_channel]))), self.model.trainable_weights)
     @staticmethod
     def msg2state(disGame, msg):
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,DroneNet._in_channel])
