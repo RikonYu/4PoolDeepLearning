@@ -78,7 +78,7 @@ class VultureNet(UnitNet):
         ans[:,:,3]=msg.myInfo.canFireGround
         rng=msg.myInfo.rangeGround[1]
         for i in range(-rng,rng+1):
-            for j in range(-(-numpy.sqrt(rng*rng-i*i))//1,1+numpy.sqrt(rng*rng-i*i)//1):
+            for j in range(-int(numpy.sqrt(rng*rng-i*i)),1+int(numpy.sqrt(rng*rng-i*i))):
                 ans[WINDOW_SIZE//2+i,WINDOW_SIZE//2+j,4]=1
 
         return ans
