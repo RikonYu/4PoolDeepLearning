@@ -42,7 +42,7 @@ class A2C(Learner):
             values=[]
             cmem=self.memory[0]
             for i in cmem:
-                values.append(self.critic.predict(self.actor.msg2state(i[0])))
+                values.append(self.critic.predict(self.actor.msg2state(self.memory_map[0],i[0])))
             values.append(0)
             for i in range(len(cmem)):
                 advantages=numpy.zeros([1,WINDOW_SIZE,WINDOW_SIZE,self.actor._in_channel])
