@@ -98,15 +98,16 @@ class A2C(Learner):
                                 frwd.write(str(data.value) + '\n')
                                 frwd.flush()
                                 os.fsync(frwd.fileno())
-                            return
+                            break
                         else:
                             memory.append([last_state,last_act,data.msg, 1, data.value])
                     last_val=data.value
                     last_state=data.msg
                     last_act=act
             except EOFError:
-                rl.acquire()
-                self.memory.append(memory)
-                self.memory_map.append(self.mapName)
-                rl.release()
-                return
+                break
+
+            rl.acquire()
+            self.memory.append(memory)
+            self.memory_map.append(self.mapName)
+            rl.release()
