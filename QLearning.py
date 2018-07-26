@@ -140,6 +140,9 @@ class QLearning(Learner):
                         ans = [ini[ind], inj[ind], ink[ind]]
                         if (is_first == 1):
                             print('exploring', ans)
+                            fq.write('None\n')
+                            fq.flush()
+                            os.fsync(fq.fileno())
                         # print(ans)
                     else:
                         mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)

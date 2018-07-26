@@ -39,6 +39,12 @@ def plots(arr, rows=1):
     plt.show()
 
 if(__name__=='__main__'):
+    fvv=open('results/vultureq.txt','r')
+    k=fvv.readlines()
+    k=k[::4]
+    x=[int(i[12:]) for i in k]
+    gamelen=[(i+1)//3 for i in x]
+
     fin = open('rewards.txt', 'r')
     k = list(map(float, fin.read().splitlines()))
     k = numpy.array(k)
@@ -48,14 +54,22 @@ if(__name__=='__main__'):
     plt.show()
     fin = open('Qvals.txt', 'r')
     k = list(map(float, fin.read().splitlines()))
-    plt.plot(k, 'r', label='Q')
-    plt.legend()
-    plt.show()
 
-    ferr=open('trainerr.txt','r')
-
-    k=[float(i[:-1]) for i in ferr.readlines()]
-    plt.plot(k[:150], label='training MSE')
+    sk=[]
+    ct=0
+    pt=0
+    ss=0
+    for i in range(len(k)):
+        if(pt>=len(gamelen)):
+            break
+        if(ct>=gamelen[pt]*0.7):
+            ct=0
+            pt+=1
+            sk.append(ss)
+            ss=0
+        ss+=k[i]
+        ct+=1
+    plt.plot(numpy.array(sk)/0.7 /gamelen[:-11], 'r', label='average episodic Q')
     plt.legend()
     plt.show()
 

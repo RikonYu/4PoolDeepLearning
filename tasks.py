@@ -77,10 +77,10 @@ def findGasFinalValue(player):
     return ans
 
 def VultureKiteValue(unit):
-    return unit.getKillCount()+game.getFrameCount()*0.03
+    return unit.getKillCount()+game.getFrameCount()*0.03+unit.getHitPoints()
 
 def VultureKiteFinalValue(player):
-    return game.getFrameCount()*0.03+unit.getKillCount()
+    return game.getFrameCount()
 
 
 taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue, 10)
