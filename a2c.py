@@ -85,7 +85,7 @@ class A2C(Learner):
                     act=self.actor.sample_ans_masked(X,mask)
                     rl.release()
                     if(is_first==1 and last_val is not None):
-                        print(act, self.critic.predict([X])[0,0], data.value)
+                        #print(act, self.critic.predict([X])[0,0], data.value)
                         fval.write(str(self.critic.predict([X])[0,0])+'\n')
 
                         fval.flush()
@@ -94,9 +94,10 @@ class A2C(Learner):
                     if(last_state is not None):
                         if(data.type=='terminal'):
                             memory.append([last_state,last_act,last_state, 0, data.value])
-                            frwd.write(str(data.value) + '\n')
-                            frwd.flush()
-                            os.fsync(frwd.fileno())
+                            if(is_first==1):
+                                frwd.write(str(data.value) + '\n')
+                                frwd.flush()
+                                os.fsync(frwd.fileno())
                             return
                         else:
                             memory.append([last_state,last_act,data.msg, 1, data.value])
