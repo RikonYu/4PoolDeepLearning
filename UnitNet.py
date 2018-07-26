@@ -66,8 +66,7 @@ class UnitNet:
         allval=self.predict_all(X).reshape([WINDOW_SIZE,WINDOW_SIZE,self._out_channel])
         X,Y,Z=numpy.nonzero(mask)
         total=numpy.sum(allval[0]*mask)
-        print(allval.shape, mask.shape)
-        ans=numpy.random.choice(len(X),p=allval[0][X,Y,Z]/total)
+        ans=numpy.random.choice(len(X),p=allval[X,Y,Z]/total)
         return [X[ans],Y[ans],Z[ans]]
     def train(self,X,Y):
         with self.session.as_default():
