@@ -6,6 +6,7 @@ from ClassConstr import getUnitClass
 from consts import WINDOW_SIZE
 from readerwriterlock import RWLock
 from UnitNet import ValueNetwork
+import os
 from Learners import Learner
 
 class A2C(Learner):
@@ -84,6 +85,10 @@ class A2C(Learner):
                         print(self.critic.predict([X]), data.value)
                         fval.write(str(self.critic.predict([X])[0,0])+'\n')
                         frwd.write(str(data.value-last_val)+'\n')
+                        fval.flush()
+                        frwd.flush()
+                        os.fsync(fval.fileno())
+                        os.fsync(frwd.fileno())
                     rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
