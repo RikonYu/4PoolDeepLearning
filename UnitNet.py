@@ -48,11 +48,10 @@ class UnitNet:
         ini,inj,ink=numpy.nonzero(mask)
         return numpy.amax(k[ini,inj,ink])
     def predict_ans_masked(self,X,mask, want_val=False):
-        allval=self.predict_all(X)[0]
+        allval=self.predict_all(X).reshape([WINDOW_SIZE,WINDOW_SIZE,self._out_channel])
         #print(allval)
         ini,inj,ink=numpy.nonzero(mask)
         pos=numpy.argmax(allval[ini,inj,ink])
-        ans=[ini[pos],inj[pos],ink[pos]]
         if(want_val):
             f=open('allval.txt','wb')
             pickle.dump(allval, f)
