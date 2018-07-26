@@ -65,7 +65,7 @@ class UnitNet:
     def sample_ans_masked(self, X, mask):
         allval=self.predict_all(X).reshape([WINDOW_SIZE,WINDOW_SIZE,self._out_channel])
         X,Y,Z=numpy.nonzero(mask)
-        total=numpy.sum(allval[0]*mask)
+        total=numpy.sum(allval[X,Y,Z])
         ans=numpy.random.choice(len(X),p=allval[X,Y,Z]/total)
         return [X[ans],Y[ans],Z[ans]]
     def train(self,X,Y):
