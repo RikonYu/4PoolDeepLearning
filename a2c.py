@@ -31,7 +31,6 @@ class A2C(Learner):
         self.mapName = k.mapName
         self.agent_no = 1
     def learner(self):
-
         wl=self.lock.genWlock()
         while(True):
             if(len(self.memory)==0):
