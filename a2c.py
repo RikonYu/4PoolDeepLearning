@@ -57,8 +57,10 @@ class A2C(Learner):
             wl.acquire()
             self.actor.set_weights(self.tactor.get_weights())
             self.critic.set_weights(self.tcritic.get_weights())
-            wl.release()
             self.memory.pop(0)
+            self.memory_map.pop(0)
+            wl.release()
+
     def controller(self, con, is_first):
         rl=self.lock.genRlock()
         last_state=None
@@ -86,21 +88,25 @@ class A2C(Learner):
                     if(is_first==1 and last_val is not None):
                         print(act, self.critic.predict([X])[0,0], data.value)
                         fval.write(str(self.critic.predict([X])[0,0])+'\n')
-                        frwd.write(str(data.value-last_val)+'\n')
+
                         fval.flush()
-                        frwd.flush()
                         os.fsync(fval.fileno())
-                        os.fsync(frwd.fileno())
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
                         if(data.type=='terminal'):
                             memory.append([last_state,last_act,last_state, 0, data.value])
+                            frwd.write(str(data.value) + '\n')
+                            frwd.flush()
+                            os.fsync(frwd.fileno())
+                            return
                         else:
                             memory.append([last_state,last_act,data.msg, 1, data.value])
                     last_val=data.value
                     last_state=data.msg
                     last_act=act
             except EOFError:
+                rl.acquire()
                 self.memory.append(memory)
                 self.memory_map.append(self.mapName)
-                break
+                rl.release()
+                return
