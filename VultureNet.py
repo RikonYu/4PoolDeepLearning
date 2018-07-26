@@ -84,7 +84,7 @@ class VultureNet(UnitNet):
         for i in range(-rng,rng+1):
             for j in range(-int(numpy.sqrt(rng*rng-i*i)),1+int(numpy.sqrt(rng*rng-i*i))):
                 ans[WINDOW_SIZE//2+i,WINDOW_SIZE//2+j,4]=1
-        ans[:, :, 6]=msg.myInfo.HP
+        ans[:, :, 6]=msg.myInfo.HP/16.0
         return ans
     @staticmethod
     def msg2mask(disGame, msg):

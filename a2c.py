@@ -37,6 +37,7 @@ class A2C(Learner):
             if(len(self.memory)==0):
                 time.sleep(5)
                 continue
+            print('training')
             self.tactor.set_weights(self.actor.get_weights())
             self.tcritic.set_weights(self.critic.get_weights())
             values=[]
@@ -83,7 +84,7 @@ class A2C(Learner):
                     act=self.actor.sample_ans_masked(X,mask)
                     rl.release()
                     if(is_first==1 and last_val is not None):
-                        print(self.critic.predict([X]), data.value)
+                        print(act, self.critic.predict([X])[0,0], data.value)
                         fval.write(str(self.critic.predict([X])[0,0])+'\n')
                         frwd.write(str(data.value-last_val)+'\n')
                         fval.flush()
