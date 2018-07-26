@@ -53,7 +53,7 @@ if(__name__=='__main__'):
     plt.legend()
     plt.show()
     fin = open('Qvals.txt', 'r')
-    k = list(map(float, fin.read().splitlines()))
+    k = fin.read().splitlines()
 
     sk=[]
     ct=0
@@ -62,14 +62,15 @@ if(__name__=='__main__'):
     for i in range(len(k)):
         if(pt>=len(gamelen)):
             break
-        if(ct>=gamelen[pt]*0.7):
+        if(ct>=gamelen[pt]):
             ct=0
             pt+=1
             sk.append(ss)
             ss=0
-        ss+=k[i]
+        if(k[i]!='None'):
+            ss+=float(k[i])
         ct+=1
-    plt.plot(numpy.array(sk)/0.7 /gamelen[:-11], 'r', label='average episodic Q')
+    plt.plot(numpy.array(sk)/gamelen[:-1], 'r', label='average episodic Q')
     plt.legend()
     plt.show()
 

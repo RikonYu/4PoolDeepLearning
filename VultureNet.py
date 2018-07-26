@@ -13,7 +13,7 @@ from keras.layers.advanced_activations import LeakyReLU
 import os,sys
 
 class VultureNet(UnitNet):
-    _in_channel=7
+    _in_channel=8
     _out_channel=3
     def __init__(self, loading=False, output_type='linear'):
         self._in_channel = VultureNet._in_channel
@@ -63,7 +63,7 @@ class VultureNet(UnitNet):
                 self.model.save('VultureNet.h5')
     @staticmethod
     def msg2state(disGame, msg):
-        #[enemy, myBound, region, myCooldown, myRange, enemyCooldown, myHp]
+        #[enemyBound, myBound, region, myCooldown, myRange, enemyCooldown, myHp, enemyCenter]
         x,y=msg.myInfo.coord
         X,Y=disGame.regions.shape
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,VultureNet._in_channel])
@@ -71,6 +71,7 @@ class VultureNet(UnitNet):
             if (abs(u.coord[0] - x) < WINDOW_SIZE // 2 and abs(u.coord[1] - y) < WINDOW_SIZE // 2):
                 ans[shrinkScr(u.bounds[0]-x+WINDOW_SIZE//2):shrinkScr(u.bounds[1]-x+WINDOW_SIZE//2),
                     shrinkScr(u.bounds[2]-y+WINDOW_SIZE//2):shrinkScr(u.bounds[3]-y+WINDOW_SIZE//2),0]=1
+                ans[u.coord[0] - x + WINDOW_SIZE // 2, u.coord[1] - y + WINDOW_SIZE // 2, 7] = 1
                 ans[u.coord[0]-x+WINDOW_SIZE//2,u.coord[1]-y+WINDOW_SIZE//2,5]= u.canFireGround
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
@@ -90,10 +91,9 @@ class VultureNet(UnitNet):
         x,y=msg.myInfo.coord
         X, Y = disGame.regions.shape
         ans=numpy.zeros([WINDOW_SIZE,WINDOW_SIZE,VultureNet._out_channel])
-        #ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
-        ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
+        #ans[WINDOW_SIZE//2,WINDOW_SIZE//2,0]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=1
         myPos=msg.myInfo.coord
