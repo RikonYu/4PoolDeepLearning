@@ -81,6 +81,7 @@ class A2C(Learner):
                     mask=self.actor.msg2mask(self.mapSet.find_map(self.mapName),data.msg)
                     rl.acquire()
                     act=self.actor.sample_ans_masked(X,mask)
+                    rl.release()
                     if(is_first==1 and last_val is not None):
                         print(self.critic.predict([X]), data.value)
                         fval.write(str(self.critic.predict([X])[0,0])+'\n')
@@ -89,7 +90,6 @@ class A2C(Learner):
                         frwd.flush()
                         os.fsync(fval.fileno())
                         os.fsync(frwd.fileno())
-                    rl.release()
                     util64.send_msg(con,pickle.dumps(act))
                     if(last_state is not None):
                         if(data.type=='terminal'):
@@ -99,7 +99,7 @@ class A2C(Learner):
                     last_val=data.value
                     last_state=data.msg
                     last_act=act
-            except:
+            except EOFError:
                 self.memory.append(memory)
                 self.memory_map.append(self.mapName)
                 break
