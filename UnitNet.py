@@ -110,7 +110,7 @@ class ValueNetwork:
     def predict(self,X):
         with self.session.as_default():
             with self.graph.as_default():
-                return self.model.predict([X])
+                return self.model.predict(X.reshape([-1,WINDOW_SIZE,WINDOW_SIZE, self.in_channel]))
     def save(self):
         with self.session.as_default():
             with self.graph.as_default():
