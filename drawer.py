@@ -37,7 +37,10 @@ def plots(arr, rows=1):
         fig.add_subplot(rows, arr.shape[2]//rows, i+1)
         plt.imshow(arr[:,:,i])
     plt.show()
-
+def cvt(x):
+    if(x=='None'):
+        return 0
+    return float(x)
 if(__name__=='__main__'):
     fvv=open('results/vultureq.txt','r')
     k=fvv.readlines()
@@ -46,15 +49,19 @@ if(__name__=='__main__'):
     gamelen=[(i+1)//3 for i in x]
 
     fin = open('rewards.txt', 'r')
-    k = list(map(float, fin.read().splitlines()))
+    k = list(map(cvt, fin.read().splitlines()))
     k = numpy.array(k)
-    sb = [sum(k[x:x + 15]) for x in range(len(k) // 15)]
-    plt.plot(k, 'r', label='R')
+    plt.plot([sum(k[i:i+10]/10) for i in range(len(k)-10)], 'r', label='Reward')
+    plt.plot([-1.06]*(len(k)-10),'b', label='maximum without phase moving')
     plt.legend()
     plt.show()
     fin = open('Qvals.txt', 'r')
-    k = fin.read().splitlines()
+    k = list(map(cvt,fin.read().splitlines()))
 
+    plt.plot([sum(k[i*15:i*15+15])/15 for i in range(len(k)//15)],'r', label='average episodic Q')
+    plt.legend()
+    plt.show()
+    '''
     sk=[]
     ct=0
     pt=0
@@ -73,7 +80,7 @@ if(__name__=='__main__'):
     plt.plot(numpy.array(sk)/gamelen[:-1], 'r', label='average episodic Q')
     plt.legend()
     plt.show()
-
+    '''
 
     ft=open('state.txt','rb')
     sb=pickle.load(ft)
