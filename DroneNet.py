@@ -79,10 +79,10 @@ class DroneNet(UnitNet):
         #print(disGame.name, disGame.regions.shape,x,y)
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
-        '''
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
+        '''
 
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,1]=1
         for u in msg.allies:
