@@ -165,6 +165,7 @@ class QLearning(Learner):
                 print('exception found')
                 break
         if (is_first == 1):
+            self.epsilon*=0.99
             feval.close()
             fq.close()
 
