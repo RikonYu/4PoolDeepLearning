@@ -57,9 +57,7 @@ class QLearning(Learner):
             for i in range(self.batch_size):
                 if(samples[i][3]!=0):
                     print(Y_[i], aprime[i], samples[i][3])
-                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] = Y_[i]
-
-            # not using bias for now
+                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] += bias[i]*(Y_[i]-diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
 
             self.tempd.train(X, diff)
             self.tempd.save()
@@ -114,12 +112,10 @@ class QLearning(Learner):
                     msg=k.msg
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
-                        '''
                         self.buflock.acquire()
                         self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited - last_value),
                                 1, self.mapName)
                         self.buflock.release()
-                        '''
                         if (is_first == 1):
                             feval.write(str(k.value) + '\n')
                             feval.flush()
