@@ -11,7 +11,12 @@ from keras.layers.advanced_activations import LeakyReLU
 import keras
 from consts import WINDOW_SIZE
 
-
+def clip_bias(bias):
+    if(bias>1):
+        return 1
+    if(bias<-1):
+        return -1
+    return bias
 def conv_block(inp, times, has_input=False):
     x= Lambda(lambda i:i+0)(inp)
     for i in range(times):

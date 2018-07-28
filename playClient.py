@@ -17,6 +17,7 @@ address = 'linux.cs.uwaterloo.ca'
 unitThreads = {}
 first_time=0
 curTask=taskVultureKite
+regSoc=None
 
 def send_msg(sock, msg):
     msg = struct.pack('>I', len(msg)) + msg
@@ -29,11 +30,12 @@ def send(u, tp, sock):
 
 
 def send_reg():
-    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.connect((address, 12346))
-    send_msg(soc, pickle.dumps(mapState(mapMessage(), curTask.unitTypes[0].getName(), game.mapName())))
-    _ = soc.recv(16)
-    soc.close()
+    global regSoc
+    regSoc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    regSoc.connect((address, 12346))
+    send_msg(regSoc, pickle.dumps(mapState(mapMessage(), curTask.unitTypes[0].getName(), game.mapName())))
+    _ = regSoc.recv(16)
+    regSoc.close()
 
 
 
@@ -86,7 +88,11 @@ class PlayAI(BaseAI):
             game.leaveGame()
         #print(len(Socks.keys()))
     def finished(self):
-
+        kys = list(Socks.keys())
+        for i in kys:
+            Socks[i].close()
+            Socks.pop(i, None)
+            unitThreads.pop(i, None)
         pass
 
 def printer(k):
