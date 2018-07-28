@@ -131,9 +131,11 @@ class QLearning(Learner):
                         unvisited -= 1
                     if (numpy.random.random() < self.epsilon):
                         places = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
-                        ini, inj, ink = numpy.nonzero(places)
+                        _,_, ink = numpy.nonzero(places)
+                        moveType=numpy.random.choice(numpy.unique(ink))
+                        ini,inj=numpy.nonzero(places[:,:,moveType])
                         ind = numpy.random.choice(len(ini))
-                        ans = [ini[ind], inj[ind], ink[ind]]
+                        ans = [ini[ind], inj[ind], moveType]
                         if (is_first == 1):
                             print('exploring', ans)
                             fq.write('None\n')

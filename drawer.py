@@ -51,21 +51,16 @@ if(__name__=='__main__'):
     fin = open('rewards.txt', 'r')
     k = list(map(cvt, fin.read().splitlines()))
     k = numpy.array(k)
-    plt.plot([sum(k[i:i+10]/10) for i in range(len(k)-10)], 'r', label='Reward')
-    plt.plot([-1.06]*(len(k)-10),'b', label='maximum without phase moving')
+    plt.plot(k, 'r', label='Reward')
+    #plt.plot([sum(k[i:i+10]/10) for i in range(len(k)-10)], 'r', label='Reward')
     plt.legend()
     plt.show()
-    fin = open('Qvals.txt', 'r')
-    k = list(map(cvt,fin.read().splitlines()))
-
-    plt.plot([sum(k[i*15:i*15+15])/15 for i in range(len(k)//15)],'r', label='average episodic Q')
-    plt.legend()
-    plt.show()
-    '''
     sk=[]
     ct=0
     pt=0
     ss=0
+    fin=open('Qvals.txt','r')
+    k = list(map(cvt, fin.read().splitlines()))
     for i in range(len(k)):
         if(pt>=len(gamelen)):
             break
@@ -80,7 +75,6 @@ if(__name__=='__main__'):
     plt.plot(numpy.array(sk)/gamelen[:-1], 'r', label='average episodic Q')
     plt.legend()
     plt.show()
-    '''
 
     ft=open('state.txt','rb')
     sb=pickle.load(ft)
