@@ -57,7 +57,7 @@ class QLearning(Learner):
             for i in range(self.batch_size):
                 if(samples[i][3]!=0):
                     print(Y_[i], aprime[i], samples[i][3])
-                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] += bias[i]*(Y_[i]-diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
+                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] += util64.clip_bias(bias[i])*(Y_[i]-diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
 
             self.tempd.train(X, diff)
             self.tempd.save()
