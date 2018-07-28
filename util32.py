@@ -146,7 +146,6 @@ def command(unit, order):
         unit.attack(game.getClosestUnit(coord, radius=1))
     elif (order[2] == 5):
         unit.returnCargo()
-
 def recv_msg(sock):
     # Read message length and unpack it into an integer
     raw_msglen = recvall(sock, 4)

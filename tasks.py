@@ -86,4 +86,4 @@ def VultureKiteFinalValue(player):
 taskDragoonDefuse=gameTask('DragoonDefusal', dragoonDefusalValue, [pybrood.UnitTypes.Protoss_Dragoon], 15000, dragoonDefusalFinalValue, 10)
 taskBaseScout=gameTask( 'findEnemyBase', findEnemyBaseValue, [pybrood.UnitTypes.Zerg_Drone], 2500,findEnemyBaseFinalValue, 10)
 taskDebug=gameTask('findGas',findGasValue,[pybrood.UnitTypes.Zerg_Drone],150,findGasFinalValue, 10)
-taskVultureKite=gameTask('VultureKite', VultureKiteValue, [pybrood.UnitTypes.Terran_Vulture], numpy.inf, VultureKiteFinalValue, 3)
+taskVultureKite=gameTask('VultureKite', VultureKiteValue, [pybrood.UnitTypes.Terran_Vulture], numpy.inf, VultureKiteFinalValue, 5)
