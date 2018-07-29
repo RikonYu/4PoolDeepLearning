@@ -61,7 +61,7 @@ if(__name__=='__main__'):
     ss=0
     fin=open('Qvals.txt','r')
     k = list(map(cvt, fin.read().splitlines()))
-    plt.plot(k)
+    plt.plot([sum(k[i:i+100])/100 for i in range(len(k)-100)], 'r', label='Q')
     plt.show()
     for i in range(len(k)):
         if(pt>=len(gamelen)):

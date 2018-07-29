@@ -57,7 +57,7 @@ class QLearning(Learner):
             for i in range(self.batch_size):
                 if(samples[i][3]!=0):
                     print(Y_[i], aprime[i], samples[i][3])
-                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] += util64.clip_bias(bias[i])*(Y_[i]-diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
+                diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] += (Y_[i]-diff[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]])
 
             self.tempd.train(X, diff)
             self.tempd.save()
@@ -97,6 +97,7 @@ class QLearning(Learner):
         rl = self.lock.genRlock()
         feval = 0
         fq = 0
+        pSticky=0.2
         if (is_first == 1):
             feval = open('rewards.txt', 'a')
             fq = open('Qvals.txt', 'a')
@@ -130,17 +131,21 @@ class QLearning(Learner):
                     if (visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] == 1):
                         unvisited -= 1
                     if (numpy.random.random() < self.epsilon):
-                        places = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
-                        _,_, ink = numpy.nonzero(places)
-                        moveType=numpy.random.choice(numpy.unique(ink))
-                        ini,inj=numpy.nonzero(places[:,:,moveType])
-                        ind = numpy.random.choice(len(ini))
-                        ans = [ini[ind], inj[ind], moveType]
-                        if (is_first == 1):
-                            print('exploring', ans)
-                            fq.write('None\n')
-                            fq.flush()
-                            os.fsync(fq.fileno())
+                        if(numpy.random.random()<pSticky):
+                            print('sticky')
+                            ans=[256,256,-1]
+                        else:
+                            places = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
+                            _,_, ink = numpy.nonzero(places)
+                            moveType=numpy.random.choice(numpy.unique(ink))
+                            ini,inj=numpy.nonzero(places[:,:,moveType])
+                            ind = numpy.random.choice(len(ini))
+                            ans = [ini[ind], inj[ind], moveType]
+                            if (is_first == 1):
+                                print('exploring', ans)
+                                fq.write('None\n')
+                                fq.flush()
+                                os.fsync(fq.fileno())
                         # print(ans)
                     else:
                         mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
