@@ -77,7 +77,7 @@ def findGasFinalValue(player):
     return ans
 
 def VultureKiteValue(unit):
-    return unit.getKillCount()+game.getFrameCount()*0.03
+    return unit.getKillCount() + unit.getHitPoints()*0.2
 
 def VultureKiteFinalValue(player):
     return game.getFrameCount()
