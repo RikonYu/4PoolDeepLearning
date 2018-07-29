@@ -18,6 +18,8 @@ class QLearning(Learner):
         self.units=None
         self.tempd=None
         self.target=None
+        self.explore_count=0
+        self.exploit_count=0
         self.async=0
         self.buflock=threading.Semaphore(1)
         self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
@@ -106,6 +108,7 @@ class QLearning(Learner):
                 data = util64.recv_msg(con)
                 k = pickle.loads(data)
                 if (k.type == 'reg'):
+                    print(self.explore_count,self.exploit_count)
                     self.init_episode(k)
                     con.send(b'ok')
                     break
@@ -130,8 +133,8 @@ class QLearning(Learner):
                     visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] += 1
                     if (visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] == 1):
                         unvisited -= 1
-                    print('epsilon',self.epsilon)
                     if (numpy.random.random() < self.epsilon):
+                        self.explore_count += 1
                         if(numpy.random.random()<pSticky):
                             print('sticky')
                             ans=[256,256,-1]
@@ -155,6 +158,7 @@ class QLearning(Learner):
                         rl.release()
                         if (is_first == 1):
                             print('exploiting', ans[0], ans[1])
+                            self.exploit_count+=1
                             fq.write(str(ans[1]) + '\n')
                             fq.flush()
                             os.fsync(fq.fileno())
