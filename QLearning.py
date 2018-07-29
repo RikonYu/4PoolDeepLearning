@@ -130,6 +130,7 @@ class QLearning(Learner):
                     visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] += 1
                     if (visited[msg.myInfo.coord[0], msg.myInfo.coord[1]] == 1):
                         unvisited -= 1
+                    print('epsilon%d'%self.epsilon)
                     if (numpy.random.random() < self.epsilon):
                         if(numpy.random.random()<pSticky):
                             print('sticky')
