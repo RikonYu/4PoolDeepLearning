@@ -119,11 +119,10 @@ class DroneNet(UnitNet):
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                 shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         for u in msg.resources:
-            if(inReach(u.coord, msg.myInfo.coord)):
+            if(abs(u.coord[0] - x) < WINDOW_SIZE // 2 and abs(u.coord[1] - y) < WINDOW_SIZE // 2):
                 top,bot,left,right=u.bounds
                 ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                     shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
-
         fstate=open('mask.txt','wb')
         pickle.dump(ans, fstate)
         fstate.close()
