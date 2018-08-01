@@ -84,12 +84,14 @@ class DroneNet(UnitNet):
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,1]=1
         for u in msg.allies:
-            if(u.type=='Zerg_Drone'):
-                ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
-                shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 2]=1
-            else:
-                ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
-                shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 3]=1
+            if(u.coord[0]!=x or u.coord[1]!=y):
+                if(u.type!='Zerg_Overlord'):
+                    if(u.type=='Zerg_Drone'):
+                        ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
+                        shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 2]=1
+                    else:
+                        ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
+                        shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 3]=1
         for u in msg.resources:
             #print(u.type)
             if(u.type=='Resource_Vespene_Geyser'):
@@ -115,11 +117,9 @@ class DroneNet(UnitNet):
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
         for u in msg.allies:
-            if(u.coord[0]!=x or u.coord[1]!=y):
-                if(u.type!='Zerg_Overlord'):
-                    top,bot,left,right=u.bounds
-                    ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
-                        shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
+            top,bot,left,right=u.bounds
+            ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
+                shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
         for u in msg.resources:
             if(abs(u.coord[0] - x) < WINDOW_SIZE // 2 and abs(u.coord[1] - y) < WINDOW_SIZE // 2):
                 top,bot,left,right=u.bounds

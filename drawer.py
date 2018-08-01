@@ -35,7 +35,7 @@ def plots(arr, rows=1):
     fig=plt.figure(figsize=(rows, arr.shape[2]//rows))
     for i in range(arr.shape[2]):
         fig.add_subplot(rows, arr.shape[2]//rows, i+1)
-        plt.imshow(arr[:,:,i].transpose())
+        plt.imshow(arr[:,:,i])
     plt.show()
 def cvt(x):
     if(x=='None'):
