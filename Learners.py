@@ -30,9 +30,9 @@ class Learner:
         if (self.mapSet.is_empty()):
             self.mapSet.add_map(util64.gameMap(data.msg, data.mapName))
             self.targetType = data.unitType
-            self.units = getUnitClass(self.targetType, False)
-            self.target = getUnitClass(self.targetType, False)
-            self.tempd = getUnitClass(self.targetType, False)
+            self.units = getUnitClass(self.targetType, True)
+            self.target = getUnitClass(self.targetType, True)
+            self.tempd = getUnitClass(self.targetType, True)
         elif (self.mapSet.find_map(data.mapName) is None):
             self.mapSet.add_map(util64.gameMap(data.msg, data.mapName))
         self.mapName = data.mapName

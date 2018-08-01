@@ -17,3 +17,5 @@ pybrood/abc.py
 *.xml
 *.iml
 *.png
+.idea/workspace.xml___jb_tmp___
+*.h5

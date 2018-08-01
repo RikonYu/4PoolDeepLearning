@@ -124,6 +124,8 @@ class QLearning(Learner):
                             feval.write(str(k.value) + '\n')
                             feval.flush()
                             os.fsync(feval.fileno())
+                            self.epsilon*=0.98
+                            print(self.epsilon)
                         break
                     if (visited.shape[0] == 1):
                         visited = numpy.zeros(self.mapSet.find_map(self.mapName).regions.shape)

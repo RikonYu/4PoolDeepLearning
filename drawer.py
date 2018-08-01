@@ -51,8 +51,8 @@ if(__name__=='__main__'):
     fin = open('rewards.txt', 'r')
     k = list(map(cvt, fin.read().splitlines()))
     k = numpy.array(k)
-    plt.plot(k, 'r', label='Reward')
-    #plt.plot([sum(k[i:i+10]/10) for i in range(len(k)-10)], 'r', label='Reward')
+    #plt.plot(k, 'r', label='Reward')
+    plt.plot([sum(k[:i+1]/(i+1)) for i in range(len(k)-1)], 'r', label='average Reward')
     plt.legend()
     plt.show()
     sk=[]
@@ -61,7 +61,7 @@ if(__name__=='__main__'):
     ss=0
     fin=open('Qvals.txt','r')
     k = list(map(cvt, fin.read().splitlines()))
-    plt.plot([sum(k[i:i+100])/100 for i in range(len(k)-100)], 'r', label='Q')
+    plt.plot([sum(k[i:i+10000])/10000 for i in range(10000,len(k)-10000)], 'r', label='Q')
     plt.show()
     for i in range(len(k)):
         if(pt>=len(gamelen)):
