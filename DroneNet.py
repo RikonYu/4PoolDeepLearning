@@ -82,18 +82,23 @@ class DroneNet(UnitNet):
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
-        '''
-
         ans[WINDOW_SIZE//2,WINDOW_SIZE//2,1]=1
         for u in msg.allies:
-            ans[u.coord[0]*WINDOW_SIZE//X,u.coord[1]*WINDOW_SIZE//Y,3]=1
-        '''
+            if(u.type=='Zerg_Drone'):
+                ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
+                shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 2]=1
+            else:
+                ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
+                shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 3]=1
         for u in msg.resources:
             #print(u.type)
             if(u.type=='Resource_Vespene_Geyser'):
                 #ans[shrinkScr(u.coord[0]-x+WINDOW_SIZE//2),shrinkScr(u.coord[1]-y+WINDOW_SIZE//2),4]=1
                 ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
                 shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2) : shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 4] = 1
+            else:
+                ans[shrinkScr(u.bounds[0] - x + WINDOW_SIZE // 2):shrinkScr(u.bounds[1] - x + WINDOW_SIZE // 2),
+                shrinkScr(u.bounds[2] - y + WINDOW_SIZE // 2): shrinkScr(u.bounds[3] - y + WINDOW_SIZE // 2), 3]=1
         fstate=open('state.txt','wb')
         pickle.dump(ans, fstate)
         fstate.close()
@@ -109,7 +114,6 @@ class DroneNet(UnitNet):
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
             ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),1]=disGame.regions[max(0,x-WINDOW_SIZE//2):min(x+WINDOW_SIZE//2,X),
                                                                       max(0,y-WINDOW_SIZE//2):min(y+WINDOW_SIZE//2,Y)]
-        '''
         for u in msg.allies:
             top,bot,left,right=u.bounds
             ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
@@ -119,5 +123,8 @@ class DroneNet(UnitNet):
                 top,bot,left,right=u.bounds
                 ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                     shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
-        '''
+                
+        fstate=open('mask.txt','wb')
+        pickle.dump(ans, fstate)
+        fstate.close()
         return ans

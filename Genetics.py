@@ -3,8 +3,8 @@ from Learners import Learner
 
 class GeneticNet:
     def __init__(self):
-        self.zerglingEff=numpy.random.random()*2-1.0
-        self.zerglingRng=numpy.random.random()
+        self.boundRad=numpy.random.uniform(15-5, 15+5)
+
 class GeneticLearner(Learner):
     def __init__(self, population):
         self.

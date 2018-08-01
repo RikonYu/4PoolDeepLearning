@@ -16,7 +16,7 @@ address = 'linux.cs.uwaterloo.ca'
 # address='127.0.0.1'
 unitThreads = {}
 first_time=0
-curTask=taskVultureKite
+curTask=taskDebug
 regSoc=None
 
 def send_msg(sock, msg):
@@ -55,38 +55,11 @@ class PlayAI(BaseAI):
         send_reg()
 
     def frame(self):
-        if (game.getFrameCount() % curTask.frameSkip != 2):
-            for i in game.getAllUnits():
-                if(i.getLastCommand().getType().getName()=='Move'):
-                    game.drawLineMap(i.getPosition(),i.getLastCommand().getTargetPosition(),pybrood.Colors.Red)
-            return
         for i in game.getAllUnits():
-            if (curTask.can_control(i,self.playerMe)):
-                if (i.getID() in Socks):
-                    continue
-                Socks[i.getID()] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                Socks[i.getID()].connect((address, 12346))
+            if(i.getType().getName()=="Zerg_Drone"):
+                game.drawBoxMap(i.getPosition()[0]-256, i.getPosition()[1]-256, i.getPosition()[0]+256, i.getPosition()[1]+256,pybrood.Colors.Red)
+                return
 
-        kys = list(Socks.keys())
-        for i in kys:
-            if (curTask.is_terminal(game.getUnit(i))):
-                unitThreads[i] = threading.Thread(target=dead_unit, args=[i])
-                unitThreads[i].start()
-            else:
-                unitThreads[i] = threading.Thread(target=unit_thread, args=[i])
-                unitThreads[i].start()
-        for i in unitThreads.keys():
-            unitThreads[i].join()
-        for i in kys:
-            if (curTask.is_terminal(game.getUnit(i))):
-                Socks[i].close()
-                Socks.pop(i, None)
-                unitThreads.pop(i, None)
-        if(game.getFrameCount()>=curTask.maxFrame or len(Socks)==0):
-            ans=curTask.finalValueFunc(self.playerMe)
-            print('final Value', ans)
-            game.leaveGame()
-        #print(len(Socks.keys()))
     def finished(self):
         kys = list(Socks.keys())
         for i in kys:

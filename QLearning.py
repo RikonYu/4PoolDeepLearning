@@ -69,7 +69,25 @@ class QLearning(Learner):
             self.units.set_weights(self.tempd.get_weights())
             wl.release()
             self.learn_epoch += 1
-
+    def printer(self, conn, is_first):
+        while (True):
+            try:
+                data = util64.recv_msg(con)
+                k = pickle.loads(data)
+                if (k.type == 'reg'):
+                    self.init_episode(k)
+                    con.send(b'ok')
+                    break
+                else:
+                    if(is_first!=1):
+                        return
+                    msg=k.msg
+                    X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
+                    mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
+                    #ans = self.units.predict_ans_masked(X, mask, is_first == 1)
+                    #util64.send_msg(con, pickle.dumps(ans))
+            except EOFError:
+                break
     def exploiter(self, con, is_first):
         while (True):
             try:
