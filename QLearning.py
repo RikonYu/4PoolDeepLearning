@@ -69,7 +69,7 @@ class QLearning(Learner):
             self.units.set_weights(self.tempd.get_weights())
             wl.release()
             self.learn_epoch += 1
-    def printer(self, conn, is_first):
+    def drawer(self, con, is_first):
         while (True):
             try:
                 data = util64.recv_msg(con)

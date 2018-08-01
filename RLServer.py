@@ -35,6 +35,8 @@ if (__name__ == '__main__'):
             k = threading.Thread(target=agent.controller, args=[con, agent.agent_no])
         elif(sys.argv[1]=='test'):
             k=threading.Thread(target=agent.exploiter, args=[con,agent.agent_no])
+        elif(sys.argv[1]=='draw'):
+            k=threading.Thread(target=agent.drawer, args=[con,agent.agent_no])
         #print(agent_no)
         agent.agent_no += 1
         time.sleep(1)

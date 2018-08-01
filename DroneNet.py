@@ -123,7 +123,7 @@ class DroneNet(UnitNet):
                 top,bot,left,right=u.bounds
                 ans[shrinkScr(top - x + WINDOW_SIZE // 2):shrinkScr(bot - x + WINDOW_SIZE // 2),
                     shrinkScr(left - y + WINDOW_SIZE // 2):shrinkScr(right - x + WINDOW_SIZE // 2),1] = 0
-                
+
         fstate=open('mask.txt','wb')
         pickle.dump(ans, fstate)
         fstate.close()
