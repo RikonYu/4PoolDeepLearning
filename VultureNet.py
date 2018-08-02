@@ -7,6 +7,7 @@ from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,
 from keras.optimizers import Adam, SGD
 from keras import backend as KTF
 import numpy
+import pickle
 from util64 import conv_block, deconv_block, shrinkScr
 from consts import WINDOW_SIZE
 from keras.layers.advanced_activations import LeakyReLU
@@ -70,22 +71,26 @@ class VultureNet(UnitNet):
         for u in msg.enemies:
             if (abs(u.coord[0] - x) < WINDOW_SIZE // 2 and abs(u.coord[1] - y) < WINDOW_SIZE // 2):
                 ans[shrinkScr(u.bounds[0]-x+WINDOW_SIZE//2):shrinkScr(u.bounds[1]-x+WINDOW_SIZE//2),
-                    shrinkScr(u.bounds[2]-y+WINDOW_SIZE//2):shrinkScr(u.bounds[3]-y+WINDOW_SIZE//2),0]=1
+                    shrinkScr(u.bounds[2]-y+WINDOW_SIZE//2):shrinkScr(u.bounds[3]-y+WINDOW_SIZE//2),1]=1
                 ans[u.coord[0] - x + WINDOW_SIZE // 2, u.coord[1] - y + WINDOW_SIZE // 2, 7] = 1
                 ans[u.coord[0]-x+WINDOW_SIZE//2,u.coord[1]-y+WINDOW_SIZE//2,5]= u.canFireGround
         ax=max(0,WINDOW_SIZE//2-x)
         ay=max(0,WINDOW_SIZE//2-y)
         ans[(msg.myInfo.bounds[0]-x)+WINDOW_SIZE//2:msg.myInfo.bounds[1]-x+WINDOW_SIZE//2,
-            (msg.myInfo.bounds[2] - y) + WINDOW_SIZE // 2:msg.myInfo.bounds[3] - y + WINDOW_SIZE // 2,1]=1
+            (msg.myInfo.bounds[2] - y) + WINDOW_SIZE // 2:msg.myInfo.bounds[3] - y + WINDOW_SIZE // 2, 2]=1
         ans[ax:min(WINDOW_SIZE,X-x+WINDOW_SIZE//2),
-            ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),2]=1
+            ay:min(WINDOW_SIZE,Y-y+WINDOW_SIZE//2),0]=1
         ans[:,:,3]=msg.myInfo.canFireGround
         rng=msg.myInfo.rangeGround[1]
         for i in range(-rng,rng+1):
             for j in range(-int(numpy.sqrt(rng*rng-i*i)),1+int(numpy.sqrt(rng*rng-i*i))):
                 ans[WINDOW_SIZE//2+i,WINDOW_SIZE//2+j,4]=1
         ans[:, :, 6]=msg.myInfo.HP/16.0
+        fstate=open('state.txt','wb')
+        pickle.dump(ans, fstate)
+        fstate.close()
         return ans
+
     @staticmethod
     def msg2mask(disGame, msg):
         x,y=msg.myInfo.coord

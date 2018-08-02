@@ -35,7 +35,7 @@ def plots(arr, rows=1):
     fig=plt.figure(figsize=(rows, arr.shape[2]//rows))
     for i in range(arr.shape[2]):
         fig.add_subplot(rows, arr.shape[2]//rows, i+1)
-        plt.imshow(arr[:,:,i])
+        plt.imshow(arr[:,:,i].transpose(),cmap=plt.cm.gray)
     plt.show()
 def cvt(x):
     if(x=='None'):
@@ -43,6 +43,8 @@ def cvt(x):
     return float(x)
 if(__name__=='__main__'):
     plots(pickle.load(open('state.txt','rb')),1)
+    plots(pickle.load(open('mask.txt', 'rb')), 1)
+
     fvv=open('results/vultureq.txt','r')
     k=fvv.readlines()
     k=k[::4]
