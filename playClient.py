@@ -16,7 +16,7 @@ address = 'linux.cs.uwaterloo.ca'
 # address='127.0.0.1'
 unitThreads = {}
 first_time=0
-curTask=taskDebug
+curTask=taskVultureKite
 regSoc=None
 
 def send_msg(sock, msg):
