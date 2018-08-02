@@ -35,6 +35,10 @@ def plots(arr, rows=1):
     fig=plt.figure(figsize=(rows, arr.shape[2]//rows))
     for i in range(arr.shape[2]):
         fig.add_subplot(rows, arr.shape[2]//rows, i+1)
+        print(numpy.amax(arr[:,:,i]))
+        arr[511,511,i]=0
+        arr[0,0,i]=1
+
         plt.imshow(arr[:,:,i].transpose(),cmap=plt.cm.gray)
     plt.show()
 def cvt(x):
@@ -42,9 +46,6 @@ def cvt(x):
         return 0
     return float(x)
 if(__name__=='__main__'):
-    plots(pickle.load(open('state.txt','rb')),2)
-    plots(pickle.load(open('mask.txt', 'rb')), 1)
-
     fvv=open('results/vultureq.txt','r')
     k=fvv.readlines()
     k=k[::4]
@@ -55,7 +56,7 @@ if(__name__=='__main__'):
     k = list(map(cvt, fin.read().splitlines()))
     k = numpy.array(k)
     #plt.plot(k, 'r', label='Reward')
-    plt.plot([sum(k[:i+1]/(i+1)) for i in range(len(k)-1)], 'r', label='average Reward')
+    plt.plot([sum(k[:i+1]/(i+1)) for i in range(len(k)-1)], 'r', label='Reward')
     plt.legend()
     plt.show()
     sk=[]
@@ -64,7 +65,7 @@ if(__name__=='__main__'):
     ss=0
     fin=open('Qvals.txt','r')
     k = list(map(cvt, fin.read().splitlines()))
-    plt.plot([sum(k[i:i+10000])/10000 for i in range(10000,len(k)-10000)], 'r', label='Q')
+    plt.plot([sum(k[i:i+10000])/10000 for i in range(10000,len(k)-10000)], 'r', label='Q value')
     plt.show()
     for i in range(len(k)):
         if(pt>=len(gamelen)):
