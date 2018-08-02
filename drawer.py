@@ -42,7 +42,7 @@ def cvt(x):
         return 0
     return float(x)
 if(__name__=='__main__'):
-    plots(pickle.load(open('state.txt','rb')),1)
+    plots(pickle.load(open('state.txt','rb')),2)
     plots(pickle.load(open('mask.txt', 'rb')), 1)
 
     fvv=open('results/vultureq.txt','r')

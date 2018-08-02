@@ -84,7 +84,10 @@ class QLearning(Learner):
                     msg=k.msg
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     mask = self.units.msg2mask(self.mapSet.find_map(self.mapName), msg)
+                    if(msg.myInfo.killCount()==1):
+                        time.sleep(100)
                     util64.send_msg(con, pickle.dumps([256,256,0]))
+
                     #ans = self.units.predict_ans_masked(X, mask, is_first == 1)
                     #util64.send_msg(con, pickle.dumps(ans))
             except EOFError:
