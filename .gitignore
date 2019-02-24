@@ -19,3 +19,4 @@ pybrood/abc.py
 *.png
 .idea/workspace.xml___jb_tmp___
 *.h5
+*.JPG

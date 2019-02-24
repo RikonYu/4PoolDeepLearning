@@ -1,25 +1,36 @@
 import numpy
 
 class ReplayBuffer:
-    def __init__(self,length):
+    def __init__(self,length,lock=None):
         self.buffers=[]
         self._ind=0
         self.maxlen=length
         self.count=0
+        self.lock=lock
 
     def add(self,state,action,new_state,reward,is_terminal, mapName):
+        if(self.lock):
+            self.lock.acquire()
         if(len(self.buffers)>=self.maxlen):
             self.buffers[self._ind]=[state,action,new_state,reward,is_terminal, mapName]
         else:
             self.buffers.append([state,action,new_state,reward,is_terminal, mapName])
         self._ind=(self._ind+1)%self.maxlen
         self.count+=1
+        if(self.lock):
+            self.lock.release()
 
     def sample(self,batch_size):
+        if(self.lock):
+            self.lock.acquire()
         if(len(self.buffers)<batch_size):
             return []
         inds=numpy.random.choice(len(self.buffers),batch_size)
+        if (self.lock):
+            self.lock.release()
         return [self.buffers[i] for i in inds]
+
+
 
 class SegTree:
     def __init__(self,ln):
@@ -49,7 +60,7 @@ class SegTree:
             self.set(ind,val,pos*2+1)
 
 class PriortizedReplayBuffer:
-    def __init__(self,length):
+    def __init__(self,length,lock=None):
         self.buffers=[]
         self._ind=0
         self.maxlen=length
@@ -58,7 +69,10 @@ class PriortizedReplayBuffer:
         self.count=0
         self.beta=0.4
         self.alpha=0.6
+        self.lock=lock
     def add(self,state,action,new_state,reward,is_terminal, mapName):
+        if(self.lock):
+            self.lock.acquire()
         priority=self.prts.getmax()+0.0001
         if(len(self.buffers)>=self.maxlen):
             self.psum-=numpy.power(self.buffers[self._ind][1],self.alpha)
@@ -69,22 +83,31 @@ class PriortizedReplayBuffer:
         self.prts.set(self._ind,priority,1)
         self._ind=(self._ind+1)%self.maxlen
         self.count+=1
-
+        if(self.lock):
+            self.lock.release()
     def sample(self,batch_size):
+        if(self.lock):
+            self.lock.acquire()
         if(len(self.buffers)<batch_size):
             return []
         probs=numpy.power([i[1] for i in self.buffers],self.alpha)/self.psum
         inds=numpy.random.choice(len(self.buffers),batch_size,replace=False,p=probs)
         bias=numpy.power((self.count*probs[inds]),self.beta)
+        if(self.lock):
+            self.lock.release()
 
         return [self.buffers[i][0] for i in inds],inds,bias
 
     def update(self,ind,p):
+        if(self.lock):
+            self.lock.acquire()
         for i in range(len(ind)):
             self.psum-=numpy.power(self.buffers[ind[i]][1],self.alpha)
             self.prts.set(ind[i],abs(p[i]),1)
             self.psum+=numpy.power(abs(p[i]),self.alpha)
             self.buffers[ind[i]][1]=abs(p[i])
+        if (self.lock):
+            self.lock.release()
 
 '''
 a=SegTree(50000)

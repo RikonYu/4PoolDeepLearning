@@ -22,7 +22,7 @@ class QLearning(Learner):
         self.exploit_count=0
         self.async=0
         self.buflock=threading.Semaphore(1)
-        self.buf = ReplayBuffer.PriortizedReplayBuffer(100000)
+        self.buf = ReplayBuffer.PriortizedReplayBuffer(100000,self.buflock)
         self.learn_epoch=0
 
     def learner(self):
@@ -36,11 +36,8 @@ class QLearning(Learner):
                 # print('not enough samples')
                 time.sleep(10)
                 continue
-            self.buflock.acquire()
             samples, indx, bias = self.buf.sample(self.batch_size)
-            #samples = self.buf.sample(self.batch_size)
-
-            self.buflock.release()
+            #samples = self.buf.sample(self.batch_sacquireize)
             print('training')
             self.tempd.set_weights(self.units.get_weights())
             X = numpy.array([self.units.msg2state(self.mapSet.find_map(map_name), i) for i, _act, _nextS, _reward, _is_terminal,map_name in samples])
@@ -50,10 +47,8 @@ class QLearning(Learner):
             Y_ = [(samples[i][3] + self.discount * aprime[i] * (1 - samples[i][4])) for i in
                   range(self.batch_size)]  # r+discount*max_aq'(s',a')
             diff = numpy.copy(Y)
-            self.buflock.acquire()
             self.buf.update(indx,
                        list(Y_[i] - Y[i, samples[i][1][0], samples[i][1][1], samples[i][1][2]] for i in range(self.batch_size)))
-            self.buflock.release()
 
 
             for i in range(self.batch_size):
@@ -138,10 +133,8 @@ class QLearning(Learner):
                     msg=k.msg
                     X = self.units.msg2state(self.mapSet.find_map(self.mapName), msg)
                     if (k.type == 'terminal' and last_action is not None):
-                        self.buflock.acquire()
                         self.buf.add(last_state, last_action, last_state, (k.value - self.exploration_weight * unvisited - last_value),
                                 1, self.mapName)
-                        self.buflock.release()
                         if (is_first == 1):
                             feval.write(str(k.value) + '\n')
                             feval.flush()
@@ -189,10 +182,8 @@ class QLearning(Learner):
                             ans = ans[0]
                     util64.send_msg(con, pickle.dumps(ans))
                     if (last_action is not None):
-                        self.buflock.acquire()
                         self.buf.add(last_state, last_action, msg,
                                 (k.value - self.exploration_weight * unvisited - last_value), 0, self.mapName)
-                        self.buflock.release()
                     last_state = msg
                     last_action = ans
                     last_value = k.value - self.exploration_weight * unvisited
